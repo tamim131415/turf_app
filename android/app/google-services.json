@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1007718571582",
+    "project_id": "turfone-ff0e8",
+    "storage_bucket": "turfone-ff0e8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1007718571582:android:b58b4ae7ed2570813ffb6f",
+        "android_client_info": {
+          "package_name": "com.example.turf_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADhJYBXAi2xSU-swD7VAdAm7tYTE9K6YE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
