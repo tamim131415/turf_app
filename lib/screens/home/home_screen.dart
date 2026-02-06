@@ -4,6 +4,7 @@ import '../../controllers/product_controller.dart';
 import '../../models/product.dart';
 import '../../widgets/product_card.dart';
 import '../../app/routes/app_routes.dart';
+import '../../services/firebase_connection_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -147,6 +148,40 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
           ),
         ),
         actions: [
+          // Connection Status Indicator
+          Obx(
+            () => Container(
+              margin: EdgeInsets.only(right: 8),
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: productController.isOnline.value
+                    ? Colors.green
+                    : Colors.orange,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    productController.isOnline.value
+                        ? Icons.cloud_done
+                        : Icons.cloud_off,
+                    size: 12,
+                    color: Colors.white,
+                  ),
+                  SizedBox(width: 4),
+                  Text(
+                    productController.isOnline.value ? 'Online' : 'Offline',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           IconButton(
             icon: Stack(
               children: [
@@ -214,6 +249,14 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
             onPressed: () {
               Get.toNamed(Routes.NOTIFICATIONS);
             },
+          ),
+          // Firebase Connection Test Button
+          IconButton(
+            icon: Icon(Icons.settings, color: Colors.grey[700]),
+            onPressed: () {
+              FirebaseConnectionService.showConnectionDialog();
+            },
+            tooltip: 'Firebase Connection Test',
           ),
         ],
       ),
@@ -436,13 +479,47 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
             Padding(
               padding: EdgeInsets.all(20),
               child: Obx(
-                () => _filteredProducts.isEmpty
+                () => productController.isLoading.value
+                    ? Center(
+                        child: Column(
+                          children: [
+                            CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.green[700]!,
+                              ),
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              'Loading products...',
+                              style: TextStyle(color: Colors.grey[600]),
+                            ),
+                          ],
+                        ),
+                      )
+                    : _filteredProducts.isEmpty
                     ? Column(
                         children: [
                           Icon(
-                            Icons.search_off,
+                            Icons.sports_soccer,
                             size: 80,
                             color: Colors.grey[300],
+                          ),
+                          SizedBox(height: 20),
+                          Text(
+                            'Welcome to Turf-Mate!',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green[800],
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Your ultimate football products store',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey[600],
+                            ),
                           ),
                           SizedBox(height: 20),
                           Text(
@@ -453,9 +530,108 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                             ),
                           ),
                           SizedBox(height: 10),
-                          Text(
-                            'Try different search terms',
-                            style: TextStyle(color: Colors.grey[400]),
+                          Obx(
+                            () => Text(
+                              productController.isOnline.value
+                                  ? 'Trying to connect to database...'
+                                  : 'Working in offline mode',
+                              style: TextStyle(color: Colors.grey[400]),
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  productController.initializeSampleData();
+                                },
+                                icon: Icon(Icons.sports_soccer),
+                                label: Text('Load Football Products'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green[700],
+                                  foregroundColor: Colors.white,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 12,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              OutlinedButton.icon(
+                                onPressed: () {
+                                  productController.loadProducts();
+                                },
+                                icon: Icon(Icons.refresh),
+                                label: Text('Refresh'),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.green[700],
+                                  side: BorderSide(color: Colors.green[700]!),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 12,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 16),
+                          // Firebase Upload Button in prominent position
+                          Container(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                productController.forceUploadToFirebase();
+                              },
+                              icon: Icon(Icons.cloud_upload),
+                              label: Text('Upload Data to Firebase Database'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue[700],
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 16,
+                                ),
+                                textStyle: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 12),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              TextButton.icon(
+                                onPressed: () {
+                                  FirebaseConnectionService.showConnectionDialog();
+                                },
+                                icon: Icon(Icons.cloud_done, size: 16),
+                                label: Text('Test Firebase'),
+                                style: TextButton.styleFrom(
+                                  foregroundColor: Colors.blue[600],
+                                ),
+                              ),
+                              SizedBox(width: 8),
+                              Obx(
+                                () => !productController.isOnline.value
+                                    ? TextButton.icon(
+                                        onPressed: () {
+                                          productController.syncToFirebase();
+                                        },
+                                        icon: Icon(
+                                          Icons.cloud_upload,
+                                          size: 16,
+                                        ),
+                                        label: Text('Sync to Cloud'),
+                                        style: TextButton.styleFrom(
+                                          foregroundColor: Colors.green[600],
+                                        ),
+                                      )
+                                    : SizedBox.shrink(),
+                              ),
+                            ],
                           ),
                         ],
                       )

@@ -41,48 +41,46 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyA_jnZgJcC952CxfGFGsqsUzsj79TeLtw8',
-    appId: '1:1007718571582:web:6c9c98ed6ee447a63ffb6f',
-    messagingSenderId: '1007718571582',
-    projectId: 'turfone-ff0e8',
-    authDomain: 'turfone-ff0e8.firebaseapp.com',
-    storageBucket: 'turfone-ff0e8.firebasestorage.app',
-    measurementId: 'G-DC755KE85D',
+    apiKey: 'AIzaSyCsMDpY77RTRfwWAd94G4JKTXvBoxzFT2U',
+    appId: '1:405471770959:web:1be67963b47cbebb6fed3a',
+    messagingSenderId: '405471770959',
+    projectId: 'turf-mate-7d89c',
+    authDomain: 'turf-mate-7d89c.firebaseapp.com',
+    storageBucket: 'turf-mate-7d89c.firebasestorage.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyADhJYBXAi2xSU-swD7VAdAm7tYTE9K6YE',
-    appId: '1:1007718571582:android:b58b4ae7ed2570813ffb6f',
-    messagingSenderId: '1007718571582',
-    projectId: 'turfone-ff0e8',
-    storageBucket: 'turfone-ff0e8.firebasestorage.app',
+    apiKey: 'AIzaSyCsMDpY77RTRfwWAd94G4JKTXvBoxzFT2U',
+    appId: '1:405471770959:android:1be67963b47cbebb6fed3a',
+    messagingSenderId: '405471770959',
+    projectId: 'turf-mate-7d89c',
+    storageBucket: 'turf-mate-7d89c.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAbZ2bmiJd1mqot-ofkURSKURFVkLu-mJk',
-    appId: '1:1007718571582:ios:45014b5a63976a5a3ffb6f',
-    messagingSenderId: '1007718571582',
-    projectId: 'turfone-ff0e8',
-    storageBucket: 'turfone-ff0e8.firebasestorage.app',
-    iosBundleId: 'com.example.turfApp',
+    apiKey: 'AIzaSyCsMDpY77RTRfwWAd94G4JKTXvBoxzFT2U',
+    appId: '1:405471770959:ios:1be67963b47cbebb6fed3a',
+    messagingSenderId: '405471770959',
+    projectId: 'turf-mate-7d89c',
+    storageBucket: 'turf-mate-7d89c.firebasestorage.app',
+    iosBundleId: 'com.example.turf-app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyAbZ2bmiJd1mqot-ofkURSKURFVkLu-mJk',
-    appId: '1:1007718571582:ios:45014b5a63976a5a3ffb6f',
-    messagingSenderId: '1007718571582',
-    projectId: 'turfone-ff0e8',
-    storageBucket: 'turfone-ff0e8.firebasestorage.app',
-    iosBundleId: 'com.example.turfApp',
+    apiKey: 'AIzaSyCsMDpY77RTRfwWAd94G4JKTXvBoxzFT2U',
+    appId: '1:405471770959:ios:1be67963b47cbebb6fed3a',
+    messagingSenderId: '405471770959',
+    projectId: 'turf-mate-7d89c',
+    storageBucket: 'turf-mate-7d89c.firebasestorage.app',
+    iosBundleId: 'com.example.turf-app',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyA_jnZgJcC952CxfGFGsqsUzsj79TeLtw8',
-    appId: '1:1007718571582:web:71d7de76e0e21dc93ffb6f',
-    messagingSenderId: '1007718571582',
-    projectId: 'turfone-ff0e8',
-    authDomain: 'turfone-ff0e8.firebaseapp.com',
-    storageBucket: 'turfone-ff0e8.firebasestorage.app',
-    measurementId: 'G-TYCRR0YNW1',
+    apiKey: 'AIzaSyCsMDpY77RTRfwWAd94G4JKTXvBoxzFT2U',
+    appId: '1:405471770959:web:1be67963b47cbebb6fed3a',
+    messagingSenderId: '405471770959',
+    projectId: 'turf-mate-7d89c',
+    authDomain: 'turf-mate-7d89c.firebaseapp.com',
+    storageBucket: 'turf-mate-7d89c.firebasestorage.app',
   );
 }
