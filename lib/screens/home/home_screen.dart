@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// Content widget that can be used in MainNavigationScreen 
+// Content widget that can be used in MainNavigationScreen
 class HomeScreenContent extends StatefulWidget {
   const HomeScreenContent({super.key});
 
@@ -81,7 +81,7 @@ class HomeScreenContent extends StatefulWidget {
 
 class _HomeScreenContentState extends State<HomeScreenContent> {
   final ProductController productController = Get.find<ProductController>();
-  
+
   final List<String> _categories = [
     'All',
     'Jerseys',
