@@ -48,11 +48,6 @@ class CartItem extends StatelessWidget {
               icon: Icon(Icons.delete_outline, color: Colors.red),
               onPressed: () {
                 controller.removeFromCart(product);
-                Get.snackbar(
-                  'Removed',
-                  '${product.name} removed from cart',
-                  snackPosition: SnackPosition.BOTTOM,
-                );
               },
             ),
           ],
