@@ -9,6 +9,9 @@ import 'controllers/auth_controller.dart';
 import 'controllers/product_controller.dart';
 import 'services/firestore_service.dart';
 import 'services/local_storage_service.dart';
+import 'services/image_upload_service.dart';
+import 'services/local_image_service.dart';
+import 'services/cloudinary_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +34,9 @@ void main() async {
   });
 
   Get.put(FirestoreService());
+  Get.put(ImageUploadService());
+  Get.put(LocalImageService());
+  Get.put(CloudinaryService());
 
   // Initialize controllers
   Get.put(AuthController());

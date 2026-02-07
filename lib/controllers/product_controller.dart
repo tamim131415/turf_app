@@ -387,4 +387,86 @@ class ProductController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  // Add a new product
+  Future<void> addProduct(Product product) async {
+    try {
+      isLoading.value = true;
+
+      // Try to add to Firebase first
+      String? productId = await _firestoreService.addProduct(product);
+
+      if (productId != null) {
+        // Product was successfully added to Firebase
+        // Create a new product instance with the Firebase ID
+        Product updatedProduct = Product(
+          id: productId,
+          name: product.name,
+          price: product.price,
+          originalPrice: product.originalPrice,
+          team: product.team,
+          category: product.category,
+          imageUrl: product.imageUrl,
+          rating: product.rating,
+          reviewCount: product.reviewCount,
+          isFavorite: product.isFavorite,
+          sizes: product.sizes,
+          colors: product.colors,
+          description: product.description,
+        );
+
+        products.add(updatedProduct);
+        isOnline.value = true;
+
+        // Also save to local storage as backup
+        await _localStorageService.saveProducts(products);
+
+        Get.snackbar(
+          'Success',
+          'Product added to Firebase successfully!',
+          backgroundColor: Colors.green[100],
+          colorText: Colors.green[800],
+          snackPosition: SnackPosition.TOP,
+        );
+      } else {
+        // Firebase failed, add to local storage only
+        products.add(product);
+        await _localStorageService.saveProducts(products);
+        isOnline.value = false;
+
+        Get.snackbar(
+          'Offline Mode',
+          'Product added locally. Will sync when online.',
+          backgroundColor: Colors.orange[100],
+          colorText: Colors.orange[800],
+          snackPosition: SnackPosition.TOP,
+        );
+      }
+    } catch (e) {
+      // If everything fails, still try to add locally
+      try {
+        products.add(product);
+        await _localStorageService.saveProducts(products);
+        isOnline.value = false;
+
+        Get.snackbar(
+          'Added Locally',
+          'Product added offline. Error: ${e.toString()}',
+          backgroundColor: Colors.orange[100],
+          colorText: Colors.orange[800],
+          snackPosition: SnackPosition.TOP,
+        );
+      } catch (localError) {
+        Get.snackbar(
+          'Error',
+          'Failed to add product: ${localError.toString()}',
+          backgroundColor: Colors.red[100],
+          colorText: Colors.red[800],
+          snackPosition: SnackPosition.TOP,
+        );
+      }
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }

@@ -1,0 +1,16 @@
+rules_version = '2';
+
+// Firebase Storage Rules for Turf App
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Allow read/write access to products folder for all users
+    match /products/{allPaths=**} {
+      allow read, write: if true; // For development - change to more restrictive rules for production
+    }
+    
+    // Deny access to all other paths
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
