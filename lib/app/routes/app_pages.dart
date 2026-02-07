@@ -14,6 +14,7 @@ import '../../screens/profile/profile_screen.dart';
 import '../../screens/wishlist/wishlist_screen.dart';
 import '../../screens/notifications/notifications_screen.dart';
 import '../../screens/product/all_products_screen.dart';
+import '../../screens/product/add_product_screen.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -34,5 +35,6 @@ class AppPages {
     GetPage(name: Routes.WISHLIST, page: () => WishlistScreen()),
     GetPage(name: Routes.NOTIFICATIONS, page: () => NotificationsScreen()),
     GetPage(name: Routes.ALL_PRODUCTS, page: () => AllProductsScreen()),
+    GetPage(name: Routes.ADD_PRODUCT, page: () => AddProductScreen()),
   ];
 }

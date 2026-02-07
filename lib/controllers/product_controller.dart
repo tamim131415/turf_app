@@ -420,27 +420,11 @@ class ProductController extends GetxController {
 
         // Also save to local storage as backup
         await _localStorageService.saveProducts(products);
-
-        Get.snackbar(
-          'Success',
-          'Product added to Firebase successfully!',
-          backgroundColor: Colors.green[100],
-          colorText: Colors.green[800],
-          snackPosition: SnackPosition.TOP,
-        );
       } else {
         // Firebase failed, add to local storage only
         products.add(product);
         await _localStorageService.saveProducts(products);
         isOnline.value = false;
-
-        Get.snackbar(
-          'Offline Mode',
-          'Product added locally. Will sync when online.',
-          backgroundColor: Colors.orange[100],
-          colorText: Colors.orange[800],
-          snackPosition: SnackPosition.TOP,
-        );
       }
     } catch (e) {
       // If everything fails, still try to add locally
@@ -448,22 +432,9 @@ class ProductController extends GetxController {
         products.add(product);
         await _localStorageService.saveProducts(products);
         isOnline.value = false;
-
-        Get.snackbar(
-          'Added Locally',
-          'Product added offline. Error: ${e.toString()}',
-          backgroundColor: Colors.orange[100],
-          colorText: Colors.orange[800],
-          snackPosition: SnackPosition.TOP,
-        );
       } catch (localError) {
-        Get.snackbar(
-          'Error',
-          'Failed to add product: ${localError.toString()}',
-          backgroundColor: Colors.red[100],
-          colorText: Colors.red[800],
-          snackPosition: SnackPosition.TOP,
-        );
+        // Re-throw to let the caller handle the error
+        rethrow;
       }
     } finally {
       isLoading.value = false;

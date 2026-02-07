@@ -130,12 +130,7 @@ class CloudinaryService extends GetxService {
             children: [
               CircularProgressIndicator(color: Colors.orange[700]),
               SizedBox(height: 16),
-              Text('Uploading to Cloudinary...'),
-              SizedBox(height: 8),
-              Text(
-                'Product: $productId',
-                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-              ),
+              Text('Product is uploading...'),
             ],
           ),
         ),
@@ -199,15 +194,6 @@ class CloudinaryService extends GetxService {
         print('  - Width: ${responseData['width']}px');
         print('  - Height: ${responseData['height']}px');
 
-        Get.snackbar(
-          'Success',
-          'Image uploaded to Cloudinary successfully!',
-          backgroundColor: Colors.orange[100],
-          colorText: Colors.orange[800],
-          snackPosition: SnackPosition.TOP,
-          icon: Icon(Icons.cloud_done, color: Colors.orange[800]),
-        );
-
         return imageUrl;
       } else {
         throw Exception(
@@ -224,19 +210,19 @@ class CloudinaryService extends GetxService {
         Get.back();
       }
 
-      String errorMessage = 'Failed to upload image to Cloudinary';
+      String errorMessage = 'Failed to upload image';
       if (e.toString().contains('network')) {
         errorMessage = 'Network error. Check your internet connection.';
       } else if (e.toString().contains('401') ||
           e.toString().contains('authentication')) {
-        errorMessage = 'Authentication failed. Check Cloudinary credentials.';
+        errorMessage = 'Authentication failed. Please try again.';
       } else if (e.toString().contains('timeout')) {
         errorMessage = 'Upload timeout. Try again with smaller image.';
       }
 
       Get.snackbar(
         'Upload Error',
-        '$errorMessage\n\nError: ${e.toString()}',
+        errorMessage,
         backgroundColor: Colors.red[100],
         colorText: Colors.red[800],
         snackPosition: SnackPosition.TOP,

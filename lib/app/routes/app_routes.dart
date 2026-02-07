@@ -15,4 +15,5 @@ abstract class Routes {
   static const WISHLIST = '/wishlist';
   static const NOTIFICATIONS = '/notifications';
   static const ALL_PRODUCTS = '/all-products';
+  static const ADD_PRODUCT = '/add-product';
 }
