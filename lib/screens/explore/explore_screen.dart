@@ -55,6 +55,16 @@ class ExploreScreen extends StatelessWidget {
     IconData icon,
     List<String> items,
   ) {
+    // Valid product categories
+    final validCategories = [
+      'Jerseys',
+      'Shoes',
+      'Accessories',
+      'Balls',
+      'Training',
+      'Training Gear',
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -80,10 +90,17 @@ class ExploreScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
-                  // Filter products by category when tapped
                   final ProductController productController =
                       Get.find<ProductController>();
-                  productController.filterByCategory(items[index]);
+
+                  // Check if it's a valid category
+                  if (validCategories.contains(items[index])) {
+                    productController.filterByCategory(items[index]);
+                  } else {
+                    // For teams and brands, show all products for now
+                    productController.filterByCategory('All');
+                  }
+
                   Get.toNamed('/all-products');
                 },
                 child: Container(

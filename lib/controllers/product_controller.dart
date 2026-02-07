@@ -160,11 +160,12 @@ class ProductController extends GetxController {
       isLoading.value = true;
 
       // Try Firebase first, fallback to local
+      List<Product> categoryProducts = [];
       try {
         if (isOnline.value) {
           final firestoreProducts = await _firestoreService
               .getProductsByCategory(category);
-          products.value = firestoreProducts;
+          categoryProducts = firestoreProducts;
         } else {
           throw Exception('Offline mode');
         }
@@ -172,9 +173,34 @@ class ProductController extends GetxController {
         final localProducts = await _localStorageService.getProductsByCategory(
           category,
         );
-        products.value = localProducts;
+        categoryProducts = localProducts;
       }
 
+      // If no products found and category is not 'All', reset to 'All'
+      if (categoryProducts.isEmpty && category != 'All') {
+        print(
+          '⚠️ No products found for category: $category. Resetting to All.',
+        );
+        selectedCategory.value = 'All';
+        // Load all products instead
+        try {
+          if (isOnline.value) {
+            final firestoreProducts = await _firestoreService
+                .getProductsByCategory('All');
+            products.value = firestoreProducts;
+          } else {
+            final localProducts = await _localStorageService
+                .getProductsByCategory('All');
+            products.value = localProducts;
+          }
+        } catch (e) {
+          print('Error loading all products: $e');
+        }
+        updateFavoriteProducts();
+        return;
+      }
+
+      products.value = categoryProducts;
       updateFavoriteProducts();
     } catch (e) {
       Get.snackbar('Error', 'Failed to filter products: $e');
