@@ -185,37 +185,6 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
           IconButton(
             icon: Stack(
               children: [
-                Icon(Icons.favorite, color: Colors.grey[700]),
-                Obx(() {
-                  final count = productController.favoriteProducts.length;
-                  if (count > 0) {
-                    return Positioned(
-                      right: 0,
-                      top: 0,
-                      child: Container(
-                        padding: EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Text(
-                          '$count',
-                          style: TextStyle(color: Colors.white, fontSize: 10),
-                        ),
-                      ),
-                    );
-                  }
-                  return SizedBox.shrink();
-                }),
-              ],
-            ),
-            onPressed: () {
-              Get.toNamed(Routes.WISHLIST);
-            },
-          ),
-          IconButton(
-            icon: Stack(
-              children: [
                 Icon(Icons.shopping_cart, color: Colors.grey[700]),
                 Obx(() {
                   final count = productController.cartItems.length;
