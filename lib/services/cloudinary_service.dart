@@ -122,21 +122,6 @@ class CloudinaryService extends GetxService {
         throw Exception('Selected file does not exist');
       }
 
-      // Show upload progress dialog
-      Get.dialog(
-        AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircularProgressIndicator(color: Colors.orange[700]),
-              SizedBox(height: 16),
-              Text('Product is uploading...'),
-            ],
-          ),
-        ),
-        barrierDismissible: false,
-      );
-
       // Prepare upload parameters (simplified for testing)
       int timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       String publicId =
@@ -178,9 +163,6 @@ class CloudinaryService extends GetxService {
         },
       );
 
-      // Close loading dialog
-      Get.back();
-
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = response.data;
         String imageUrl = responseData['secure_url'];
@@ -204,11 +186,6 @@ class CloudinaryService extends GetxService {
       print('❌ ERROR during Cloudinary upload:');
       print('🔥 Error: $e');
       print('📍 Stack trace: $stackTrace');
-
-      // Close loading dialog if still open
-      if (Get.isDialogOpen ?? false) {
-        Get.back();
-      }
 
       String errorMessage = 'Failed to upload image';
       if (e.toString().contains('network')) {

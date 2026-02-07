@@ -34,7 +34,7 @@ class AppPages {
     GetPage(name: Routes.PROFILE, page: () => ProfileScreen()),
     GetPage(name: Routes.WISHLIST, page: () => WishlistScreen()),
     GetPage(name: Routes.NOTIFICATIONS, page: () => NotificationsScreen()),
-    GetPage(name: Routes.ALL_PRODUCTS, page: () => AllProductsScreen()),
+    GetPage(name: Routes.ALL_PRODUCTS, page: () => const AllProductsScreen()),
     GetPage(name: Routes.ADD_PRODUCT, page: () => AddProductScreen()),
   ];
 }

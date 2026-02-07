@@ -221,20 +221,20 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
               Get.toNamed(Routes.CART);
             },
           ),
-          IconButton(
-            icon: Icon(Icons.notifications, color: Colors.grey[700]),
-            onPressed: () {
-              Get.toNamed(Routes.NOTIFICATIONS);
-            },
-          ),
-          // Firebase Connection Test Button
-          IconButton(
-            icon: Icon(Icons.settings, color: Colors.grey[700]),
-            onPressed: () {
-              FirebaseConnectionService.showConnectionDialog();
-            },
-            tooltip: 'Firebase Connection Test',
-          ),
+          // IconButton(
+          //   icon: Icon(Icons.notifications, color: Colors.grey[700]),
+          //   onPressed: () {
+          //     Get.toNamed(Routes.NOTIFICATIONS);
+          //   },
+          // ),
+          // // Firebase Connection Test Button
+          // IconButton(
+          //   icon: Icon(Icons.settings, color: Colors.grey[700]),
+          //   onPressed: () {
+          //     FirebaseConnectionService.showConnectionDialog();
+          //   },
+          //   tooltip: 'Firebase Connection Test',
+          // ),
         ],
       ),
       body: SingleChildScrollView(

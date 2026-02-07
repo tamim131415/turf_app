@@ -1,32 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/product_controller.dart';
+import '../../models/product.dart';
 import '../../widgets/product_card.dart';
 
-class AllProductsScreen extends StatelessWidget {
-  AllProductsScreen({super.key});
+class AllProductsScreen extends StatefulWidget {
+  const AllProductsScreen({super.key});
 
+  @override
+  State<AllProductsScreen> createState() => _AllProductsScreenState();
+}
+
+class _AllProductsScreenState extends State<AllProductsScreen> {
   final ProductController productController = Get.find<ProductController>();
+  final TextEditingController searchController = TextEditingController();
+  final RxBool isSearching = false.obs;
+  final RxString searchQuery = ''.obs;
+
+  @override
+  void initState() {
+    super.initState();
+    searchController.addListener(() {
+      searchQuery.value = searchController.text;
+    });
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('All Products'),
+        title: Obx(
+          () => isSearching.value
+              ? TextField(
+                  controller: searchController,
+                  autofocus: true,
+                  decoration: InputDecoration(
+                    hintText: 'Search products...',
+                    border: InputBorder.none,
+                    hintStyle: TextStyle(color: Colors.grey[400]),
+                  ),
+                  style: TextStyle(color: Colors.green[800], fontSize: 18),
+                )
+              : Text('All Products'),
+        ),
         backgroundColor: Colors.white,
         foregroundColor: Colors.green[800],
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () => Get.back(),
+          onPressed: () {
+            if (isSearching.value) {
+              isSearching.value = false;
+              searchController.clear();
+            } else {
+              Get.back();
+            }
+          },
         ),
         actions: [
-          // Filter/Search icon
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              // TODO: Implement search functionality
-            },
+          Obx(
+            () => IconButton(
+              icon: Icon(isSearching.value ? Icons.close : Icons.search),
+              onPressed: () {
+                isSearching.value = !isSearching.value;
+                if (!isSearching.value) {
+                  searchController.clear();
+                }
+              },
+            ),
           ),
           PopupMenuButton<String>(
             icon: Icon(Icons.filter_alt),
@@ -35,9 +82,11 @@ class AllProductsScreen extends StatelessWidget {
             },
             itemBuilder: (context) => [
               PopupMenuItem(value: 'All', child: Text('All Products')),
-              PopupMenuItem(value: 'Jersey', child: Text('Jerseys')),
-              PopupMenuItem(value: 'Kit', child: Text('Kits')),
+              PopupMenuItem(value: 'Jerseys', child: Text('Jerseys')),
+              PopupMenuItem(value: 'Shoes', child: Text('Shoes')),
+              PopupMenuItem(value: 'Balls', child: Text('Balls')),
               PopupMenuItem(value: 'Accessories', child: Text('Accessories')),
+              PopupMenuItem(value: 'Training', child: Text('Training')),
             ],
           ),
         ],
@@ -48,23 +97,47 @@ class AllProductsScreen extends StatelessWidget {
           Container(
             height: 50,
             margin: EdgeInsets.symmetric(vertical: 8),
-            child: Obx(() {
-              return ListView(
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                children: [
-                  _buildCategoryChip('All'),
-                  _buildCategoryChip('Jersey'),
-                  _buildCategoryChip('Kit'),
-                  _buildCategoryChip('Accessories'),
-                ],
-              );
-            }),
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              children: [
+                _buildCategoryChip('All'),
+                _buildCategoryChip('Jerseys'),
+                _buildCategoryChip('Shoes'),
+                _buildCategoryChip('Balls'),
+                _buildCategoryChip('Accessories'),
+                _buildCategoryChip('Training'),
+              ],
+            ),
           ),
           // Products Grid
           Expanded(
             child: Obx(() {
-              final products = productController.filteredProducts;
+              // Show loading indicator
+              if (productController.isLoading.value) {
+                return Center(
+                  child: CircularProgressIndicator(color: Colors.green[700]),
+                );
+              }
+
+              // Get filtered products from controller, then apply search
+              final query = searchQuery.value.toLowerCase();
+              final baseProducts = productController.filteredProducts;
+
+              final products = query.isEmpty
+                  ? baseProducts
+                  : baseProducts.where((product) {
+                      final nameMatch = product.name.toLowerCase().contains(
+                        query,
+                      );
+                      final teamMatch = product.team.toLowerCase().contains(
+                        query,
+                      );
+                      final categoryMatch = product.category
+                          .toLowerCase()
+                          .contains(query);
+                      return nameMatch || teamMatch || categoryMatch;
+                    }).toList();
 
               if (products.isEmpty) {
                 return Center(
@@ -78,7 +151,9 @@ class AllProductsScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 16),
                       Text(
-                        'No products found',
+                        searchQuery.value.isEmpty
+                            ? 'No products found'
+                            : 'No results for "${searchQuery.value}"',
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.grey[600],
