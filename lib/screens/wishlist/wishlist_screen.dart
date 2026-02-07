@@ -16,10 +16,7 @@ class WishlistScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         foregroundColor: Colors.green[800],
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Get.back(),
-        ),
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: Icon(Icons.delete_outline),
