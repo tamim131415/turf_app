@@ -9,6 +9,7 @@ class WishlistScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ProductController productController = Get.find<ProductController>();
+    final bool canGoBack = Navigator.of(context).canPop();
 
     return Scaffold(
       appBar: AppBar(
@@ -16,7 +17,7 @@ class WishlistScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         foregroundColor: Colors.green[800],
         elevation: 0,
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: canGoBack,
         actions: [
           IconButton(
             icon: Icon(Icons.delete_outline),
