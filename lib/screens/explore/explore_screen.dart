@@ -26,19 +26,22 @@ class ExploreScreen extends StatelessWidget {
               'France',
               'Spain',
               'England',
+              'Others',
             ]),
             _buildCategorySection('Categories', Icons.category, [
               'Jerseys',
               'Shoes',
               'Accessories',
               'Balls',
-              'Training Gear',
+              'Training',
+              'Others',
             ]),
             _buildCategorySection('Brands', Icons.business, [
               'Nike',
               'Adidas',
               'Puma',
               'New Balance',
+              'Others',
             ]),
             _buildProductSection(
               'Trending Products',
@@ -55,16 +58,6 @@ class ExploreScreen extends StatelessWidget {
     IconData icon,
     List<String> items,
   ) {
-    // Valid product categories
-    final validCategories = [
-      'Jerseys',
-      'Shoes',
-      'Accessories',
-      'Balls',
-      'Training',
-      'Training Gear',
-    ];
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -93,12 +86,14 @@ class ExploreScreen extends StatelessWidget {
                   final ProductController productController =
                       Get.find<ProductController>();
 
-                  // Check if it's a valid category
-                  if (validCategories.contains(items[index])) {
-                    productController.filterByCategory(items[index]);
+                  // Determine filter type based on section title
+                  if (title == 'Popular Teams') {
+                    productController.filterByTeam(items[index]);
+                  } else if (title == 'Brands') {
+                    productController.filterByBrand(items[index]);
                   } else {
-                    // For teams and brands, show all products for now
-                    productController.filterByCategory('All');
+                    // Categories
+                    productController.filterByCategory(items[index]);
                   }
 
                   Get.toNamed('/all-products');

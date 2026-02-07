@@ -75,41 +75,77 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
               },
             ),
           ),
-          PopupMenuButton<String>(
-            icon: Icon(Icons.filter_alt),
-            onSelected: (category) {
-              productController.filterByCategory(category);
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(value: 'All', child: Text('All Products')),
-              PopupMenuItem(value: 'Jerseys', child: Text('Jerseys')),
-              PopupMenuItem(value: 'Shoes', child: Text('Shoes')),
-              PopupMenuItem(value: 'Balls', child: Text('Balls')),
-              PopupMenuItem(value: 'Accessories', child: Text('Accessories')),
-              PopupMenuItem(value: 'Training', child: Text('Training')),
-            ],
-          ),
+          Obx(() {
+            final filterType = productController.filterType.value;
+
+            return PopupMenuButton<String>(
+              icon: Icon(Icons.filter_alt),
+              onSelected: (value) {
+                if (filterType == 'team') {
+                  productController.filterByTeam(value);
+                } else if (filterType == 'brand') {
+                  productController.filterByBrand(value);
+                } else {
+                  productController.filterByCategory(value);
+                }
+              },
+              itemBuilder: (context) {
+                if (filterType == 'team') {
+                  return [
+                    PopupMenuItem(value: 'All', child: Text('All Teams')),
+                    PopupMenuItem(value: 'Argentina', child: Text('Argentina')),
+                    PopupMenuItem(value: 'Brazil', child: Text('Brazil')),
+                    PopupMenuItem(value: 'Germany', child: Text('Germany')),
+                    PopupMenuItem(value: 'France', child: Text('France')),
+                    PopupMenuItem(value: 'Spain', child: Text('Spain')),
+                    PopupMenuItem(value: 'England', child: Text('England')),
+                    PopupMenuItem(value: 'Others', child: Text('Others')),
+                  ];
+                } else if (filterType == 'brand') {
+                  return [
+                    PopupMenuItem(value: 'All', child: Text('All Brands')),
+                    PopupMenuItem(value: 'Nike', child: Text('Nike')),
+                    PopupMenuItem(value: 'Adidas', child: Text('Adidas')),
+                    PopupMenuItem(value: 'Puma', child: Text('Puma')),
+                    PopupMenuItem(
+                      value: 'New Balance',
+                      child: Text('New Balance'),
+                    ),
+                    PopupMenuItem(value: 'Others', child: Text('Others')),
+                  ];
+                } else {
+                  return [
+                    PopupMenuItem(value: 'All', child: Text('All Categories')),
+                    PopupMenuItem(value: 'Jerseys', child: Text('Jerseys')),
+                    PopupMenuItem(value: 'Shoes', child: Text('Shoes')),
+                    PopupMenuItem(value: 'Balls', child: Text('Balls')),
+                    PopupMenuItem(
+                      value: 'Accessories',
+                      child: Text('Accessories'),
+                    ),
+                    PopupMenuItem(value: 'Training', child: Text('Training')),
+                    PopupMenuItem(value: 'Others', child: Text('Others')),
+                  ];
+                }
+              },
+            );
+          }),
         ],
       ),
       body: Column(
         children: [
-          // Category Filter Tabs
-          Container(
-            height: 50,
-            margin: EdgeInsets.symmetric(vertical: 8),
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              children: [
-                _buildCategoryChip('All'),
-                _buildCategoryChip('Jerseys'),
-                _buildCategoryChip('Shoes'),
-                _buildCategoryChip('Balls'),
-                _buildCategoryChip('Accessories'),
-                _buildCategoryChip('Training'),
-              ],
-            ),
-          ),
+          // Dynamic Filter Tabs based on filter type
+          Obx(() {
+            return Container(
+              height: 50,
+              margin: EdgeInsets.symmetric(vertical: 8),
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                children: _buildFilterChips(),
+              ),
+            );
+          }),
           // Products Grid
           Expanded(
             child: Obx(() {
@@ -239,6 +275,85 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
         return SizedBox.shrink();
       }),
     );
+  }
+
+  List<Widget> _buildFilterChips() {
+    final filterType = productController.filterType.value;
+
+    if (filterType == 'team') {
+      // Show team filter chips
+      return [
+        _buildFilterChip('All', 'team'),
+        _buildFilterChip('Argentina', 'team'),
+        _buildFilterChip('Brazil', 'team'),
+        _buildFilterChip('Germany', 'team'),
+        _buildFilterChip('France', 'team'),
+        _buildFilterChip('Spain', 'team'),
+        _buildFilterChip('England', 'team'),
+        _buildFilterChip('Others', 'team'),
+      ];
+    } else if (filterType == 'brand') {
+      // Show brand filter chips
+      return [
+        _buildFilterChip('All', 'brand'),
+        _buildFilterChip('Nike', 'brand'),
+        _buildFilterChip('Adidas', 'brand'),
+        _buildFilterChip('Puma', 'brand'),
+        _buildFilterChip('New Balance', 'brand'),
+        _buildFilterChip('Others', 'brand'),
+      ];
+    } else {
+      // Show category filter chips (default)
+      return [
+        _buildFilterChip('All', 'category'),
+        _buildFilterChip('Jerseys', 'category'),
+        _buildFilterChip('Shoes', 'category'),
+        _buildFilterChip('Balls', 'category'),
+        _buildFilterChip('Accessories', 'category'),
+        _buildFilterChip('Training', 'category'),
+        _buildFilterChip('Others', 'category'),
+      ];
+    }
+  }
+
+  Widget _buildFilterChip(String value, String type) {
+    return Obx(() {
+      bool isSelected = false;
+
+      if (type == 'team') {
+        isSelected = productController.selectedTeam.value == value;
+      } else if (type == 'brand') {
+        isSelected = productController.selectedBrand.value == value;
+      } else {
+        isSelected = productController.selectedCategory.value == value;
+      }
+
+      return Container(
+        margin: EdgeInsets.only(right: 8),
+        child: FilterChip(
+          label: Text(value),
+          selected: isSelected,
+          onSelected: (selected) {
+            if (type == 'team') {
+              productController.filterByTeam(value);
+            } else if (type == 'brand') {
+              productController.filterByBrand(value);
+            } else {
+              productController.filterByCategory(value);
+            }
+          },
+          selectedColor: Colors.green[100],
+          checkmarkColor: Colors.green[700],
+          labelStyle: TextStyle(
+            color: isSelected ? Colors.green[700] : Colors.grey[700],
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          ),
+          side: BorderSide(
+            color: isSelected ? Colors.green[700]! : Colors.grey[300]!,
+          ),
+        ),
+      );
+    });
   }
 
   Widget _buildCategoryChip(String category) {

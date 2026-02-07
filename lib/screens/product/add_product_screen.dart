@@ -20,13 +20,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController originalPriceController = TextEditingController();
-  final TextEditingController teamController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController reviewCountController = TextEditingController(
     text: '0',
   );
 
   String selectedCategory = 'Jerseys';
+  String selectedBrand = 'Nike';
+  String selectedTeam = 'Argentina';
   File? selectedImage;
   final ImagePicker picker = ImagePicker();
   bool isUploading = false;
@@ -39,6 +40,25 @@ class _AddProductScreenState extends State<AddProductScreen> {
     'Balls',
     'Accessories',
     'Training',
+    'Others',
+  ];
+
+  final List<String> brands = [
+    'Nike',
+    'Adidas',
+    'Puma',
+    'New Balance',
+    'Others',
+  ];
+
+  final List<String> teams = [
+    'Argentina',
+    'Brazil',
+    'Germany',
+    'France',
+    'Spain',
+    'England',
+    'Others',
   ];
 
   @override
@@ -46,7 +66,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
     nameController.dispose();
     priceController.dispose();
     originalPriceController.dispose();
-    teamController.dispose();
     descriptionController.dispose();
     reviewCountController.dispose();
     super.dispose();
@@ -168,8 +187,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
         name: nameController.text,
         price: price,
         originalPrice: originalPrice,
-        team: teamController.text.isEmpty ? 'Custom' : teamController.text,
+        team: selectedTeam,
         category: selectedCategory,
+        brand: selectedBrand,
         imageUrl: finalImageUrl,
         rating: rating,
         reviewCount: reviewCount,
@@ -290,16 +310,27 @@ class _AddProductScreenState extends State<AddProductScreen> {
               ),
               SizedBox(height: 16),
 
-              // Team/Brand
-              TextField(
-                controller: teamController,
+              // Team Dropdown
+              DropdownButtonFormField<String>(
+                value: selectedTeam,
                 decoration: InputDecoration(
-                  labelText: 'Team/Brand',
+                  labelText: 'Team',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  prefixIcon: Icon(Icons.business),
+                  prefixIcon: Icon(Icons.groups),
                 ),
+                items: teams.map((String team) {
+                  return DropdownMenuItem<String>(
+                    value: team,
+                    child: Text(team),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedTeam = newValue!;
+                  });
+                },
               ),
               SizedBox(height: 16),
 
@@ -322,6 +353,30 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 onChanged: (String? newValue) {
                   setState(() {
                     selectedCategory = newValue!;
+                  });
+                },
+              ),
+              SizedBox(height: 16),
+
+              // Brand Dropdown
+              DropdownButtonFormField<String>(
+                value: selectedBrand,
+                decoration: InputDecoration(
+                  labelText: 'Brand',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  prefixIcon: Icon(Icons.branding_watermark),
+                ),
+                items: brands.map((String brand) {
+                  return DropdownMenuItem<String>(
+                    value: brand,
+                    child: Text(brand),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedBrand = newValue!;
                   });
                 },
               ),

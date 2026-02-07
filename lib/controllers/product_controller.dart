@@ -9,6 +9,9 @@ class ProductController extends GetxController {
   final RxList<Product> favoriteProducts = <Product>[].obs;
   final RxList<Product> cartItems = <Product>[].obs;
   final RxString selectedCategory = 'All'.obs;
+  final RxString selectedTeam = 'All'.obs;
+  final RxString selectedBrand = 'All'.obs;
+  final RxString filterType = 'category'.obs; // 'category', 'team', or 'brand'
   final RxBool isLoading = false.obs;
   final RxBool isOnline = true.obs;
 
@@ -109,6 +112,7 @@ class ProductController extends GetxController {
           originalPrice: product.originalPrice,
           team: product.team,
           category: product.category,
+          brand: product.brand,
           imageUrl: product.imageUrl,
           rating: product.rating,
           reviewCount: product.reviewCount,
@@ -120,10 +124,6 @@ class ProductController extends GetxController {
       }
 
       updateFavoriteProducts();
-      Get.snackbar(
-        'Success',
-        newFavoriteStatus ? 'Added to favorites' : 'Removed from favorites',
-      );
     } catch (e) {
       Get.snackbar('Error', 'Failed to update favorite: $e');
     }
@@ -156,7 +156,10 @@ class ProductController extends GetxController {
 
   void filterByCategory(String category) async {
     try {
+      filterType.value = 'category';
       selectedCategory.value = category;
+      selectedTeam.value = 'All';
+      selectedBrand.value = 'All';
       isLoading.value = true;
 
       // Try Firebase first, fallback to local
@@ -209,8 +212,74 @@ class ProductController extends GetxController {
     }
   }
 
+  void filterByTeam(String team) async {
+    try {
+      filterType.value = 'team';
+      selectedTeam.value = team;
+      selectedCategory.value = 'All';
+      selectedBrand.value = 'All';
+      isLoading.value = true;
+
+      // Load all products and filter by team
+      try {
+        if (isOnline.value) {
+          final firestoreProducts = await _firestoreService
+              .getProductsByCategory('All');
+          products.value = firestoreProducts;
+        } else {
+          final localProducts = await _localStorageService
+              .getProductsByCategory('All');
+          products.value = localProducts;
+        }
+      } catch (e) {
+        print('Error loading products: $e');
+      }
+
+      updateFavoriteProducts();
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to filter products: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void filterByBrand(String brand) async {
+    try {
+      filterType.value = 'brand';
+      selectedBrand.value = brand;
+      selectedCategory.value = 'All';
+      selectedTeam.value = 'All';
+      isLoading.value = true;
+
+      // Load all products and filter by brand (currently we'll show all)
+      try {
+        if (isOnline.value) {
+          final firestoreProducts = await _firestoreService
+              .getProductsByCategory('All');
+          products.value = firestoreProducts;
+        } else {
+          final localProducts = await _localStorageService
+              .getProductsByCategory('All');
+          products.value = localProducts;
+        }
+      } catch (e) {
+        print('Error loading products: $e');
+      }
+
+      updateFavoriteProducts();
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to filter products: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   List<Product> get filteredProducts {
-    if (selectedCategory.value == 'All') {
+    if (filterType.value == 'team' && selectedTeam.value != 'All') {
+      return products.where((p) => p.team == selectedTeam.value).toList();
+    } else if (filterType.value == 'brand' && selectedBrand.value != 'All') {
+      return products.where((p) => p.brand == selectedBrand.value).toList();
+    } else if (selectedCategory.value == 'All') {
       return products;
     }
     return products.where((p) => p.category == selectedCategory.value).toList();
@@ -432,6 +501,7 @@ class ProductController extends GetxController {
           originalPrice: product.originalPrice,
           team: product.team,
           category: product.category,
+          brand: product.brand,
           imageUrl: product.imageUrl,
           rating: product.rating,
           reviewCount: product.reviewCount,

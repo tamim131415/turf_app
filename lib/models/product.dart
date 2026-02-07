@@ -8,6 +8,7 @@ class Product {
   final double? originalPrice;
   final String team;
   final String category;
+  final String brand;
   final String imageUrl;
   final double rating;
   final int reviewCount;
@@ -23,6 +24,7 @@ class Product {
     this.originalPrice,
     required this.team,
     required this.category,
+    this.brand = 'Others',
     required this.imageUrl,
     this.rating = 0.0,
     this.reviewCount = 0,
@@ -40,6 +42,7 @@ class Product {
       'originalPrice': originalPrice,
       'team': team,
       'category': category,
+      'brand': brand,
       'imageUrl': imageUrl,
       'rating': rating,
       'reviewCount': reviewCount,
@@ -59,6 +62,7 @@ class Product {
       originalPrice: map['originalPrice']?.toDouble(),
       team: map['team'] ?? '',
       category: map['category'] ?? '',
+      brand: map['brand'] ?? 'Others',
       imageUrl: map['imageUrl'] ?? '',
       rating: (map['rating'] ?? 0.0).toDouble(),
       reviewCount: map['reviewCount'] ?? 0,
