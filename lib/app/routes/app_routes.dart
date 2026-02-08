@@ -15,6 +15,7 @@ abstract class Routes {
   static const PROFILE = '/profile';
   static const WISHLIST = '/wishlist';
   static const NOTIFICATIONS = '/notifications';
+  static const MY_ORDERS = '/my-orders';
   static const ALL_PRODUCTS = '/all-products';
   static const ADD_PRODUCT = '/add-product';
   static const EDIT_PRODUCT = '/edit-product';

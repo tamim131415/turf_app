@@ -14,6 +14,7 @@ import '../../screens/cart/order_success_screen.dart';
 import '../../screens/profile/profile_screen.dart';
 import '../../screens/wishlist/wishlist_screen.dart';
 import '../../screens/notifications/notifications_screen.dart';
+import '../../screens/orders/my_orders_screen.dart';
 import '../../screens/product/all_products_screen.dart';
 import '../../screens/product/add_product_screen.dart';
 import '../../screens/product/edit_product_screen.dart';
@@ -42,6 +43,7 @@ class AppPages {
     GetPage(name: Routes.PROFILE, page: () => ProfileScreen()),
     GetPage(name: Routes.WISHLIST, page: () => WishlistScreen()),
     GetPage(name: Routes.NOTIFICATIONS, page: () => NotificationsScreen()),
+    GetPage(name: Routes.MY_ORDERS, page: () => const MyOrdersScreen()),
     GetPage(name: Routes.ALL_PRODUCTS, page: () => const AllProductsScreen()),
     GetPage(name: Routes.ADD_PRODUCT, page: () => AddProductScreen()),
     GetPage(name: Routes.EDIT_PRODUCT, page: () => const EditProductScreen()),

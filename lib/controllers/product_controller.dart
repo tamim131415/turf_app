@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/product.dart';
 import '../models/cart_item.dart';
+import '../models/order.dart' as app_models;
 import '../services/firestore_service.dart';
 import '../services/local_storage_service.dart';
+import '../services/auth_service.dart';
 
 class ProductController extends GetxController {
   final RxList<Product> products = <Product>[].obs;
@@ -19,6 +21,7 @@ class ProductController extends GetxController {
 
   final FirestoreService _firestoreService = FirestoreService.instance;
   final LocalStorageService _localStorageService = LocalStorageService.instance;
+  final AuthService _authService = Get.find<AuthService>();
 
   @override
   void onInit() {
@@ -287,9 +290,50 @@ class ProductController extends GetxController {
   }
 
   // Place order and reduce inventory
-  Future<void> placeOrder() async {
+  Future<String?> placeOrder({
+    required String customerName,
+    required String phoneNumber,
+    required String email,
+    required String address,
+    required String paymentMethod,
+  }) async {
     try {
       isLoading.value = true;
+
+      // Get current user ID
+      final userId = _authService.currentUser?.uid ?? '';
+
+      if (userId.isEmpty) {
+        throw Exception('User not logged in');
+      }
+
+      // Create order object
+      final order = app_models.Order(
+        id: 'order_${DateTime.now().millisecondsSinceEpoch}',
+        userId: userId,
+        items: List.from(cartItems),
+        totalAmount: cartTotal + 100, // Including delivery charge
+        customerName: customerName,
+        phoneNumber: phoneNumber,
+        email: email,
+        address: address,
+        paymentMethod: paymentMethod,
+        orderStatus: 'Pending',
+        orderDate: DateTime.now(),
+      );
+
+      print('🛒 Placing order for user: $userId');
+      print('   Items: ${cartItems.length}');
+      print('   Total: ${cartTotal + 100}');
+
+      // Save order to Firebase
+      final orderId = await _firestoreService.saveOrder(order);
+
+      if (orderId == null) {
+        throw Exception('Failed to save order');
+      }
+
+      print('✅ Order saved with ID: $orderId');
 
       // Reduce inventory for each cart item
       for (CartItem cartItem in cartItems) {
@@ -337,12 +381,16 @@ class ProductController extends GetxController {
       cartItems.clear();
       await _localStorageService.saveCartItems(cartItems);
 
+      print('✅ Order completed successfully! ID: $orderId');
+
       Get.snackbar(
         'Success',
-        'Order placed successfully!',
+        'Order #$orderId placed successfully!',
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
+
+      return orderId;
     } catch (e) {
       Get.snackbar(
         'Error',
@@ -354,6 +402,7 @@ class ProductController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+    return null;
   }
 
   // Sync local data to Firebase when connection is restored

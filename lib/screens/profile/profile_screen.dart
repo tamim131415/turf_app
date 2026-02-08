@@ -351,11 +351,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   'My Orders',
                   'View your order history and track deliveries',
                   () {
-                    Get.snackbar(
-                      'Coming Soon',
-                      'Order history feature will be available soon',
-                      backgroundColor: Colors.blue[100],
-                    );
+                    Get.toNamed('/my-orders');
                   },
                 ),
                 _buildProfileTile(

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import '../models/product.dart';
+import '../models/order.dart' as app_models;
 
 class FirestoreService extends GetxService {
   static FirestoreService get instance => Get.find<FirestoreService>();
@@ -12,6 +13,7 @@ class FirestoreService extends GetxService {
       _firestore.collection('products');
   CollectionReference get categoriesCollection =>
       _firestore.collection('categories');
+  CollectionReference get ordersCollection => _firestore.collection('orders');
 
   // Get all products
   Future<List<Product>> getProducts() async {
@@ -124,5 +126,69 @@ class FirestoreService extends GetxService {
     return productsCollection.snapshots().map((snapshot) {
       return snapshot.docs.map((doc) => Product.fromFirestore(doc)).toList();
     });
+  }
+
+  // Save order to Firestore
+  Future<String?> saveOrder(app_models.Order order) async {
+    try {
+      String orderId = 'order_${DateTime.now().millisecondsSinceEpoch}';
+
+      Map<String, dynamic> orderData = order.toMap();
+      orderData['created_at'] = FieldValue.serverTimestamp();
+
+      print('📦 Saving order to Firebase...');
+      print('   Order ID: $orderId');
+      print('   User ID: ${order.userId}');
+      print('   Items count: ${order.items.length}');
+      print('   Total amount: ${order.totalAmount}');
+
+      await ordersCollection.doc(orderId).set(orderData);
+
+      print('✅ Order saved successfully: $orderId');
+      return orderId;
+    } catch (e) {
+      print('❌ Error saving order: $e');
+      return null;
+    }
+  }
+
+  // Get user orders
+  Future<List<app_models.Order>> getUserOrders(String userId) async {
+    try {
+      print('📋 Fetching orders for user: $userId');
+
+      QuerySnapshot snapshot = await ordersCollection
+          .where('userId', isEqualTo: userId)
+          .get();
+
+      print('   Found ${snapshot.docs.length} orders');
+
+      final orders = snapshot.docs
+          .map((doc) => app_models.Order.fromFirestore(doc))
+          .toList();
+
+      // Sort by date in memory (descending - newest first)
+      orders.sort((a, b) => b.orderDate.compareTo(a.orderDate));
+
+      print('✅ Returning ${orders.length} orders');
+      return orders;
+    } catch (e) {
+      print('❌ Error getting user orders: $e');
+      return [];
+    }
+  }
+
+  // Get order by ID
+  Future<app_models.Order?> getOrderById(String orderId) async {
+    try {
+      DocumentSnapshot doc = await ordersCollection.doc(orderId).get();
+      if (doc.exists) {
+        return app_models.Order.fromFirestore(doc);
+      }
+      return null;
+    } catch (e) {
+      print('Error getting order: $e');
+      return null;
+    }
   }
 }

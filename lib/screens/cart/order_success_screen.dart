@@ -2,21 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/product_controller.dart';
 import '../../app/routes/app_routes.dart';
-import 'dart:math';
 
 class OrderSuccessScreen extends StatelessWidget {
   const OrderSuccessScreen({super.key});
 
-  String _generateOrderId() {
-    final random = Random();
-    final orderNumber = random.nextInt(99999).toString().padLeft(5, '0');
-    return 'TM-2024-$orderNumber';
-  }
-
   @override
   Widget build(BuildContext context) {
     final ProductController controller = Get.find<ProductController>();
-    final String orderId = _generateOrderId();
+    final String orderId = Get.arguments as String? ?? 'N/A';
 
     // Clear cart after successful order
     WidgetsBinding.instance.addPostFrameCallback((_) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/product_controller.dart';
+import '../../controllers/auth_controller.dart';
 import '../../app/routes/app_routes.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -30,6 +31,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     final ProductController controller = Get.find<ProductController>();
+    final AuthController authController = Get.find<AuthController>();
 
     return Scaffold(
       appBar: AppBar(
@@ -249,8 +251,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         : () async {
                             if (_formKey.currentState!.validate()) {
                               try {
-                                await controller.placeOrder();
-                                Get.toNamed(Routes.ORDER_SUCCESS);
+                                final orderId = await controller.placeOrder(
+                                  customerName: _nameController.text,
+                                  phoneNumber: _phoneController.text,
+                                  email:
+                                      authController
+                                          .firebaseUser
+                                          .value
+                                          ?.email ??
+                                      '',
+                                  address: _addressController.text,
+                                  paymentMethod: _selectedPaymentMethod,
+                                );
+                                if (orderId != null) {
+                                  Get.toNamed(
+                                    Routes.ORDER_SUCCESS,
+                                    arguments: orderId,
+                                  );
+                                }
                               } catch (e) {
                                 // Error is handled in controller
                               }
