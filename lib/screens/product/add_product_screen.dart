@@ -24,6 +24,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController reviewCountController = TextEditingController(
     text: '0',
   );
+  final TextEditingController quantityController = TextEditingController();
 
   String selectedCategory = 'Jerseys';
   String selectedBrand = 'Nike';
@@ -68,6 +69,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     originalPriceController.dispose();
     descriptionController.dispose();
     reviewCountController.dispose();
+    quantityController.dispose();
     super.dispose();
   }
 
@@ -133,6 +135,17 @@ class _AddProductScreenState extends State<AddProductScreen> {
       return;
     }
 
+    if (quantityController.text.isEmpty) {
+      Get.snackbar(
+        'Error',
+        'Please enter the stock quantity',
+        backgroundColor: Colors.red[100],
+        colorText: Colors.red[800],
+        snackPosition: SnackPosition.TOP,
+      );
+      return;
+    }
+
     if (selectedSizes.isEmpty) {
       Get.snackbar(
         'Error',
@@ -154,6 +167,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
       if (originalPriceController.text.isNotEmpty) {
         originalPrice = double.parse(originalPriceController.text);
       }
+
+      int quantity = 0;
+      if (quantityController.text.isNotEmpty) {
+        quantity = int.parse(quantityController.text);
+      }
+
       int reviewCount = int.parse(reviewCountController.text);
       String productId = 'custom_${DateTime.now().millisecondsSinceEpoch}';
 
@@ -199,6 +218,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         description: descriptionController.text.isEmpty
             ? 'Custom added product'
             : descriptionController.text,
+        quantity: quantity,
       );
 
       // Add product using the controller
@@ -306,6 +326,23 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   prefixIcon: Icon(Icons.money_off),
+                ),
+              ),
+              SizedBox(height: 16),
+
+              // Quantity (Required)
+              TextField(
+                controller: quantityController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Quantity *',
+                  hintText: 'How many units are you adding?',
+                  helperText: 'Enter the number of items in stock',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  prefixIcon: Icon(Icons.inventory_2, color: Colors.green[700]),
+                  suffixIcon: Icon(Icons.info_outline, color: Colors.grey),
                 ),
               ),
               SizedBox(height: 16),

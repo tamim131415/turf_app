@@ -16,6 +16,9 @@ import '../../screens/wishlist/wishlist_screen.dart';
 import '../../screens/notifications/notifications_screen.dart';
 import '../../screens/product/all_products_screen.dart';
 import '../../screens/product/add_product_screen.dart';
+import '../../screens/product/edit_product_screen.dart';
+import '../../screens/inventory/inventory_screen.dart';
+import '../../screens/inventory/inventory_detail_screen.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -41,5 +44,11 @@ class AppPages {
     GetPage(name: Routes.NOTIFICATIONS, page: () => NotificationsScreen()),
     GetPage(name: Routes.ALL_PRODUCTS, page: () => const AllProductsScreen()),
     GetPage(name: Routes.ADD_PRODUCT, page: () => AddProductScreen()),
+    GetPage(name: Routes.EDIT_PRODUCT, page: () => const EditProductScreen()),
+    GetPage(name: Routes.INVENTORY, page: () => const InventoryScreen()),
+    GetPage(
+      name: Routes.INVENTORY_DETAIL,
+      page: () => const InventoryDetailScreen(),
+    ),
   ];
 }

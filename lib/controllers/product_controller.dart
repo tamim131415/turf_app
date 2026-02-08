@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/product.dart';
 import '../services/firestore_service.dart';
 import '../services/local_storage_service.dart';
@@ -120,6 +121,7 @@ class ProductController extends GetxController {
           sizes: product.sizes,
           colors: product.colors,
           description: product.description,
+          quantity: product.quantity,
         );
       }
 
@@ -509,6 +511,7 @@ class ProductController extends GetxController {
           sizes: product.sizes,
           colors: product.colors,
           description: product.description,
+          quantity: product.quantity,
         );
 
         products.add(updatedProduct);
@@ -532,6 +535,157 @@ class ProductController extends GetxController {
         // Re-throw to let the caller handle the error
         rethrow;
       }
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // Delete all products
+  Future<void> deleteAllProducts() async {
+    try {
+      isLoading.value = true;
+
+      // Try to delete all from Firebase
+      try {
+        final batch = FirebaseFirestore.instance.batch();
+        for (var product in products) {
+          final docRef = FirebaseFirestore.instance
+              .collection('products')
+              .doc(product.id);
+          batch.delete(docRef);
+        }
+        await batch.commit();
+        print('All products deleted from Firebase');
+        isOnline.value = true;
+      } catch (e) {
+        print('Firebase batch delete failed: $e');
+        isOnline.value = false;
+      }
+
+      // Clear local products list
+      products.clear();
+      filteredProducts.clear();
+      favoriteProducts.clear();
+      cartItems.clear();
+
+      // Clear local storage
+      await _localStorageService.saveProducts([]);
+
+      Get.snackbar(
+        'Success',
+        'All products have been deleted',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to delete all products: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // Delete a single product
+  Future<void> deleteProduct(String productId) async {
+    try {
+      isLoading.value = true;
+
+      // Try to delete from Firebase
+      try {
+        await FirebaseFirestore.instance
+            .collection('products')
+            .doc(productId)
+            .delete();
+        print('Product deleted from Firebase');
+        isOnline.value = true;
+      } catch (e) {
+        print('Firebase delete failed: $e');
+        isOnline.value = false;
+      }
+
+      // Remove from local products list
+      products.removeWhere((p) => p.id == productId);
+      filteredProducts.removeWhere((p) => p.id == productId);
+      favoriteProducts.removeWhere((p) => p.id == productId);
+      cartItems.removeWhere((p) => p.id == productId);
+
+      // Update local storage
+      await _localStorageService.saveProducts(products);
+
+      isLoading.value = false;
+
+      Get.snackbar(
+        'Success',
+        'Product has been deleted successfully',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        duration: Duration(seconds: 2),
+      );
+
+      // Navigate back to inventory screen after a short delay
+      await Future.delayed(Duration(milliseconds: 300));
+      Get.back();
+    } catch (e) {
+      isLoading.value = false;
+      Get.snackbar(
+        'Error',
+        'Failed to delete product: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  // Update product
+  Future<void> updateProduct(Product product) async {
+    try {
+      isLoading.value = true;
+
+      // Try to update in Firebase first
+      try {
+        await _firestoreService.updateProduct(product.id, product.toMap());
+        print('Product updated in Firebase: ${product.name}');
+        isOnline.value = true;
+      } catch (e) {
+        print('Firebase update failed: $e');
+        isOnline.value = false;
+      }
+
+      // Update local product list
+      final index = products.indexWhere((p) => p.id == product.id);
+      if (index != -1) {
+        products[index] = product;
+      }
+
+      // Update filtered products if it contains this product
+      final filteredIndex = filteredProducts.indexWhere(
+        (p) => p.id == product.id,
+      );
+      if (filteredIndex != -1) {
+        filteredProducts[filteredIndex] = product;
+      }
+
+      // Update favorites if it contains this product
+      final favoriteIndex = favoriteProducts.indexWhere(
+        (p) => p.id == product.id,
+      );
+      if (favoriteIndex != -1) {
+        favoriteProducts[favoriteIndex] = product;
+      }
+
+      // Save to local storage
+      await _localStorageService.saveProducts(products);
+
+      print('Product updated locally: ${product.name}');
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to update product: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      rethrow;
     } finally {
       isLoading.value = false;
     }

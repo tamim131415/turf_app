@@ -190,13 +190,13 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
               ),
             ),
           ),
-          // Add Product Button
+          // Inventory Management Button
           IconButton(
-            icon: Icon(Icons.add_circle_outline, color: Colors.green[700]),
+            icon: Icon(Icons.inventory_2_outlined, color: Colors.green[700]),
             onPressed: () {
-              Get.toNamed(Routes.ADD_PRODUCT);
+              Get.toNamed(Routes.INVENTORY);
             },
-            tooltip: 'Add Product',
+            tooltip: 'Inventory',
           ),
           IconButton(
             icon: Stack(
