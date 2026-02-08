@@ -51,26 +51,14 @@ class CartScreen extends StatelessWidget {
           );
         }
 
-        // Group products by ID and count quantities
-        Map<String, int> productQuantities = {};
-        for (var product in controller.cartItems) {
-          productQuantities[product.id] =
-              (productQuantities[product.id] ?? 0) + 1;
-        }
-
         return Column(
           children: [
             Expanded(
               child: ListView.builder(
-                itemCount: productQuantities.length,
+                itemCount: controller.cartItems.length,
                 itemBuilder: (context, index) {
-                  final productId = productQuantities.keys.elementAt(index);
-                  final product = controller.cartItems.firstWhere(
-                    (p) => p.id == productId,
-                  );
-                  final quantity = productQuantities[productId]!;
-
-                  return CartItem(product: product, quantity: quantity);
+                  final cartItem = controller.cartItems[index];
+                  return CartItemCard(cartItem: cartItem);
                 },
               ),
             ),

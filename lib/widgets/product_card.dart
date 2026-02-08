@@ -92,11 +92,45 @@ class ProductCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
-                        'SALE',
+                        'Discount',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                // Out of Stock Badge
+                if (product.quantity == 0)
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          topRight: Radius.circular(15),
+                        ),
+                        color: Colors.black54,
+                      ),
+                      child: Center(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            'OUT OF STOCK',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -122,15 +156,31 @@ class ProductCard extends StatelessWidget {
                     ),
                     SizedBox(height: 4),
                     Expanded(
-                      child: Text(
-                        product.name,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                          height: 1.2,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            product.name,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              height: 1.2,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            product.description,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.grey[600],
+                              height: 1.3,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
                     ),
                     SizedBox(height: 8),
@@ -195,17 +245,23 @@ class ProductCard extends StatelessWidget {
                         ),
                         SizedBox(width: 8),
                         GestureDetector(
-                          onTap: () {
-                            productController.addToCart(product);
-                          },
+                          onTap: product.quantity > 0
+                              ? () {
+                                  productController.addToCart(product);
+                                }
+                              : null,
                           child: Container(
                             padding: EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: Colors.green[700],
+                              color: product.quantity > 0
+                                  ? Colors.green[700]
+                                  : Colors.grey[400],
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Icon(
-                              Icons.add_shopping_cart,
+                              product.quantity > 0
+                                  ? Icons.add_shopping_cart
+                                  : Icons.remove_shopping_cart,
                               color: Colors.white,
                               size: 18,
                             ),

@@ -2,13 +2,14 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/product.dart';
+import '../models/cart_item.dart';
 import '../services/firestore_service.dart';
 import '../services/local_storage_service.dart';
 
 class ProductController extends GetxController {
   final RxList<Product> products = <Product>[].obs;
   final RxList<Product> favoriteProducts = <Product>[].obs;
-  final RxList<Product> cartItems = <Product>[].obs;
+  final RxList<CartItem> cartItems = <CartItem>[].obs;
   final RxString selectedCategory = 'All'.obs;
   final RxString selectedTeam = 'All'.obs;
   final RxString selectedBrand = 'All'.obs;
@@ -115,16 +116,54 @@ class ProductController extends GetxController {
     favoriteProducts.value = products.where((p) => p.isFavorite).toList();
   }
 
-  void addToCart(Product product) async {
-    cartItems.add(product);
+  void addToCart(Product product, {int quantity = 1}) async {
+    // Check if product already in cart
+    final existingIndex = cartItems.indexWhere(
+      (item) => item.product.id == product.id,
+    );
+
+    if (existingIndex != -1) {
+      // Product exists, increment quantity
+      cartItems[existingIndex].quantity += quantity;
+      cartItems.refresh();
+    } else {
+      // Add new product with specified quantity
+      cartItems.add(CartItem(product: product, quantity: quantity));
+    }
+
     await _localStorageService.saveCartItems(cartItems);
     Get.snackbar('Success', '${product.name} added to cart');
   }
 
-  void removeFromCart(Product product) async {
-    cartItems.remove(product);
+  void removeFromCart(CartItem cartItem) async {
+    cartItems.remove(cartItem);
     await _localStorageService.saveCartItems(cartItems);
-    Get.snackbar('Success', '${product.name} removed from cart');
+    Get.snackbar('Success', '${cartItem.product.name} removed from cart');
+  }
+
+  void updateCartItemQuantity(CartItem cartItem, int newQuantity) async {
+    if (newQuantity <= 0) {
+      removeFromCart(cartItem);
+      return;
+    }
+
+    final index = cartItems.indexWhere(
+      (item) => item.product.id == cartItem.product.id,
+    );
+
+    if (index != -1) {
+      cartItems[index].quantity = newQuantity;
+      cartItems.refresh();
+      await _localStorageService.saveCartItems(cartItems);
+    }
+  }
+
+  void incrementCartItem(CartItem cartItem) async {
+    updateCartItemQuantity(cartItem, cartItem.quantity + 1);
+  }
+
+  void decrementCartItem(CartItem cartItem) async {
+    updateCartItemQuantity(cartItem, cartItem.quantity - 1);
   }
 
   // Load cart items from local storage
@@ -244,7 +283,77 @@ class ProductController extends GetxController {
   }
 
   double get cartTotal {
-    return cartItems.fold(0.0, (sum, item) => sum + item.price);
+    return cartItems.fold(0.0, (sum, item) => sum + item.totalPrice);
+  }
+
+  // Place order and reduce inventory
+  Future<void> placeOrder() async {
+    try {
+      isLoading.value = true;
+
+      // Reduce inventory for each cart item
+      for (CartItem cartItem in cartItems) {
+        final productIndex = products.indexWhere(
+          (p) => p.id == cartItem.product.id,
+        );
+
+        if (productIndex != -1) {
+          // Update product quantity
+          final updatedProduct = Product(
+            id: products[productIndex].id,
+            name: products[productIndex].name,
+            price: products[productIndex].price,
+            originalPrice: products[productIndex].originalPrice,
+            team: products[productIndex].team,
+            category: products[productIndex].category,
+            brand: products[productIndex].brand,
+            imageUrl: products[productIndex].imageUrl,
+            rating: products[productIndex].rating,
+            reviewCount: products[productIndex].reviewCount,
+            isFavorite: products[productIndex].isFavorite,
+            sizes: products[productIndex].sizes,
+            colors: products[productIndex].colors,
+            description: products[productIndex].description,
+            quantity: products[productIndex].quantity - cartItem.quantity,
+          );
+
+          // Update in Firebase
+          try {
+            await _firestoreService.updateProduct(
+              updatedProduct.id,
+              updatedProduct.toMap(),
+            );
+          } catch (e) {
+            print('Failed to update product in Firebase: $e');
+          }
+
+          // Update locally
+          products[productIndex] = updatedProduct;
+          await _localStorageService.saveProducts(products);
+        }
+      }
+
+      // Clear cart
+      cartItems.clear();
+      await _localStorageService.saveCartItems(cartItems);
+
+      Get.snackbar(
+        'Success',
+        'Order placed successfully!',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to place order: ${e.toString()}',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      rethrow;
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   // Sync local data to Firebase when connection is restored
@@ -541,7 +650,7 @@ class ProductController extends GetxController {
       products.removeWhere((p) => p.id == productId);
       filteredProducts.removeWhere((p) => p.id == productId);
       favoriteProducts.removeWhere((p) => p.id == productId);
-      cartItems.removeWhere((p) => p.id == productId);
+      cartItems.removeWhere((p) => p.product.id == productId);
 
       // Update local storage
       await _localStorageService.saveProducts(products);

@@ -246,9 +246,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     ),
                     onPressed: controller.cartItems.isEmpty
                         ? null
-                        : () {
+                        : () async {
                             if (_formKey.currentState!.validate()) {
-                              Get.toNamed(Routes.ORDER_SUCCESS);
+                              try {
+                                await controller.placeOrder();
+                                Get.toNamed(Routes.ORDER_SUCCESS);
+                              } catch (e) {
+                                // Error is handled in controller
+                              }
                             }
                           },
                     child: Text(

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/product.dart';
+import '../models/cart_item.dart';
 
 class LocalStorageService extends GetxService {
   static LocalStorageService get instance => Get.find<LocalStorageService>();
@@ -96,19 +97,17 @@ class LocalStorageService extends GetxService {
   }
 
   // Save cart items
-  Future<void> saveCartItems(List<Product> cartItems) async {
-    final cartJson = cartItems.map((product) => product.toMap()).toList();
+  Future<void> saveCartItems(List<CartItem> cartItems) async {
+    final cartJson = cartItems.map((item) => item.toMap()).toList();
     await _prefs.setString(_cartKey, json.encode(cartJson));
   }
 
   // Get cart items
-  Future<List<Product>> getCartItems() async {
+  Future<List<CartItem>> getCartItems() async {
     final cartString = _prefs.getString(_cartKey);
     if (cartString != null) {
       final List<dynamic> cartJson = json.decode(cartString);
-      return cartJson
-          .map((json) => Product.fromMap(json, json['id'] ?? ''))
-          .toList();
+      return cartJson.map((json) => CartItem.fromMap(json)).toList();
     }
     return [];
   }

@@ -201,47 +201,109 @@ class ProductDetailScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 20),
                           // Price
-                          Row(
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                '৳${product.price.toStringAsFixed(2)}',
-                                style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green[700],
-                                ),
+                              Row(
+                                children: [
+                                  Text(
+                                    '৳${product.price.toStringAsFixed(2)}',
+                                    style: TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green[700],
+                                    ),
+                                  ),
+                                  if (product.originalPrice != null) ...[
+                                    SizedBox(width: 12),
+                                    Text(
+                                      '৳${product.originalPrice!.toStringAsFixed(2)}',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.grey,
+                                        decoration: TextDecoration.lineThrough,
+                                      ),
+                                    ),
+                                    SizedBox(width: 12),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Text(
+                                        'SAVE ৳${(product.originalPrice! - product.price).toStringAsFixed(2)}',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ],
                               ),
-                              if (product.originalPrice != null) ...[
-                                SizedBox(width: 12),
-                                Text(
-                                  '৳${product.originalPrice!.toStringAsFixed(2)}',
+                              SizedBox(height: 8),
+                              // Total Price
+                              Obx(
+                                () => Text(
+                                  'Total: ৳${(product.price * detailController.quantity.value).toStringAsFixed(2)}',
                                   style: TextStyle(
                                     fontSize: 18,
-                                    color: Colors.grey,
-                                    decoration: TextDecoration.lineThrough,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black87,
                                   ),
                                 ),
-                                SizedBox(width: 12),
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red,
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Text(
-                                    'SAVE ৳${(product.originalPrice! - product.price).toStringAsFixed(2)}',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          // Stock Availability
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: product.quantity > 0
+                                  ? Colors.green[50]
+                                  : Colors.red[50],
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: product.quantity > 0
+                                    ? Colors.green[200]!
+                                    : Colors.red[200]!,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  product.quantity > 0
+                                      ? Icons.check_circle
+                                      : Icons.cancel,
+                                  color: product.quantity > 0
+                                      ? Colors.green[700]
+                                      : Colors.red[700],
+                                  size: 20,
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  product.quantity > 0
+                                      ? 'In Stock (${product.quantity} available)'
+                                      : 'Out of Stock',
+                                  style: TextStyle(
+                                    color: product.quantity > 0
+                                        ? Colors.green[700]
+                                        : Colors.red[700],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
                                   ),
                                 ),
                               ],
-                            ],
+                            ),
                           ),
                           SizedBox(height: 20),
                           // Description
@@ -366,62 +428,99 @@ class ProductDetailScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 20),
                           // Action Buttons
-                          Row(
-                            children: [
-                              Expanded(
-                                child: SizedBox(
-                                  height: 55,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.grey[200],
-                                      foregroundColor: Colors.black,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15),
+                          if (product.quantity > 0)
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 55,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.grey[200],
+                                        foregroundColor: Colors.black,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ),
+                                        ),
+                                        elevation: 0,
                                       ),
-                                      elevation: 0,
-                                    ),
-                                    onPressed: () {
-                                      productController.addToCart(product);
-                                    },
-                                    child: Text(
-                                      'ADD TO CART',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 12),
-                              Expanded(
-                                child: SizedBox(
-                                  height: 55,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green[700],
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      elevation: 5,
-                                    ),
-                                    onPressed: () {
-                                      productController.addToCart(product);
-                                      Get.toNamed(Routes.CART);
-                                    },
-                                    child: Text(
-                                      'BUY NOW',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
+                                      onPressed: () {
+                                        productController.addToCart(
+                                          product,
+                                          quantity:
+                                              detailController.quantity.value,
+                                        );
+                                      },
+                                      child: Text(
+                                        'ADD TO CART',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
+                                SizedBox(width: 12),
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 55,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.green[700],
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ),
+                                        ),
+                                        elevation: 5,
+                                      ),
+                                      onPressed: () {
+                                        productController.addToCart(
+                                          product,
+                                          quantity:
+                                              detailController.quantity.value,
+                                        );
+                                        Get.toNamed(Routes.CART);
+                                      },
+                                      child: Text(
+                                        'BUY NOW',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          else
+                            SizedBox(
+                              height: 55,
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey[400],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  elevation: 0,
+                                ),
+                                onPressed: null,
+                                child: Text(
+                                  'OUT OF STOCK',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.2,
+                                  ),
+                                ),
                               ),
-                            ],
-                          ),
+                            ),
                         ],
                       ),
                     ),
