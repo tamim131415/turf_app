@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/product_controller.dart';
+import '../../controllers/auth_controller.dart';
 import '../../models/product.dart';
 import '../../widgets/product_card.dart';
 import '../../app/routes/app_routes.dart';
@@ -82,6 +83,7 @@ class HomeScreenContent extends StatefulWidget {
 
 class _HomeScreenContentState extends State<HomeScreenContent> {
   final ProductController productController = Get.find<ProductController>();
+  final AuthController authController = Get.find<AuthController>();
 
   final List<String> _categories = [
     'All',
@@ -148,7 +150,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
           ),
         ),
         actions: [
-          // Connection Status Indicator
+          // User Profile with Connection Status
           Obx(
             () => Container(
               margin: EdgeInsets.only(right: 8),
@@ -162,16 +164,22 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    productController.isOnline.value
-                        ? Icons.cloud_done
-                        : Icons.cloud_off,
-                    size: 12,
-                    color: Colors.white,
+                  CircleAvatar(
+                    radius: 10,
+                    backgroundColor: Colors.white,
+                    backgroundImage:
+                        authController.userPhotoURL.value.isNotEmpty
+                        ? NetworkImage(authController.userPhotoURL.value)
+                        : null,
+                    child: authController.userPhotoURL.value.isEmpty
+                        ? Icon(Icons.person, size: 12, color: Colors.green[700])
+                        : null,
                   ),
                   SizedBox(width: 4),
                   Text(
-                    productController.isOnline.value ? 'Online' : 'Offline',
+                    authController.userName.value.isNotEmpty
+                        ? authController.userName.value
+                        : 'User',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 10,
