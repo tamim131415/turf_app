@@ -34,25 +34,11 @@ class ProductController extends GetxController {
       // Try Firebase first
       try {
         final firestoreProducts = await _firestoreService.getProducts();
+        products.value = firestoreProducts;
+        isOnline.value = true;
+        // Save to local storage as backup
         if (firestoreProducts.isNotEmpty) {
-          products.value = firestoreProducts;
-          isOnline.value = true;
-          // Save to local storage as backup
           await _localStorageService.saveProducts(firestoreProducts);
-        } else {
-          // If Firebase is empty, initialize with sample data
-          print('Firebase is empty, adding sample data...');
-          await _firestoreService.addSampleData();
-
-          // Try loading again after adding sample data
-          final newFirestoreProducts = await _firestoreService.getProducts();
-          if (newFirestoreProducts.isNotEmpty) {
-            products.value = newFirestoreProducts;
-            isOnline.value = true;
-            await _localStorageService.saveProducts(newFirestoreProducts);
-          } else {
-            throw Exception('Failed to load data after adding samples');
-          }
         }
       } catch (e) {
         print('Firestore failed: $e, trying local storage...');
@@ -60,13 +46,7 @@ class ProductController extends GetxController {
 
         // Fallback to local storage
         final localProducts = await _localStorageService.getProducts();
-        if (localProducts.isNotEmpty) {
-          products.value = localProducts;
-        } else {
-          // Initialize sample data if nothing exists
-          await _localStorageService.initializeSampleData();
-          products.value = await _localStorageService.getProducts();
-        }
+        products.value = localProducts;
       }
 
       updateFavoriteProducts();
@@ -181,30 +161,6 @@ class ProductController extends GetxController {
         categoryProducts = localProducts;
       }
 
-      // If no products found and category is not 'All', reset to 'All'
-      if (categoryProducts.isEmpty && category != 'All') {
-        print(
-          '⚠️ No products found for category: $category. Resetting to All.',
-        );
-        selectedCategory.value = 'All';
-        // Load all products instead
-        try {
-          if (isOnline.value) {
-            final firestoreProducts = await _firestoreService
-                .getProductsByCategory('All');
-            products.value = firestoreProducts;
-          } else {
-            final localProducts = await _localStorageService
-                .getProductsByCategory('All');
-            products.value = localProducts;
-          }
-        } catch (e) {
-          print('Error loading all products: $e');
-        }
-        updateFavoriteProducts();
-        return;
-      }
-
       products.value = categoryProducts;
       updateFavoriteProducts();
     } catch (e) {
@@ -291,19 +247,6 @@ class ProductController extends GetxController {
     return cartItems.fold(0.0, (sum, item) => sum + item.price);
   }
 
-  // Initialize sample data (force local initialization)
-  void initializeSampleData() async {
-    try {
-      isLoading.value = true;
-      await _localStorageService.clearAllData();
-      await _localStorageService.initializeSampleData();
-      loadProducts(); // Reload after initialization
-      Get.snackbar('Success', 'Sample data loaded successfully!');
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to initialize data: $e');
-    }
-  }
-
   // Sync local data to Firebase when connection is restored
   void syncToFirebase() async {
     try {
@@ -316,32 +259,8 @@ class ProductController extends GetxController {
 
       final localProducts = await _localStorageService.getProducts();
 
-      if (localProducts.isEmpty) {
-        // Initialize sample data first if none exists
-        await _localStorageService.initializeSampleData();
-        final sampleProducts = await _localStorageService.getProducts();
-
-        // Upload each sample product to Firebase
-        int successCount = 0;
-        for (Product product in sampleProducts) {
-          try {
-            await _firestoreService.addProduct(product);
-            successCount++;
-          } catch (e) {
-            print('Failed to upload product ${product.name}: $e');
-          }
-        }
-
-        isOnline.value = successCount > 0;
-        Get.snackbar(
-          'Upload Complete',
-          'Successfully uploaded $successCount products to Firebase!',
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          duration: Duration(seconds: 3),
-        );
-      } else {
-        // Upload existing local data
+      if (localProducts.isNotEmpty) {
+        // Upload each product to Firebase
         int successCount = 0;
         for (Product product in localProducts) {
           try {
@@ -357,6 +276,14 @@ class ProductController extends GetxController {
           'Sync Complete',
           'Successfully synced $successCount products to Firebase!',
           backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: Duration(seconds: 3),
+        );
+      } else {
+        Get.snackbar(
+          'No Data',
+          'No products found to sync',
+          backgroundColor: Colors.orange,
           colorText: Colors.white,
           duration: Duration(seconds: 3),
         );
@@ -412,27 +339,32 @@ class ProductController extends GetxController {
     try {
       isLoading.value = true;
 
-      // Get or create local data
       final localProducts = await _localStorageService.getProducts();
-      List<Product> productsToUpload = localProducts;
 
-      if (productsToUpload.isEmpty) {
-        await _localStorageService.initializeSampleData();
-        productsToUpload = await _localStorageService.getProducts();
+      if (localProducts.isEmpty) {
+        Get.snackbar(
+          'No Data',
+          'No products found to upload',
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+          duration: Duration(seconds: 3),
+        );
+        isLoading.value = false;
+        return;
       }
 
       Get.snackbar(
         'Uploading',
-        'Sending ${productsToUpload.length} products to Firebase...',
+        'Sending ${localProducts.length} products to Firebase...',
         duration: Duration(seconds: 2),
       );
 
       int successCount = 0;
-      int totalCount = productsToUpload.length;
+      int totalCount = localProducts.length;
 
-      for (int i = 0; i < productsToUpload.length; i++) {
+      for (int i = 0; i < localProducts.length; i++) {
         try {
-          Product product = productsToUpload[i];
+          Product product = localProducts[i];
           await _firestoreService.addProduct(product);
           successCount++;
 

@@ -518,105 +518,10 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                           Obx(
                             () => Text(
                               productController.isOnline.value
-                                  ? 'Trying to connect to database...'
+                                  ? 'Try selecting a different category'
                                   : 'Working in offline mode',
                               style: TextStyle(color: Colors.grey[400]),
                             ),
-                          ),
-                          SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ElevatedButton.icon(
-                                onPressed: () {
-                                  productController.initializeSampleData();
-                                },
-                                icon: Icon(Icons.sports_soccer),
-                                label: Text('Load Football Products'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.green[700],
-                                  foregroundColor: Colors.white,
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                    vertical: 12,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 10),
-                              OutlinedButton.icon(
-                                onPressed: () {
-                                  productController.loadProducts();
-                                },
-                                icon: Icon(Icons.refresh),
-                                label: Text('Refresh'),
-                                style: OutlinedButton.styleFrom(
-                                  foregroundColor: Colors.green[700],
-                                  side: BorderSide(color: Colors.green[700]!),
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                    vertical: 12,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 16),
-                          // Firebase Upload Button in prominent position
-                          Container(
-                            width: double.infinity,
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                productController.forceUploadToFirebase();
-                              },
-                              icon: Icon(Icons.cloud_upload),
-                              label: Text('Upload Data to Firebase Database'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue[700],
-                                foregroundColor: Colors.white,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 24,
-                                  vertical: 16,
-                                ),
-                                textStyle: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 12),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              TextButton.icon(
-                                onPressed: () {
-                                  FirebaseConnectionService.showConnectionDialog();
-                                },
-                                icon: Icon(Icons.cloud_done, size: 16),
-                                label: Text('Test Firebase'),
-                                style: TextButton.styleFrom(
-                                  foregroundColor: Colors.blue[600],
-                                ),
-                              ),
-                              SizedBox(width: 8),
-                              Obx(
-                                () => !productController.isOnline.value
-                                    ? TextButton.icon(
-                                        onPressed: () {
-                                          productController.syncToFirebase();
-                                        },
-                                        icon: Icon(
-                                          Icons.cloud_upload,
-                                          size: 16,
-                                        ),
-                                        label: Text('Sync to Cloud'),
-                                        style: TextButton.styleFrom(
-                                          foregroundColor: Colors.green[600],
-                                        ),
-                                      )
-                                    : SizedBox.shrink(),
-                              ),
-                            ],
                           ),
                         ],
                       )
