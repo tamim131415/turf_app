@@ -190,14 +190,23 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
               ),
             ),
           ),
-          // Inventory Management Button
-          IconButton(
-            icon: Icon(Icons.inventory_2_outlined, color: Colors.green[700]),
-            onPressed: () {
-              Get.toNamed(Routes.INVENTORY);
-            },
-            tooltip: 'Inventory',
-          ),
+          // Inventory Management Button (Admin Only)
+          Obx(() {
+            final userEmail = authController.firebaseUser.value?.email ?? '';
+            if (userEmail == 'admin@turfmate.com') {
+              return IconButton(
+                icon: Icon(
+                  Icons.inventory_2_outlined,
+                  color: Colors.green[700],
+                ),
+                onPressed: () {
+                  Get.toNamed(Routes.INVENTORY);
+                },
+                tooltip: 'Inventory',
+              );
+            }
+            return SizedBox.shrink();
+          }),
           IconButton(
             icon: Stack(
               children: [

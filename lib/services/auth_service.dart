@@ -181,8 +181,10 @@ class AuthService {
       // Update display name
       await userCredential.user?.updateDisplayName(displayName);
 
-      // Send email verification
-      await userCredential.user?.sendEmailVerification();
+      // Send email verification (skip for admin)
+      if (email != 'admin@turfmate.com') {
+        await userCredential.user?.sendEmailVerification();
+      }
 
       if (userCredential.user != null) {
         await _firestore.collection('users').doc(userCredential.user!.uid).set({
@@ -190,7 +192,7 @@ class AuthService {
           'email': email,
           'displayName': displayName,
           'photoURL': null,
-          'emailVerified': false,
+          'emailVerified': email == 'admin@turfmate.com' ? true : false,
           'createdAt': FieldValue.serverTimestamp(),
           'lastLogin': FieldValue.serverTimestamp(),
         });

@@ -71,8 +71,11 @@ class AuthController extends GetxController {
       );
 
       if (userCredential != null) {
-        // Check if email is verified
-        if (userCredential.user?.emailVerified == true) {
+        // Skip email verification for admin user
+        if (email == 'admin@turfmate.com') {
+          Get.offAllNamed(Routes.HOME);
+          Get.snackbar('Success', 'Admin login successful!');
+        } else if (userCredential.user?.emailVerified == true) {
           Get.offAllNamed(Routes.HOME);
           Get.snackbar('Success', 'Login successful!');
         } else {
@@ -128,14 +131,25 @@ class AuthController extends GetxController {
       );
 
       if (userCredential != null) {
-        // Navigate to email verification screen
-        Get.offAllNamed(Routes.EMAIL_VERIFICATION);
-        Get.snackbar(
-          'Success',
-          'Account created! Please verify your email.',
-          snackPosition: SnackPosition.BOTTOM,
-          duration: Duration(seconds: 4),
-        );
+        // Skip email verification for admin user
+        if (email == 'admin@turfmate.com') {
+          Get.offAllNamed(Routes.HOME);
+          Get.snackbar(
+            'Success',
+            'Admin account created successfully!',
+            snackPosition: SnackPosition.BOTTOM,
+            duration: Duration(seconds: 4),
+          );
+        } else {
+          // Navigate to email verification screen
+          Get.offAllNamed(Routes.EMAIL_VERIFICATION);
+          Get.snackbar(
+            'Success',
+            'Account created! Please verify your email.',
+            snackPosition: SnackPosition.BOTTOM,
+            duration: Duration(seconds: 4),
+          );
+        }
       }
     } on FirebaseAuthException catch (e) {
       String errorMessage = 'An error occurred';
