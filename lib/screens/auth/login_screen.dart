@@ -161,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         elevation: 5,
                       ),
-                      onPressed: _authController.isLoading.value
+                      onPressed: _authController.isEmailLoading.value
                           ? null
                           : () {
                               _authController.login(
@@ -169,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 _passwordController.text,
                               );
                             },
-                      child: _authController.isLoading.value
+                      child: _authController.isEmailLoading.value
                           ? CircularProgressIndicator(color: Colors.white)
                           : Text(
                               'SIGN IN',
@@ -207,7 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         elevation: 2,
                       ),
-                      onPressed: _authController.isLoading.value
+                      onPressed: _authController.isGoogleLoading.value
                           ? null
                           : () {
                               _authController.signInWithGoogle();
@@ -224,7 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           );
                         },
                       ),
-                      label: _authController.isLoading.value
+                      label: _authController.isGoogleLoading.value
                           ? SizedBox(
                               height: 20,
                               width: 20,

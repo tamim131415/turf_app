@@ -9,6 +9,8 @@ class AuthController extends GetxController {
 
   final RxBool isLoggedIn = false.obs;
   final RxBool isLoading = false.obs;
+  final RxBool isEmailLoading = false.obs;
+  final RxBool isGoogleLoading = false.obs;
   final RxString userName = ''.obs;
   final RxString userEmail = ''.obs;
   final RxString userPhotoURL = ''.obs;
@@ -37,7 +39,7 @@ class AuthController extends GetxController {
   // Google Sign In
   Future<void> signInWithGoogle() async {
     try {
-      isLoading.value = true;
+      isGoogleLoading.value = true;
       final userCredential = await _authService.signInWithGoogle();
 
       if (userCredential != null) {
@@ -55,12 +57,12 @@ class AuthController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
     } finally {
-      isLoading.value = false;
+      isGoogleLoading.value = false;
     }
   }
 
   void login(String email, String password) async {
-    isLoading.value = true;
+    isEmailLoading.value = true;
 
     try {
       final userCredential = await _authService.signInWithEmailPassword(
@@ -111,7 +113,7 @@ class AuthController extends GetxController {
     } catch (e) {
       Get.snackbar('Error', 'Failed to login: ${e.toString()}');
     } finally {
-      isLoading.value = false;
+      isEmailLoading.value = false;
     }
   }
 
