@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 import '../../controllers/product_controller.dart';
 import '../../controllers/auth_controller.dart';
 import '../../controllers/address_controller.dart';
+import '../../controllers/payment_method_controller.dart';
 import '../../models/address.dart';
+import '../../models/payment_method.dart';
 import '../../app/routes/app_routes.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -18,14 +20,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final _nameController = TextEditingController();
   final _addressFieldController = TextEditingController();
   final _phoneController = TextEditingController();
-  String _selectedPaymentMethod = 'Credit/Debit Card';
+  String _selectedPaymentMethodType = 'Credit/Debit Card';
   Address? _selectedAddress;
+  PaymentMethod? _selectedPaymentMethod;
   final AddressController _addressController = Get.put(AddressController());
+  final PaymentMethodController _paymentMethodController = Get.put(
+    PaymentMethodController(),
+  );
 
   @override
   void initState() {
     super.initState();
     _loadDefaultAddress();
+    _loadDefaultPaymentMethod();
   }
 
   Future<void> _loadDefaultAddress() async {
@@ -37,6 +44,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         _nameController.text = defaultAddr.name;
         _addressFieldController.text = defaultAddr.fullAddress;
         _phoneController.text = defaultAddr.phoneNumber;
+      });
+    }
+  }
+
+  Future<void> _loadDefaultPaymentMethod() async {
+    await _paymentMethodController.loadPaymentMethods();
+    final defaultPayment = _paymentMethodController.defaultPaymentMethod;
+    if (defaultPayment != null) {
+      setState(() {
+        _selectedPaymentMethod = defaultPayment;
+        _selectedPaymentMethodType = defaultPayment.type;
       });
     }
   }
@@ -173,6 +191,135 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
+  void _selectPaymentMethod(PaymentMethod paymentMethod) {
+    setState(() {
+      _selectedPaymentMethod = paymentMethod;
+      _selectedPaymentMethodType = paymentMethod.type;
+    });
+    Get.back();
+  }
+
+  void _showPaymentMethodSelector() {
+    Get.bottomSheet(
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Select Payment Method',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Get.back();
+                      Get.toNamed(Routes.ADD_PAYMENT_METHOD)?.then((_) {
+                        _loadDefaultPaymentMethod();
+                      });
+                    },
+                    child: Text('+ Add New'),
+                  ),
+                ],
+              ),
+            ),
+            Divider(height: 1),
+            Expanded(
+              child: Obx(() {
+                if (_paymentMethodController.paymentMethods.isEmpty) {
+                  return Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(32),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.payment, size: 64, color: Colors.grey),
+                          SizedBox(height: 16),
+                          Text('No saved payment methods'),
+                          SizedBox(height: 8),
+                          ElevatedButton(
+                            onPressed: () {
+                              Get.back();
+                              Get.toNamed(Routes.ADD_PAYMENT_METHOD)?.then((_) {
+                                _loadDefaultPaymentMethod();
+                              });
+                            },
+                            child: Text('Add Payment Method'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _paymentMethodController.paymentMethods.length,
+                  itemBuilder: (context, index) {
+                    final paymentMethod =
+                        _paymentMethodController.paymentMethods[index];
+                    return ListTile(
+                      leading: Icon(
+                        _getPaymentIcon(paymentMethod.type),
+                        color: Colors.green[700],
+                      ),
+                      title: Row(
+                        children: [
+                          Expanded(child: Text(paymentMethod.displayName)),
+                          if (paymentMethod.isDefault)
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.green[100],
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                'Default',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.green[700],
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      subtitle: Text(paymentMethod.displayDetail),
+                      onTap: () => _selectPaymentMethod(paymentMethod),
+                    );
+                  },
+                );
+              }),
+            ),
+          ],
+        ),
+      ),
+      isScrollControlled: true,
+    );
+  }
+
+  IconData _getPaymentIcon(String type) {
+    switch (type) {
+      case 'Card':
+        return Icons.credit_card;
+      case 'Mobile Banking':
+        return Icons.phone_android;
+      case 'Cash on Delivery':
+        return Icons.money;
+      default:
+        return Icons.payment;
+    }
+  }
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -298,51 +445,56 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ),
                       SizedBox(height: 10),
                       Card(
-                        child: Column(
-                          children: [
-                            RadioListTile<String>(
-                              title: Text('Credit/Debit Card'),
-                              subtitle: Text('Visa, MasterCard, etc.'),
-                              secondary: Icon(
-                                Icons.credit_card,
-                                color: Colors.green[700],
+                        child: Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    _selectedPaymentMethod != null
+                                        ? 'Selected Payment'
+                                        : 'No Payment Method',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                  TextButton.icon(
+                                    onPressed: _showPaymentMethodSelector,
+                                    icon: Icon(Icons.payment),
+                                    label: Text('Change'),
+                                  ),
+                                ],
                               ),
-                              value: 'Credit/Debit Card',
-                              groupValue: _selectedPaymentMethod,
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedPaymentMethod = value!;
-                                });
-                              },
-                            ),
-                            RadioListTile<String>(
-                              title: Text('bKash'),
-                              subtitle: Text('Mobile Financial Service'),
-                              secondary: Icon(
-                                Icons.mobile_screen_share,
-                                color: Colors.orange,
-                              ),
-                              value: 'bKash',
-                              groupValue: _selectedPaymentMethod,
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedPaymentMethod = value!;
-                                });
-                              },
-                            ),
-                            RadioListTile<String>(
-                              title: Text('Cash on Delivery'),
-                              subtitle: Text('Pay when you receive'),
-                              secondary: Icon(Icons.money, color: Colors.blue),
-                              value: 'Cash on Delivery',
-                              groupValue: _selectedPaymentMethod,
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedPaymentMethod = value!;
-                                });
-                              },
-                            ),
-                          ],
+                              if (_selectedPaymentMethod != null) ...[
+                                SizedBox(height: 12),
+                                ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: CircleAvatar(
+                                    backgroundColor: Colors.green[50],
+                                    child: Icon(
+                                      _getPaymentIcon(
+                                        _selectedPaymentMethod!.type,
+                                      ),
+                                      color: Colors.green[700],
+                                    ),
+                                  ),
+                                  title: Text(
+                                    _selectedPaymentMethod!.displayName,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    _selectedPaymentMethod!.displayDetail,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
                         ),
                       ),
                       SizedBox(height: 20),
@@ -435,7 +587,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           ?.email ??
                                       '',
                                   address: _addressFieldController.text,
-                                  paymentMethod: _selectedPaymentMethod,
+                                  paymentMethod: _selectedPaymentMethodType,
                                 );
                                 if (orderId != null) {
                                   Get.toNamed(

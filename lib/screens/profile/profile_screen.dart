@@ -375,11 +375,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   'Payment Methods',
                   'Manage your payment cards and methods',
                   () {
-                    Get.snackbar(
-                      'Coming Soon',
-                      'Payment methods feature will be available soon',
-                      backgroundColor: Colors.blue[100],
-                    );
+                    Get.toNamed('/payment-methods');
                   },
                 ),
                 _buildProfileTile(

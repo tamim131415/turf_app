@@ -18,6 +18,8 @@ abstract class Routes {
   static const MY_ORDERS = '/my-orders';
   static const ADDRESSES = '/addresses';
   static const ADD_ADDRESS = '/add-address';
+  static const PAYMENT_METHODS = '/payment-methods';
+  static const ADD_PAYMENT_METHOD = '/add-payment-method';
   static const ALL_PRODUCTS = '/all-products';
   static const ADD_PRODUCT = '/add-product';
   static const EDIT_PRODUCT = '/edit-product';

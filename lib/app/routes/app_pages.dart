@@ -17,6 +17,8 @@ import '../../screens/notifications/notifications_screen.dart';
 import '../../screens/orders/my_orders_screen.dart';
 import '../../screens/address/addresses_screen.dart';
 import '../../screens/address/add_address_screen.dart';
+import '../../screens/payment/payment_methods_screen.dart';
+import '../../screens/payment/add_payment_method_screen.dart';
 import '../../screens/product/all_products_screen.dart';
 import '../../screens/product/add_product_screen.dart';
 import '../../screens/product/edit_product_screen.dart';
@@ -48,6 +50,11 @@ class AppPages {
     GetPage(name: Routes.MY_ORDERS, page: () => const MyOrdersScreen()),
     GetPage(name: Routes.ADDRESSES, page: () => const AddressesScreen()),
     GetPage(name: Routes.ADD_ADDRESS, page: () => const AddAddressScreen()),
+    GetPage(name: Routes.PAYMENT_METHODS, page: () => PaymentMethodsScreen()),
+    GetPage(
+      name: Routes.ADD_PAYMENT_METHOD,
+      page: () => const AddPaymentMethodScreen(),
+    ),
     GetPage(name: Routes.ALL_PRODUCTS, page: () => const AllProductsScreen()),
     GetPage(name: Routes.ADD_PRODUCT, page: () => AddProductScreen()),
     GetPage(name: Routes.EDIT_PRODUCT, page: () => const EditProductScreen()),

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../models/product.dart';
 import '../models/order.dart' as app_models;
 import '../models/address.dart';
+import '../models/payment_method.dart';
 
 class FirestoreService extends GetxService {
   static FirestoreService get instance => Get.find<FirestoreService>();
@@ -17,6 +18,8 @@ class FirestoreService extends GetxService {
   CollectionReference get ordersCollection => _firestore.collection('orders');
   CollectionReference get addressesCollection =>
       _firestore.collection('addresses');
+  CollectionReference get paymentMethodsCollection =>
+      _firestore.collection('payment_methods');
 
   // Get all products
   Future<List<Product>> getProducts() async {
@@ -251,6 +254,64 @@ class FirestoreService extends GetxService {
       return true;
     } catch (e) {
       print('Error deleting address: $e');
+      return false;
+    }
+  }
+
+  // Save payment method
+  Future<bool> savePaymentMethod(PaymentMethod paymentMethod) async {
+    try {
+      await paymentMethodsCollection.doc(paymentMethod.id).set({
+        ...paymentMethod.toMap(),
+        'created_at': FieldValue.serverTimestamp(),
+      });
+      print('Payment method saved: ${paymentMethod.id}');
+      return true;
+    } catch (e) {
+      print('Error saving payment method: $e');
+      return false;
+    }
+  }
+
+  // Get user payment methods
+  Future<List<PaymentMethod>> getUserPaymentMethods(String userId) async {
+    try {
+      QuerySnapshot snapshot = await paymentMethodsCollection
+          .where('userId', isEqualTo: userId)
+          .get();
+      return snapshot.docs
+          .map((doc) => PaymentMethod.fromFirestore(doc))
+          .toList();
+    } catch (e) {
+      print('Error getting payment methods: $e');
+      return [];
+    }
+  }
+
+  // Update payment method
+  Future<bool> updatePaymentMethod(
+    String paymentMethodId,
+    Map<String, dynamic> updates,
+  ) async {
+    try {
+      updates['updated_at'] = FieldValue.serverTimestamp();
+      await paymentMethodsCollection.doc(paymentMethodId).update(updates);
+      print('Payment method updated: $paymentMethodId');
+      return true;
+    } catch (e) {
+      print('Error updating payment method: $e');
+      return false;
+    }
+  }
+
+  // Delete payment method
+  Future<bool> deletePaymentMethod(String paymentMethodId) async {
+    try {
+      await paymentMethodsCollection.doc(paymentMethodId).delete();
+      print('Payment method deleted: $paymentMethodId');
+      return true;
+    } catch (e) {
+      print('Error deleting payment method: $e');
       return false;
     }
   }
