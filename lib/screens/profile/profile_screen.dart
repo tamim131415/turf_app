@@ -6,6 +6,7 @@ import '../../services/auth_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:turf_app/services/cloudinary_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../support/help_support_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -599,11 +600,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   'Help & Support',
                   'Get help and contact customer support',
                   () {
-                    Get.snackbar(
-                      'Coming Soon',
-                      'Help & Support feature will be available soon',
-                      backgroundColor: Colors.blue[100],
-                    );
+                    Get.to(() => HelpSupportScreen());
                   },
                 ),
                 _buildProfileTile(
