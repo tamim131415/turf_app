@@ -184,12 +184,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text('My Profile'),
+        title: Text(
+          'My Profile',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.white,
         foregroundColor: Colors.green[800],
         elevation: 0,
         automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit_outlined),
+            onPressed: () {
+              setState(() {
+                _isEditingCover = !_isEditingCover;
+                if (!_isEditingCover) {
+                  _tempCoverImage = null;
+                  _tempProfileImage = null;
+                }
+              });
+            },
+            tooltip: 'Edit Profile',
+          ),
+        ],
       ),
       body: Obx(() {
         final email = authController.userEmail.value.isNotEmpty
@@ -205,9 +224,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 // Cover Image Section
                 Container(
-                  height: 200,
+                  height: 220,
                   decoration: BoxDecoration(
-                    color: Colors.green[700],
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.green[700]!,
+                        Colors.green[900]!,
+                      ],
+                    ),
                     image: _tempCoverImage != null
                         ? DecorationImage(
                             image: FileImage(_tempCoverImage!),
@@ -222,99 +248,156 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   child: Stack(
                     children: [
-                      // Edit/Save Toggle Button (Top Right)
-                      Positioned(
-                        top: 16,
-                        right: 16,
-                        child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          child: IconButton(
-                            icon: Icon(
-                              _isEditingCover ? Icons.check : Icons.edit,
-                              color: Colors.green[700],
-                              size: 20,
+                      // Overlay gradient for better text readability
+                      if (_coverImageUrl != null || _tempCoverImage != null)
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.transparent,
+                                Colors.black.withOpacity(0.3),
+                              ],
                             ),
-                            onPressed: () {
-                              if (_isEditingCover &&
-                                  (_tempCoverImage != null ||
-                                      _tempProfileImage != null)) {
-                                // Upload when tick is clicked
-                                _uploadImages();
-                              } else {
-                                setState(() {
-                                  _isEditingCover = !_isEditingCover;
-                                  if (!_isEditingCover) {
-                                    _tempCoverImage = null;
-                                    _tempProfileImage = null;
-                                  }
-                                });
-                              }
-                            },
                           ),
                         ),
-                      ),
+                      // Save Button (Top Right) - shown when editing
+                      if (_isEditingCover &&
+                          (_tempCoverImage != null || _tempProfileImage != null))
+                        Positioned(
+                          top: 16,
+                          right: 16,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.green[700],
+                              borderRadius: BorderRadius.circular(30),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 8,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(30),
+                                onTap: _uploadImages,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.check, color: Colors.white, size: 20),
+                                      SizedBox(width: 6),
+                                      Text(
+                                        'Save',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       // Upload Cover Image Button (shown when editing)
                       if (_isEditingCover)
                         Positioned(
                           right: 16,
-                          bottom: 16,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.black.withOpacity(0.6),
+                          bottom: 80,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.6),
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 8,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
                             child: IconButton(
-                              icon: Icon(
-                                Icons.camera_alt,
-                                color: Colors.white,
-                                size: 20,
-                              ),
+                              icon: Icon(Icons.camera_alt, color: Colors.white, size: 22),
                               onPressed: () => _pickImage(false),
+                              tooltip: 'Change Cover',
                             ),
                           ),
                         ),
                       // Profile Picture
                       Positioned(
-                        left: 16,
+                        left: 24,
                         bottom: 16,
                         child: Stack(
                           children: [
-                            CircleAvatar(
-                              radius: 50,
-                              backgroundColor: Colors.white,
-                              backgroundImage: _tempProfileImage != null
-                                  ? FileImage(_tempProfileImage!)
-                                  : _profileImageUrl != null
-                                  ? NetworkImage(_profileImageUrl!)
-                                  : null,
-                              child:
-                                  (_tempProfileImage == null &&
-                                      _profileImageUrl == null)
-                                  ? Text(
-                                      username.isNotEmpty
-                                          ? username[0].toUpperCase()
-                                          : 'U',
-                                      style: TextStyle(
-                                        fontSize: 40,
-                                        color: Colors.green[700],
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    )
-                                  : null,
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.white, width: 4),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    blurRadius: 12,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: CircleAvatar(
+                                radius: 56,
+                                backgroundColor: Colors.green[100],
+                                backgroundImage: _tempProfileImage != null
+                                    ? FileImage(_tempProfileImage!)
+                                    : _profileImageUrl != null
+                                    ? NetworkImage(_profileImageUrl!)
+                                    : null,
+                                child: (_tempProfileImage == null &&
+                                    _profileImageUrl == null)
+                                    ? Text(
+                                        username.isNotEmpty
+                                            ? username[0].toUpperCase()
+                                            : 'U',
+                                        style: TextStyle(
+                                          fontSize: 42,
+                                          color: Colors.green[700],
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )
+                                    : null,
+                              ),
                             ),
                             // Camera button (shown when editing)
                             if (_isEditingCover)
                               Positioned(
                                 right: 0,
                                 bottom: 0,
-                                child: CircleAvatar(
-                                  radius: 18,
-                                  backgroundColor: Colors.green[700],
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.green[700],
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: Colors.white, width: 3),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        blurRadius: 8,
+                                        offset: Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
                                   child: IconButton(
-                                    padding: EdgeInsets.zero,
-                                    icon: Icon(
-                                      Icons.camera_alt,
-                                      color: Colors.white,
-                                      size: 18,
-                                    ),
+                                    padding: EdgeInsets.all(8),
+                                    constraints: BoxConstraints(),
+                                    icon: Icon(Icons.camera_alt, color: Colors.white, size: 20),
                                     onPressed: () => _pickImage(true),
+                                    tooltip: 'Change Photo',
                                   ),
                                 ),
                               ),
@@ -325,27 +408,109 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 // User Info Section
-                Padding(
-                  padding: EdgeInsets.all(16),
+                Container(
+                  padding: EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        username,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        email,
-                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  username,
+                                  style: TextStyle(
+                                    fontSize: 26,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[900],
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                                SizedBox(height: 6),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.email_outlined,
+                                      size: 16,
+                                      color: Colors.grey[600],
+                                    ),
+                                    SizedBox(width: 6),
+                                    Expanded(
+                                      child: Text(
+                                        email,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey[600],
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.green[50],
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.green[200]!),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.verified,
+                                  size: 16,
+                                  color: Colors.green[700],
+                                ),
+                                SizedBox(width: 4),
+                                Text(
+                                  'Active',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.green[700],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-                Divider(),
+                SizedBox(height: 8),
+                // Account Section
+                Padding(
+                  padding: EdgeInsets.fromLTRB(24, 16, 24, 8),
+                  child: Text(
+                    'ACCOUNT',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.grey[600],
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                ),
                 _buildProfileTile(
                   Icons.shopping_bag,
                   'My Orders',
@@ -386,7 +551,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Get.toNamed('/notifications');
                   },
                 ),
-                Divider(thickness: 1),
+                SizedBox(height: 16),
+                // Settings Section
+                Padding(
+                  padding: EdgeInsets.fromLTRB(24, 16, 24, 8),
+                  child: Text(
+                    'SUPPORT',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.grey[600],
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                ),
                 _buildProfileTile(
                   Icons.settings,
                   'Settings',
@@ -417,25 +595,154 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   'App version and company information',
                   () {
                     Get.dialog(
-                      AlertDialog(
-                        title: Text('About TurfMart'),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Version: 1.0.0'),
-                            SizedBox(height: 8),
-                            Text(
-                              'Your premium destination for football gear and accessories.',
-                            ),
-                          ],
+                      Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Get.back(),
-                            child: Text('OK'),
+                        child: Container(
+                          padding: EdgeInsets.all(24),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                Colors.green[50]!,
+                                Colors.white,
+                              ],
+                            ),
                           ),
-                        ],
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // App Icon
+                              Container(
+                                padding: EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.green.withOpacity(0.2),
+                                      blurRadius: 20,
+                                      offset: Offset(0, 10),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Image.asset(
+                                    'assets/icon.png',
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                              // App Name
+                              Text(
+                                'Turf Mate',
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green[800],
+                                  letterSpacing: 1.2,
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              // Version
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.green[100],
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  'Version 1.0.0',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.green[700],
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 24),
+                              // Divider
+                              Container(
+                                height: 1,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.transparent,
+                                      Colors.green[200]!,
+                                      Colors.transparent,
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 24),
+                              // Description
+                              Text(
+                                'Your Premium Destination',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.green[900],
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'for Football Gear & Accessories',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[700],
+                                  height: 1.5,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: 24),
+                              // Features
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  _buildFeatureChip(Icons.verified, 'Authentic'),
+                                  _buildFeatureChip(Icons.local_shipping, 'Fast Delivery'),
+                                  _buildFeatureChip(Icons.support_agent, '24/7 Support'),
+                                ],
+                              ),
+                              SizedBox(height: 32),
+                              // Close Button
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: () => Get.back(),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.green[700],
+                                    foregroundColor: Colors.white,
+                                    padding: EdgeInsets.symmetric(vertical: 14),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    elevation: 0,
+                                  ),
+                                  child: Text(
+                                    'Close',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     );
                   },
@@ -447,21 +754,50 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   () {
                     Get.dialog(
                       AlertDialog(
-                        title: Text('Logout'),
-                        content: Text('Are you sure you want to logout?'),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        title: Row(
+                          children: [
+                            Icon(Icons.logout, color: Colors.red[700]),
+                            SizedBox(width: 12),
+                            Text('Logout'),
+                          ],
+                        ),
+                        content: Text(
+                          'Are you sure you want to logout?',
+                          style: TextStyle(fontSize: 15),
+                        ),
                         actions: [
                           TextButton(
                             onPressed: () => Get.back(),
-                            child: Text('Cancel'),
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(
+                                color: Colors.grey[700],
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
-                          TextButton(
+                          ElevatedButton(
                             onPressed: () {
                               Get.back();
                               authController.logout();
                             },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red[700],
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 12,
+                              ),
+                            ),
                             child: Text(
                               'Logout',
-                              style: TextStyle(color: Colors.red),
+                              style: TextStyle(fontWeight: FontWeight.w600),
                             ),
                           ),
                         ],
@@ -470,6 +806,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   },
                   isLogout: true,
                 ),
+                SizedBox(height: 32),
               ],
             ),
             // Loading Overlay
@@ -495,35 +832,103 @@ class _ProfileScreenState extends State<ProfileScreen> {
     VoidCallback onTap, {
     bool isLogout = false,
   }) {
-    return ListTile(
-      leading: Container(
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: isLogout ? Colors.red[50] : Colors.green[50],
-          shape: BoxShape.circle,
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: onTap,
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: isLogout ? Colors.red[50] : Colors.green[50],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    icon,
+                    color: isLogout ? Colors.red[700] : Colors.green[700],
+                    size: 24,
+                  ),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                          color: isLogout ? Colors.red[700] : Colors.grey[900],
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: Colors.grey[400],
+                ),
+              ],
+            ),
+          ),
         ),
-        child: Icon(
-          icon,
-          color: isLogout ? Colors.red[700] : Colors.green[700],
+      ),
+    );
+  }
+
+  Widget _buildFeatureChip(IconData icon, String label) {
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.green[50],
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.green[200]!, width: 2),
+          ),
+          child: Icon(
+            icon,
+            color: Colors.green[700],
+            size: 20,
+          ),
         ),
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontWeight: FontWeight.w500,
-          color: isLogout ? Colors.red[700] : null,
+        SizedBox(height: 8),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            color: Colors.grey[700],
+            fontWeight: FontWeight.w500,
+          ),
         ),
-      ),
-      subtitle: Text(
-        subtitle,
-        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-      ),
-      trailing: Icon(
-        Icons.arrow_forward_ios,
-        size: 16,
-        color: Colors.grey[400],
-      ),
-      onTap: onTap,
+      ],
     );
   }
 }
