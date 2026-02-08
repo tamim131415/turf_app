@@ -11,49 +11,51 @@ class WishlistScreen extends StatelessWidget {
     final ProductController productController = Get.find<ProductController>();
     final bool canGoBack = Navigator.of(context).canPop();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('My Wishlist'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.green[800],
-        elevation: 0,
-        automaticallyImplyLeading: canGoBack,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.delete_outline),
-            onPressed: () {
-              Get.dialog(
-                AlertDialog(
-                  title: Text('Clear Wishlist'),
-                  content: Text(
-                    'Are you sure you want to remove all items from your wishlist?',
+    return Obx(
+      () => Scaffold(
+        appBar: AppBar(
+          title: Text('My Wishlist'),
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.green[800],
+          elevation: 0,
+          automaticallyImplyLeading: canGoBack,
+          actions: productController.favoriteProducts.isEmpty
+              ? []
+              : [
+                  IconButton(
+                    icon: Icon(Icons.delete_outline),
+                    onPressed: () {
+                      Get.dialog(
+                        AlertDialog(
+                          title: Text('Clear Wishlist'),
+                          content: Text(
+                            'Are you sure you want to remove all items from your wishlist?',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Get.back(),
+                              child: Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                // Clear all favorites
+                                for (var product
+                                    in productController.favoriteProducts) {
+                                  productController.toggleFavorite(product);
+                                }
+                                Get.back();
+                                Get.snackbar('Success', 'Wishlist cleared');
+                              },
+                              child: Text('Clear All'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Get.back(),
-                      child: Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        // Clear all favorites
-                        for (var product
-                            in productController.favoriteProducts) {
-                          productController.toggleFavorite(product);
-                        }
-                        Get.back();
-                        Get.snackbar('Success', 'Wishlist cleared');
-                      },
-                      child: Text('Clear All'),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-      body: Obx(() {
-        return productController.favoriteProducts.isEmpty
+                ],
+        ),
+        body: productController.favoriteProducts.isEmpty
             ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -75,7 +77,9 @@ class WishlistScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 30),
                     ElevatedButton(
-                      onPressed: () => Get.toNamed('/explore'),
+                      onPressed: () {
+                        Get.offAllNamed('/home');
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green[700],
                         padding: EdgeInsets.symmetric(
@@ -99,8 +103,8 @@ class WishlistScreen extends StatelessWidget {
                     product: productController.favoriteProducts[index],
                   );
                 },
-              );
-      }),
+              ),
+      ),
     );
   }
 }

@@ -54,14 +54,6 @@ class ProductController extends GetxController {
       }
 
       updateFavoriteProducts();
-      Get.snackbar(
-        'Status',
-        isOnline.value ? 'Connected to Firebase' : 'Working Offline',
-        backgroundColor: isOnline.value
-            ? null
-            : Get.theme.colorScheme.secondary,
-        duration: Duration(seconds: 2),
-      );
     } catch (e) {
       Get.snackbar('Error', 'Failed to load products: $e');
     } finally {

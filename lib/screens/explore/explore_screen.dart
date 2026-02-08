@@ -5,6 +5,44 @@ import '../../controllers/product_controller.dart';
 class ExploreScreen extends StatelessWidget {
   const ExploreScreen({super.key});
 
+  // Team flag mapping
+  final Map<String, String> teamFlags = const {
+    'Argentina': '🇦🇷',
+    'Brazil': '🇧🇷',
+    'Germany': '🇩🇪',
+    'France': '🇫🇷',
+    'Spain': '🇪🇸',
+    'England': '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+    'Others': '🌍',
+  };
+
+  // Category emoji mapping
+  final Map<String, String> categoryEmojis = const {
+    'Jerseys': '👕',
+    'Shoes': '👟',
+    'Accessories': '🎽',
+    'Balls': '⚽',
+    'Training': '🏋️',
+    'Others': '🛍️',
+  };
+
+  // Brand emoji mapping
+  final Map<String, String> brandEmojis = const {
+    'Nike': '✔️',
+    'Adidas': '🔺',
+    'Puma': '🐆',
+    'New Balance': '⚖️',
+    'Others': '🏷️',
+  };
+
+  // Brand image mapping
+  final Map<String, String> brandImages = const {
+    'Nike': 'assets/brands/nike.png',
+    'Adidas': 'assets/brands/adidas.png',
+    'Puma': 'assets/brands/puma.png',
+    'New Balance': 'assets/brands/newbalance.png',
+  };
+
   @override
   Widget build(BuildContext context) {
     final ProductController productController = Get.find<ProductController>();
@@ -107,13 +145,55 @@ class ExploreScreen extends StatelessWidget {
                     border: Border.all(color: Colors.green[100]!),
                   ),
                   child: Center(
-                    child: Text(
-                      items[index],
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green[800],
-                      ),
-                    ),
+                    child:
+                        (title == 'Popular Teams' ||
+                            title == 'Categories' ||
+                            title == 'Brands')
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (title == 'Brands' &&
+                                  brandImages.containsKey(items[index]))
+                                Image.asset(
+                                  brandImages[items[index]]!,
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Text(
+                                      brandEmojis[items[index]] ?? '🏷️',
+                                      style: TextStyle(fontSize: 32),
+                                    );
+                                  },
+                                )
+                              else
+                                Text(
+                                  title == 'Popular Teams'
+                                      ? (teamFlags[items[index]] ?? '🌍')
+                                      : title == 'Categories'
+                                      ? (categoryEmojis[items[index]] ?? '🛍️')
+                                      : (brandEmojis[items[index]] ?? '🏷️'),
+                                  style: TextStyle(fontSize: 32),
+                                ),
+                              SizedBox(height: 4),
+                              Text(
+                                items[index],
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green[800],
+                                  fontSize: 12,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          )
+                        : Text(
+                            items[index],
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green[800],
+                            ),
+                          ),
                   ),
                 ),
               );

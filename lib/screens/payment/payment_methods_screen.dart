@@ -146,10 +146,14 @@ class PaymentMethodsScreen extends StatelessWidget {
           ),
         );
       }),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Get.toNamed(Routes.ADD_PAYMENT_METHOD),
-        icon: Icon(Icons.add),
-        label: Text('Add Payment'),
+      floatingActionButton: Obx(
+        () => controller.paymentMethods.isEmpty
+            ? SizedBox.shrink()
+            : FloatingActionButton.extended(
+                onPressed: () => Get.toNamed(Routes.ADD_PAYMENT_METHOD),
+                icon: Icon(Icons.add),
+                label: Text('Add Payment'),
+              ),
       ),
     );
   }
