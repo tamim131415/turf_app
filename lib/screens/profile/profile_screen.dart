@@ -229,10 +229,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [
-                        Colors.green[700]!,
-                        Colors.green[900]!,
-                      ],
+                      colors: [Colors.green[700]!, Colors.green[900]!],
                     ),
                     image: _tempCoverImage != null
                         ? DecorationImage(
@@ -264,7 +261,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       // Save Button (Top Right) - shown when editing
                       if (_isEditingCover &&
-                          (_tempCoverImage != null || _tempProfileImage != null))
+                          (_tempCoverImage != null ||
+                              _tempProfileImage != null))
                         Positioned(
                           top: 16,
                           right: 16,
@@ -293,7 +291,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Icon(Icons.check, color: Colors.white, size: 20),
+                                      Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
                                       SizedBox(width: 6),
                                       Text(
                                         'Save',
@@ -327,7 +329,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ],
                             ),
                             child: IconButton(
-                              icon: Icon(Icons.camera_alt, color: Colors.white, size: 22),
+                              icon: Icon(
+                                Icons.camera_alt,
+                                color: Colors.white,
+                                size: 22,
+                              ),
                               onPressed: () => _pickImage(false),
                               tooltip: 'Change Cover',
                             ),
@@ -342,7 +348,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Container(
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                border: Border.all(color: Colors.white, width: 4),
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 4,
+                                ),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withOpacity(0.2),
@@ -359,8 +368,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     : _profileImageUrl != null
                                     ? NetworkImage(_profileImageUrl!)
                                     : null,
-                                child: (_tempProfileImage == null &&
-                                    _profileImageUrl == null)
+                                child:
+                                    (_tempProfileImage == null &&
+                                        _profileImageUrl == null)
                                     ? Text(
                                         username.isNotEmpty
                                             ? username[0].toUpperCase()
@@ -383,7 +393,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   decoration: BoxDecoration(
                                     color: Colors.green[700],
                                     shape: BoxShape.circle,
-                                    border: Border.all(color: Colors.white, width: 3),
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 3,
+                                    ),
                                     boxShadow: [
                                       BoxShadow(
                                         color: Colors.black.withOpacity(0.2),
@@ -395,7 +408,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   child: IconButton(
                                     padding: EdgeInsets.all(8),
                                     constraints: BoxConstraints(),
-                                    icon: Icon(Icons.camera_alt, color: Colors.white, size: 20),
+                                    icon: Icon(
+                                      Icons.camera_alt,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
                                     onPressed: () => _pickImage(true),
                                     tooltip: 'Change Photo',
                                   ),
@@ -606,10 +623,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
-                              colors: [
-                                Colors.green[50]!,
-                                Colors.white,
-                              ],
+                              colors: [Colors.green[50]!, Colors.white],
                             ),
                           ),
                           child: Column(
@@ -709,11 +723,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               SizedBox(height: 24),
                               // Features
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  _buildFeatureChip(Icons.verified, 'Authentic'),
-                                  _buildFeatureChip(Icons.local_shipping, 'Fast Delivery'),
-                                  _buildFeatureChip(Icons.support_agent, '24/7 Support'),
+                                  _buildFeatureChip(
+                                    Icons.verified,
+                                    'Authentic',
+                                  ),
+                                  _buildFeatureChip(
+                                    Icons.local_shipping,
+                                    'Fast Delivery',
+                                  ),
+                                  _buildFeatureChip(
+                                    Icons.support_agent,
+                                    '24/7 Support',
+                                  ),
                                 ],
                               ),
                               SizedBox(height: 32),
@@ -882,10 +906,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       SizedBox(height: 4),
                       Text(
                         subtitle,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                       ),
                     ],
                   ),
@@ -913,11 +934,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             shape: BoxShape.circle,
             border: Border.all(color: Colors.green[200]!, width: 2),
           ),
-          child: Icon(
-            icon,
-            color: Colors.green[700],
-            size: 20,
-          ),
+          child: Icon(icon, color: Colors.green[700], size: 20),
         ),
         SizedBox(height: 8),
         Text(
