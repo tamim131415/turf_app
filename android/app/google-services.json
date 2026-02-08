@@ -12,7 +12,20 @@
           "package_name": "com.example.turf_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "405471770959-v3b9ofrgpijas3l98tsa13g07c36ehq5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.turf_app",
+            "certificate_hash": "b8d405fb3a4a4493987c0c566752cbae93c882bd"
+          }
+        },
+        {
+          "client_id": "405471770959-c25jo7d2e0jt2kde9orhlajvk86qmbt1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCsMDpY77RTRfwWAd94G4JKTXvBoxzFT2U"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "405471770959-c25jo7d2e0jt2kde9orhlajvk86qmbt1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

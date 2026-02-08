@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../app/routes/app_routes.dart';
+import '../../controllers/auth_controller.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -25,7 +26,13 @@ class _SplashScreenState extends State<SplashScreen>
     _controller.forward();
 
     Future.delayed(Duration(seconds: 3), () {
-      Get.offNamed(Routes.ONBOARDING);
+      final authController = Get.find<AuthController>();
+      // Check if user is already logged in
+      if (authController.isLoggedIn.value) {
+        Get.offNamed(Routes.HOME);
+      } else {
+        Get.offNamed(Routes.ONBOARDING);
+      }
     });
   }
 
