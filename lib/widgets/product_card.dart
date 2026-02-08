@@ -140,79 +140,76 @@ class ProductCard extends StatelessWidget {
             // Product Details
             Expanded(
               child: Padding(
-                padding: EdgeInsets.all(12),
+                padding: EdgeInsets.all(10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       product.team,
                       style: TextStyle(
                         color: Colors.green[700],
-                        fontSize: 12,
+                        fontSize: 11,
                         fontWeight: FontWeight.bold,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 4),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            product.name,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                              height: 1.2,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            product.description,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: Colors.grey[600],
-                              height: 1.3,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
+                    SizedBox(height: 2),
+                    Text(
+                      product.name,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                        height: 1.2,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: 2),
+                    Flexible(
+                      child: Text(
+                        product.description,
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.grey[600],
+                          height: 1.2,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    SizedBox(height: 4),
                     // Rating
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.star, color: Colors.amber, size: 16),
-                        SizedBox(width: 4),
+                        Icon(Icons.star, color: Colors.amber, size: 14),
+                        SizedBox(width: 3),
                         Text(
                           product.rating.toString(),
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 11,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(width: 4),
+                        SizedBox(width: 3),
                         Flexible(
                           child: Text(
                             '(${product.reviewCount})',
-                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                            style: TextStyle(fontSize: 11, color: Colors.grey),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 8),
+                    Spacer(flex: 1),
                     // Price and Add to Cart Button
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Expanded(
+                        Flexible(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
@@ -222,28 +219,29 @@ class ProductCard extends StatelessWidget {
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.green[700],
-                                  fontSize: 16,
+                                  fontSize: 15,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              if (product.originalPrice != null) ...[
-                                SizedBox(height: 2),
-                                Text(
-                                  '৳${product.originalPrice!.toStringAsFixed(2)}',
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 12,
-                                    decoration: TextDecoration.lineThrough,
+                              if (product.originalPrice != null)
+                                Padding(
+                                  padding: EdgeInsets.only(top: 2),
+                                  child: Text(
+                                    '৳${product.originalPrice!.toStringAsFixed(2)}',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 11,
+                                      decoration: TextDecoration.lineThrough,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ],
                             ],
                           ),
                         ),
-                        SizedBox(width: 8),
+                        SizedBox(width: 6),
                         GestureDetector(
                           onTap: product.quantity > 0
                               ? () {
@@ -263,7 +261,7 @@ class ProductCard extends StatelessWidget {
                                   ? Icons.add_shopping_cart
                                   : Icons.remove_shopping_cart,
                               color: Colors.white,
-                              size: 18,
+                              size: 16,
                             ),
                           ),
                         ),

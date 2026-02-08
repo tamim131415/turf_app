@@ -561,14 +561,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Get.toNamed('/payment-methods');
                   },
                 ),
-                _buildProfileTile(
-                  Icons.notifications,
-                  'Notifications',
-                  'View your recent notifications',
-                  () {
-                    Get.toNamed('/notifications');
-                  },
-                ),
                 SizedBox(height: 16),
                 // Settings Section
                 Padding(
@@ -582,18 +574,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       letterSpacing: 1.2,
                     ),
                   ),
-                ),
-                _buildProfileTile(
-                  Icons.settings,
-                  'Settings',
-                  'App preferences and account settings',
-                  () {
-                    Get.snackbar(
-                      'Coming Soon',
-                      'Settings page will be available soon',
-                      backgroundColor: Colors.blue[100],
-                    );
-                  },
                 ),
                 _buildProfileTile(
                   Icons.help,

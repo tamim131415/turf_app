@@ -28,10 +28,7 @@ class HelpSupportScreen extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Colors.green[700]!,
-                  Colors.green[900]!,
-                ],
+                colors: [Colors.green[700]!, Colors.green[900]!],
               ),
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
@@ -44,11 +41,7 @@ class HelpSupportScreen extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Icon(
-                  Icons.support_agent,
-                  size: 64,
-                  color: Colors.white,
-                ),
+                Icon(Icons.support_agent, size: 64, color: Colors.white),
                 SizedBox(height: 16),
                 Text(
                   'We\'re Here to Help',
@@ -79,30 +72,23 @@ class HelpSupportScreen extends StatelessWidget {
           _buildSupportTile(
             icon: Icons.phone,
             title: 'Call Us',
-            subtitle: '+880 1234-567890',
+            subtitle: '+880 1998-354369',
             color: Colors.blue,
-            onTap: () => _makePhoneCall('+8801234567890'),
+            onTap: () => _makePhoneCall('+8801998354369'),
           ),
           _buildSupportTile(
             icon: Icons.email,
             title: 'Email Support',
-            subtitle: 'support@turfmate.com',
+            subtitle: 'tamim.cse.vu@gmail.com',
             color: Colors.orange,
-            onTap: () => _sendEmail('support@turfmate.com'),
-          ),
-          _buildSupportTile(
-            icon: Icons.chat_bubble,
-            title: 'Live Chat',
-            subtitle: 'Chat with our support team',
-            color: Colors.green,
-            onTap: () => _openLiveChat(),
+            onTap: () => _sendEmail('tamim.cse.vu@gmail.com'),
           ),
           _buildSupportTile(
             icon: Icons.messenger,
             title: 'WhatsApp',
             subtitle: 'Message us on WhatsApp',
             color: Colors.teal,
-            onTap: () => _openWhatsApp('+8801234567890'),
+            onTap: () => _openWhatsApp('+8801998354369'),
           ),
 
           SizedBox(height: 24),
@@ -276,15 +262,16 @@ class HelpSupportScreen extends StatelessWidget {
                       SizedBox(height: 4),
                       Text(
                         subtitle,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                       ),
                     ],
                   ),
                 ),
-                Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey[400]),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: Colors.grey[400],
+                ),
               ],
             ),
           ),
@@ -294,10 +281,10 @@ class HelpSupportScreen extends StatelessWidget {
   }
 
   Future<void> _makePhoneCall(String phoneNumber) async {
-    final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
-    if (await canLaunchUrl(launchUri)) {
+    try {
+      final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
       await launchUrl(launchUri);
-    } else {
+    } catch (e) {
       Get.snackbar(
         'Error',
         'Could not launch phone dialer',
@@ -308,14 +295,14 @@ class HelpSupportScreen extends StatelessWidget {
   }
 
   Future<void> _sendEmail(String email) async {
-    final Uri launchUri = Uri(
-      scheme: 'mailto',
-      path: email,
-      query: 'subject=Support Request&body=',
-    );
-    if (await canLaunchUrl(launchUri)) {
+    try {
+      final Uri launchUri = Uri(
+        scheme: 'mailto',
+        path: email,
+        query: 'subject=Support Request&body=',
+      );
       await launchUrl(launchUri);
-    } else {
+    } catch (e) {
       Get.snackbar(
         'Error',
         'Could not launch email client',
@@ -326,60 +313,22 @@ class HelpSupportScreen extends StatelessWidget {
   }
 
   Future<void> _openWhatsApp(String phoneNumber) async {
-    final Uri launchUri = Uri.parse('https://wa.me/$phoneNumber');
-    if (await canLaunchUrl(launchUri)) {
+    try {
+      // Remove + sign and any spaces for WhatsApp URL
+      final cleanNumber = phoneNumber
+          .replaceAll('+', '')
+          .replaceAll(' ', '')
+          .replaceAll('-', '');
+      final Uri launchUri = Uri.parse('https://wa.me/$cleanNumber');
       await launchUrl(launchUri, mode: LaunchMode.externalApplication);
-    } else {
+    } catch (e) {
       Get.snackbar(
         'Error',
-        'Could not open WhatsApp',
+        'Could not open WhatsApp. Please make sure WhatsApp is installed.',
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
     }
-  }
-
-  void _openLiveChat() {
-    Get.dialog(
-      Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.chat_bubble, size: 64, color: Colors.green[700]),
-              SizedBox(height: 16),
-              Text(
-                'Live Chat',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 12),
-              Text(
-                'Our live chat feature will be available soon. In the meantime, please contact us via phone or email.',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey[700]),
-              ),
-              SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Get.back(),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green[700],
-                    padding: EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: Text('OK', style: TextStyle(fontSize: 16)),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 
   void _showReportDialog() {
@@ -439,7 +388,10 @@ class HelpSupportScreen extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red[700],
-                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -468,11 +420,18 @@ class HelpSupportScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.local_shipping, color: Colors.cyan[700], size: 28),
+                    Icon(
+                      Icons.local_shipping,
+                      color: Colors.cyan[700],
+                      size: 28,
+                    ),
                     SizedBox(width: 12),
                     Text(
                       'Shipping & Delivery',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -581,7 +540,7 @@ For complete terms, visit our website.''',
 - Request data correction or deletion
 - Opt-out of marketing communications
 
-Contact us for privacy concerns: privacy@turfmate.com''',
+Contact us for privacy concerns: tamim.cse.vu@gmail.com''',
     );
   }
 
@@ -618,12 +577,17 @@ Contact us for privacy concerns: privacy@turfmate.com''',
 - Subject to stock availability
 - Free exchange within 7 days
 
-For return requests: returns@turfmate.com
-Call: +880 1234-567890''',
+For return requests: tamim.cse.vu@gmail.com
+Call: +880 1998-354369''',
     );
   }
 
-  void _showLegalDialog(String title, IconData icon, Color color, String content) {
+  void _showLegalDialog(
+    String title,
+    IconData icon,
+    Color color,
+    String content,
+  ) {
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -717,43 +681,53 @@ class FAQScreen extends StatelessWidget {
   final List<FAQItem> faqs = [
     FAQItem(
       question: 'How do I place an order?',
-      answer: 'Browse products, add items to cart, proceed to checkout, enter shipping details, choose payment method, and confirm your order.',
+      answer:
+          'Browse products, add items to cart, proceed to checkout, enter shipping details, choose payment method, and confirm your order.',
     ),
     FAQItem(
       question: 'What payment methods do you accept?',
-      answer: 'We accept Credit/Debit Cards, Mobile Banking (bKash, Nagad, Rocket), and Cash on Delivery.',
+      answer:
+          'We accept Credit/Debit Cards, Mobile Banking (bKash, Nagad, Rocket), and Cash on Delivery.',
     ),
     FAQItem(
       question: 'How can I track my order?',
-      answer: 'Go to "My Orders" section in your profile. Click on the order you want to track to see its current status and tracking details.',
+      answer:
+          'Go to "My Orders" section in your profile. Click on the order you want to track to see its current status and tracking details.',
     ),
     FAQItem(
       question: 'Can I change or cancel my order?',
-      answer: 'You can cancel your order within 1 hour of placing it. After that, please contact customer support for assistance.',
+      answer:
+          'You can cancel your order within 1 hour of placing it. After that, please contact customer support for assistance.',
     ),
     FAQItem(
       question: 'What is your return policy?',
-      answer: 'We accept returns within 7 days of delivery. Items must be unused and in original packaging with proof of purchase.',
+      answer:
+          'We accept returns within 7 days of delivery. Items must be unused and in original packaging with proof of purchase.',
     ),
     FAQItem(
       question: 'How long does delivery take?',
-      answer: 'Standard delivery: 3-5 business days. Express delivery: 1-2 business days. Delivery times may vary based on location.',
+      answer:
+          'Standard delivery: 3-5 business days. Express delivery: 1-2 business days. Delivery times may vary based on location.',
     ),
     FAQItem(
       question: 'Are the products authentic?',
-      answer: 'Yes, all our products are 100% authentic. We source directly from authorized distributors and manufacturers.',
+      answer:
+          'Yes, all our products are 100% authentic. We source directly from authorized distributors and manufacturers.',
     ),
     FAQItem(
       question: 'Do you offer gift wrapping?',
-      answer: 'Yes, gift wrapping is available for an additional charge. You can select this option during checkout.',
+      answer:
+          'Yes, gift wrapping is available for an additional charge. You can select this option during checkout.',
     ),
     FAQItem(
       question: 'What if I receive a damaged product?',
-      answer: 'Contact us immediately with photos of the damage. We will arrange a replacement or full refund.',
+      answer:
+          'Contact us immediately with photos of the damage. We will arrange a replacement or full refund.',
     ),
     FAQItem(
       question: 'Can I change my delivery address?',
-      answer: 'Yes, you can change the address before the order is shipped. Go to "My Orders" and select "Change Address".',
+      answer:
+          'Yes, you can change the address before the order is shipped. Go to "My Orders" and select "Change Address".',
     ),
   ];
 
