@@ -367,11 +367,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   'Addresses',
                   'Manage your delivery addresses',
                   () {
-                    Get.snackbar(
-                      'Coming Soon',
-                      'Address management feature will be available soon',
-                      backgroundColor: Colors.blue[100],
-                    );
+                    Get.toNamed('/addresses');
                   },
                 ),
                 _buildProfileTile(

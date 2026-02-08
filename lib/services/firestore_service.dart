@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import '../models/product.dart';
 import '../models/order.dart' as app_models;
+import '../models/address.dart';
 
 class FirestoreService extends GetxService {
   static FirestoreService get instance => Get.find<FirestoreService>();
@@ -14,6 +15,8 @@ class FirestoreService extends GetxService {
   CollectionReference get categoriesCollection =>
       _firestore.collection('categories');
   CollectionReference get ordersCollection => _firestore.collection('orders');
+  CollectionReference get addressesCollection =>
+      _firestore.collection('addresses');
 
   // Get all products
   Future<List<Product>> getProducts() async {
@@ -189,6 +192,66 @@ class FirestoreService extends GetxService {
     } catch (e) {
       print('Error getting order: $e');
       return null;
+    }
+  }
+
+  // Save address to Firestore
+  Future<String?> saveAddress(Address address) async {
+    try {
+      String addressId = 'address_${DateTime.now().millisecondsSinceEpoch}';
+
+      Map<String, dynamic> addressData = address.toMap();
+      addressData['created_at'] = FieldValue.serverTimestamp();
+
+      await addressesCollection.doc(addressId).set(addressData);
+
+      print('Address saved to Firebase: $addressId');
+      return addressId;
+    } catch (e) {
+      print('Error saving address: $e');
+      return null;
+    }
+  }
+
+  // Get user addresses
+  Future<List<Address>> getUserAddresses(String userId) async {
+    try {
+      QuerySnapshot snapshot = await addressesCollection
+          .where('userId', isEqualTo: userId)
+          .get();
+
+      return snapshot.docs.map((doc) => Address.fromFirestore(doc)).toList();
+    } catch (e) {
+      print('Error getting user addresses: $e');
+      return [];
+    }
+  }
+
+  // Update address
+  Future<bool> updateAddress(
+    String addressId,
+    Map<String, dynamic> updates,
+  ) async {
+    try {
+      updates['updated_at'] = FieldValue.serverTimestamp();
+      await addressesCollection.doc(addressId).update(updates);
+      print('Address updated: $addressId');
+      return true;
+    } catch (e) {
+      print('Error updating address: $e');
+      return false;
+    }
+  }
+
+  // Delete address
+  Future<bool> deleteAddress(String addressId) async {
+    try {
+      await addressesCollection.doc(addressId).delete();
+      print('Address deleted: $addressId');
+      return true;
+    } catch (e) {
+      print('Error deleting address: $e');
+      return false;
     }
   }
 }

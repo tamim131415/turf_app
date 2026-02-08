@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/product_controller.dart';
 import '../../controllers/auth_controller.dart';
+import '../../controllers/address_controller.dart';
+import '../../models/address.dart';
 import '../../app/routes/app_routes.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -13,12 +15,163 @@ class CheckoutScreen extends StatefulWidget {
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController(text: 'John Doe');
-  final _addressController = TextEditingController(
-    text: '123 Main Street, Dhaka',
-  );
-  final _phoneController = TextEditingController(text: '+880 1XXX-XXXXXX');
+  final _nameController = TextEditingController();
+  final _addressFieldController = TextEditingController();
+  final _phoneController = TextEditingController();
   String _selectedPaymentMethod = 'Credit/Debit Card';
+  Address? _selectedAddress;
+  final AddressController _addressController = Get.put(AddressController());
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDefaultAddress();
+  }
+
+  Future<void> _loadDefaultAddress() async {
+    await _addressController.loadAddresses();
+    final defaultAddr = _addressController.defaultAddress;
+    if (defaultAddr != null) {
+      setState(() {
+        _selectedAddress = defaultAddr;
+        _nameController.text = defaultAddr.name;
+        _addressFieldController.text = defaultAddr.fullAddress;
+        _phoneController.text = defaultAddr.phoneNumber;
+      });
+    }
+  }
+
+  void _selectAddress(Address address) {
+    setState(() {
+      _selectedAddress = address;
+      _nameController.text = address.name;
+      _addressFieldController.text = address.fullAddress;
+      _phoneController.text = address.phoneNumber;
+    });
+    Get.back();
+  }
+
+  void _showAddressSelector() {
+    Get.bottomSheet(
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Select Address',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Get.back();
+                      Get.toNamed(Routes.ADD_ADDRESS)?.then((_) {
+                        _loadDefaultAddress();
+                      });
+                    },
+                    child: Text('+ Add New'),
+                  ),
+                ],
+              ),
+            ),
+            Divider(height: 1),
+            Expanded(
+              child: Obx(() {
+                if (_addressController.addresses.isEmpty) {
+                  return Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(32),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.location_off,
+                            size: 64,
+                            color: Colors.grey,
+                          ),
+                          SizedBox(height: 16),
+                          Text('No saved addresses'),
+                          SizedBox(height: 8),
+                          ElevatedButton(
+                            onPressed: () {
+                              Get.back();
+                              Get.toNamed(Routes.ADD_ADDRESS)?.then((_) {
+                                _loadDefaultAddress();
+                              });
+                            },
+                            child: Text('Add Address'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _addressController.addresses.length,
+                  itemBuilder: (context, index) {
+                    final address = _addressController.addresses[index];
+                    return ListTile(
+                      leading: Icon(
+                        Icons.location_on,
+                        color: Colors.green[700],
+                      ),
+                      title: Row(
+                        children: [
+                          Expanded(child: Text(address.name)),
+                          if (address.isDefault)
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.green[100],
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                'Default',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.green[700],
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(address.phoneNumber),
+                          Text(
+                            address.fullAddress,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                      isThreeLine: true,
+                      onTap: () => _selectAddress(address),
+                    );
+                  },
+                );
+              }),
+            ),
+          ],
+        ),
+      ),
+      isScrollControlled: true,
+    );
+  }
 
   @override
   void dispose() {
@@ -69,6 +222,27 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           padding: EdgeInsets.all(16),
                           child: Column(
                             children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    _selectedAddress != null
+                                        ? 'Selected Address'
+                                        : 'No Address Selected',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                  TextButton.icon(
+                                    onPressed: _showAddressSelector,
+                                    icon: Icon(Icons.location_on),
+                                    label: Text('Change'),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10),
                               TextFormField(
                                 controller: _nameController,
                                 decoration: InputDecoration(
@@ -84,7 +258,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               ),
                               SizedBox(height: 10),
                               TextFormField(
-                                controller: _addressController,
+                                controller: _addressFieldController,
                                 decoration: InputDecoration(
                                   labelText: 'Address',
                                   border: OutlineInputBorder(),
@@ -260,7 +434,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           .value
                                           ?.email ??
                                       '',
-                                  address: _addressController.text,
+                                  address: _addressFieldController.text,
                                   paymentMethod: _selectedPaymentMethod,
                                 );
                                 if (orderId != null) {
