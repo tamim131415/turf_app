@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../app/routes/app_routes.dart';
 import '../services/auth_service.dart';
 
@@ -68,8 +69,20 @@ class AuthController extends GetxController {
       );
 
       if (userCredential != null) {
-        Get.offAllNamed(Routes.HOME);
-        Get.snackbar('Success', 'Login successful!');
+        // Check if email is verified
+        if (userCredential.user?.emailVerified == true) {
+          Get.offAllNamed(Routes.HOME);
+          Get.snackbar('Success', 'Login successful!');
+        } else {
+          // Email not verified, go to verification screen
+          Get.offAllNamed(Routes.EMAIL_VERIFICATION);
+          Get.snackbar(
+            'Email Not Verified',
+            'Please verify your email to continue',
+            snackPosition: SnackPosition.BOTTOM,
+            duration: Duration(seconds: 4),
+          );
+        }
       }
     } on FirebaseAuthException catch (e) {
       String errorMessage = 'An error occurred';
@@ -86,6 +99,9 @@ class AuthController extends GetxController {
           break;
         case 'user-disabled':
           errorMessage = 'This account has been disabled';
+          break;
+        case 'invalid-credential':
+          errorMessage = 'Invalid email or password';
           break;
         default:
           errorMessage = e.message ?? 'An error occurred';
@@ -110,8 +126,14 @@ class AuthController extends GetxController {
       );
 
       if (userCredential != null) {
-        Get.offAllNamed(Routes.HOME);
-        Get.snackbar('Success', 'Registration successful!');
+        // Navigate to email verification screen
+        Get.offAllNamed(Routes.EMAIL_VERIFICATION);
+        Get.snackbar(
+          'Success',
+          'Account created! Please verify your email.',
+          snackPosition: SnackPosition.BOTTOM,
+          duration: Duration(seconds: 4),
+        );
       }
     } on FirebaseAuthException catch (e) {
       String errorMessage = 'An error occurred';
@@ -138,10 +160,38 @@ class AuthController extends GetxController {
     }
   }
 
+  // Check email verification
+  Future<bool> checkEmailVerification() async {
+    try {
+      final isVerified = await _authService.isEmailVerified();
+      if (isVerified) {
+        await _authService.updateEmailVerificationStatus();
+      }
+      return isVerified;
+    } catch (e) {
+      print('Error checking email verification: $e');
+      return false;
+    }
+  }
+
+  // Resend verification email
+  Future<void> resendVerificationEmail() async {
+    try {
+      await _authService.sendEmailVerification();
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to send verification email');
+    }
+  }
+
   void logout() async {
     isLoading.value = true;
 
     try {
+      // Clear SharedPreferences (profile images, etc.)
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('profile_image_url');
+      await prefs.remove('cover_image_url');
+
       await _authService.signOut();
       Get.offAllNamed(Routes.LOGIN);
       Get.snackbar('Success', 'Logged out successfully');

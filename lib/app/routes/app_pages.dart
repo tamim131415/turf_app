@@ -4,6 +4,7 @@ import '../../screens/onboarding/onboarding_screen.dart';
 import '../../screens/auth/login_screen.dart';
 import '../../screens/auth/register_screen.dart';
 import '../../screens/auth/forgot_password_screen.dart';
+import '../../screens/auth/email_verification_screen.dart';
 import '../../screens/main_navigation_screen.dart';
 import '../../screens/product/product_detail_screen.dart';
 import '../../screens/explore/explore_screen.dart';
@@ -24,6 +25,10 @@ class AppPages {
     GetPage(name: Routes.LOGIN, page: () => LoginScreen()),
     GetPage(name: Routes.REGISTER, page: () => RegisterScreen()),
     GetPage(name: Routes.FORGOT_PASSWORD, page: () => ForgotPasswordScreen()),
+    GetPage(
+      name: Routes.EMAIL_VERIFICATION,
+      page: () => EmailVerificationScreen(),
+    ),
     GetPage(name: Routes.HOME, page: () => MainNavigationScreen()),
     GetPage(name: Routes.MAIN_NAVIGATION, page: () => MainNavigationScreen()),
     GetPage(name: Routes.PRODUCT_DETAIL, page: () => ProductDetailScreen()),

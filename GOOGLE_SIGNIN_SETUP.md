@@ -9,6 +9,8 @@
 2. আপনার প্রজেক্ট সিলেক্ট করুন (`turf_app`)
 
 ### 2. Authentication Enable করুন
+
+#### Google Sign-In:
 1. বাম পাশের মেনু থেকে **Authentication** এ ক্লিক করুন
 2. **Get Started** বাটনে ক্লিক করুন (যদি এখনো করা না হয়ে থাকে)
 3. **Sign-in method** ট্যাবে যান
@@ -16,6 +18,14 @@
 5. **Enable** সুইচ টগল করুন
 6. **Project support email** সিলেক্ট করুন
 7. **Save** বাটনে ক্লিক করুন
+
+#### Email/Password Authentication (IMPORTANT):
+1. একই **Sign-in method** ট্যাবে থাকুন
+2. **Email/Password** অপশন খুঁজুন এবং ক্লিক করুন
+3. **Enable** সুইচ টগল করুন
+4. **Save** বাটনে ক্লিক করুন
+
+⚠️ **খুবই গুরুত্বপূর্ণ:** Email/Password authentication enable না করলে manual registration/login কাজ করবে না!
 
 ### 3. Android এর জন্য SHA-1 Certificate Fingerprint যোগ করুন
 

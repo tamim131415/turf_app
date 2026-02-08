@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
+import '../../services/auth_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:turf_app/services/cloudinary_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +16,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final authController = Get.find<AuthController>();
+  final _authService = Get.find<AuthService>();
   final _cloudinaryService = Get.find<CloudinaryService>();
   final _picker = ImagePicker();
 
@@ -28,15 +30,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _loadSavedImages();
+    _loadUserProfile();
   }
 
-  Future<void> _loadSavedImages() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _profileImageUrl = prefs.getString('profile_image_url');
-      _coverImageUrl = prefs.getString('cover_image_url');
-    });
+  Future<void> _loadUserProfile() async {
+    try {
+      // First load from SharedPreferences for quick display (user-specific)
+      final prefs = await SharedPreferences.getInstance();
+      final userId = authController.firebaseUser.value?.uid ?? '';
+
+      if (userId.isNotEmpty) {
+        setState(() {
+          _profileImageUrl = prefs.getString('profile_image_url_$userId');
+          _coverImageUrl = prefs.getString('cover_image_url_$userId');
+        });
+
+        // Then fetch from Firestore for the latest data
+        final profileData = await _authService.getUserProfile();
+        if (profileData != null) {
+          setState(() {
+            _profileImageUrl = profileData['profileImageUrl'] as String?;
+            _coverImageUrl = profileData['coverImageUrl'] as String?;
+          });
+
+          // Update SharedPreferences with latest data
+          if (_profileImageUrl != null) {
+            await prefs.setString(
+              'profile_image_url_$userId',
+              _profileImageUrl!,
+            );
+          }
+          if (_coverImageUrl != null) {
+            await prefs.setString('cover_image_url_$userId', _coverImageUrl!);
+          }
+        }
+      }
+    } catch (e) {
+      print('Error loading user profile: $e');
+    }
   }
 
   Future<void> _pickImage(bool isProfile) async {
@@ -74,18 +105,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() => _isLoading = true);
 
       final prefs = await SharedPreferences.getInstance();
+      final userId = authController.firebaseUser.value?.uid ?? '';
+
+      if (userId.isEmpty) {
+        Get.snackbar('Error', 'User not logged in');
+        return;
+      }
+
       bool uploadedAny = false;
 
       // Upload profile image if selected
       if (_tempProfileImage != null) {
-        final imageId = 'profile_${authController.userEmail.value}';
+        final imageId = 'profile_$userId';
         final imageUrl = await _cloudinaryService.uploadProductImage(
           _tempProfileImage!,
           imageId,
         );
 
         if (imageUrl != null) {
-          await prefs.setString('profile_image_url', imageUrl);
+          // Update Firestore
+          await _authService.updateProfileImage(imageUrl);
+
+          // Update SharedPreferences (user-specific key)
+          await prefs.setString('profile_image_url_$userId', imageUrl);
+
           setState(() {
             _profileImageUrl = imageUrl;
             _tempProfileImage = null;
@@ -96,14 +139,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       // Upload cover image if selected
       if (_tempCoverImage != null) {
-        final imageId = 'cover_${authController.userEmail.value}';
+        final imageId = 'cover_$userId';
         final imageUrl = await _cloudinaryService.uploadProductImage(
           _tempCoverImage!,
           imageId,
         );
 
         if (imageUrl != null) {
-          await prefs.setString('cover_image_url', imageUrl);
+          // Update Firestore
+          await _authService.updateCoverImage(imageUrl);
+
+          // Update SharedPreferences (user-specific key)
+          await prefs.setString('cover_image_url_$userId', imageUrl);
+
           setState(() {
             _coverImageUrl = imageUrl;
             _tempCoverImage = null;

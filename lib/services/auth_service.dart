@@ -67,6 +67,8 @@ class AuthService {
           'email': user.email,
           'displayName': user.displayName,
           'photoURL': user.photoURL,
+          'profileImageUrl': null,
+          'coverImageUrl': null,
           'createdAt': FieldValue.serverTimestamp(),
           'lastLogin': FieldValue.serverTimestamp(),
         });
@@ -76,6 +78,51 @@ class AuthService {
       }
     } catch (e) {
       print('Error saving user to Firestore: $e');
+    }
+  }
+
+  // Update profile image URL
+  Future<void> updateProfileImage(String imageUrl) async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        await _firestore.collection('users').doc(user.uid).update({
+          'profileImageUrl': imageUrl,
+        });
+      }
+    } catch (e) {
+      print('Error updating profile image: $e');
+      rethrow;
+    }
+  }
+
+  // Update cover image URL
+  Future<void> updateCoverImage(String imageUrl) async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        await _firestore.collection('users').doc(user.uid).update({
+          'coverImageUrl': imageUrl,
+        });
+      }
+    } catch (e) {
+      print('Error updating cover image: $e');
+      rethrow;
+    }
+  }
+
+  // Get user profile data
+  Future<Map<String, dynamic>?> getUserProfile() async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        final doc = await _firestore.collection('users').doc(user.uid).get();
+        return doc.data();
+      }
+      return null;
+    } catch (e) {
+      print('Error getting user profile: $e');
+      return null;
     }
   }
 
@@ -134,12 +181,16 @@ class AuthService {
       // Update display name
       await userCredential.user?.updateDisplayName(displayName);
 
+      // Send email verification
+      await userCredential.user?.sendEmailVerification();
+
       if (userCredential.user != null) {
         await _firestore.collection('users').doc(userCredential.user!.uid).set({
           'uid': userCredential.user!.uid,
           'email': email,
           'displayName': displayName,
           'photoURL': null,
+          'emailVerified': false,
           'createdAt': FieldValue.serverTimestamp(),
           'lastLogin': FieldValue.serverTimestamp(),
         });
@@ -149,6 +200,39 @@ class AuthService {
     } catch (e) {
       print('Error registering with email: $e');
       rethrow;
+    }
+  }
+
+  // Send Email Verification
+  Future<void> sendEmailVerification() async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null && !user.emailVerified) {
+        await user.sendEmailVerification();
+      }
+    } catch (e) {
+      print('Error sending email verification: $e');
+      rethrow;
+    }
+  }
+
+  // Check if email is verified
+  Future<bool> isEmailVerified() async {
+    await _auth.currentUser?.reload();
+    return _auth.currentUser?.emailVerified ?? false;
+  }
+
+  // Update email verification status in Firestore
+  Future<void> updateEmailVerificationStatus() async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null && user.emailVerified) {
+        await _firestore.collection('users').doc(user.uid).update({
+          'emailVerified': true,
+        });
+      }
+    } catch (e) {
+      print('Error updating email verification status: $e');
     }
   }
 
