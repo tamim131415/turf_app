@@ -178,12 +178,12 @@ class ProductController extends GetxController {
     }
   }
 
-  void filterByCategory(String category) async {
+  Future<void> filterByCategory(String category) async {
     try {
       filterType.value = 'category';
       selectedCategory.value = category;
-      selectedTeam.value = 'All';
-      selectedBrand.value = 'All';
+      selectedTeam.value = AppStrings.all;
+      selectedBrand.value = AppStrings.all;
       isLoading.value = true;
 
       // Try Firebase first, fallback to local
@@ -215,7 +215,7 @@ class ProductController extends GetxController {
     }
   }
 
-  void filterByTeam(String team) async {
+  Future<void> filterByTeam(String team) async {
     try {
       filterType.value = 'team';
       selectedTeam.value = team;
@@ -227,11 +227,11 @@ class ProductController extends GetxController {
       try {
         if (isOnline.value) {
           final firestoreProducts = await _firestoreService
-              .getProductsByCategory('All');
+              .getProductsByCategory(AppStrings.all);
           products.value = firestoreProducts;
         } else {
           final localProducts = await _localStorageService
-              .getProductsByCategory('All');
+              .getProductsByCategory(AppStrings.all);
           products.value = localProducts;
         }
       } catch (e) {
@@ -249,7 +249,7 @@ class ProductController extends GetxController {
     }
   }
 
-  void filterByBrand(String brand) async {
+  Future<void> filterByBrand(String brand) async {
     try {
       filterType.value = 'brand';
       selectedBrand.value = brand;
@@ -261,11 +261,11 @@ class ProductController extends GetxController {
       try {
         if (isOnline.value) {
           final firestoreProducts = await _firestoreService
-              .getProductsByCategory('All');
+              .getProductsByCategory(AppStrings.all);
           products.value = firestoreProducts;
         } else {
           final localProducts = await _localStorageService
-              .getProductsByCategory('All');
+              .getProductsByCategory(AppStrings.all);
           products.value = localProducts;
         }
       } catch (e) {
@@ -289,7 +289,7 @@ class ProductController extends GetxController {
     } else if (filterType.value == 'brand' &&
         selectedBrand.value != AppStrings.all) {
       return products.where((p) => p.brand == selectedBrand.value).toList();
-    } else if (selectedCategory.value == 'All') {
+    } else if (selectedCategory.value == AppStrings.all) {
       return products;
     }
     return products.where((p) => p.category == selectedCategory.value).toList();

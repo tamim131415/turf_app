@@ -20,12 +20,18 @@ class HomeScreenState extends State<HomeScreen> {
   final TextEditingController _searchController = TextEditingController();
   final RxList<Product> _filteredProducts = <Product>[].obs;
   final RxString _searchQuery = ''.obs;
+  Worker? _productsWorker;
 
   @override
   void initState() {
     super.initState();
     _filteredProducts.value = productController.products;
     _searchController.addListener(_filterProducts);
+
+    // Listen to product changes and update filtered products
+    _productsWorker = ever(productController.products, (_) {
+      _filterProducts();
+    });
   }
 
   void _filterProducts() {
@@ -49,6 +55,7 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _searchController.dispose();
+    _productsWorker?.dispose();
     super.dispose();
   }
 
@@ -71,7 +78,7 @@ class HomeScreenContentState extends State<HomeScreenContent> {
   final AuthController authController = Get.find<AuthController>();
 
   final List<String> _categories = [
-    'All',
+    AppStrings.all,
     'Jerseys',
     'Shoes',
     'Accessories',
@@ -82,12 +89,18 @@ class HomeScreenContentState extends State<HomeScreenContent> {
   final TextEditingController _searchController = TextEditingController();
   final RxList<Product> _filteredProducts = <Product>[].obs;
   final RxString _searchQuery = ''.obs;
+  Worker? _productsWorker;
 
   @override
   void initState() {
     super.initState();
     _filteredProducts.value = productController.products;
     _searchController.addListener(_filterProducts);
+
+    // Listen to product changes and update filtered products
+    _productsWorker = ever(productController.products, (_) {
+      _filterProducts();
+    });
   }
 
   void _filterProducts() {
@@ -108,14 +121,15 @@ class HomeScreenContentState extends State<HomeScreenContent> {
     }
   }
 
-  void _filterByCategory(String category) {
-    productController.filterByCategory(category);
+  void _filterByCategory(String category) async {
+    await productController.filterByCategory(category);
     _filterProducts(); // Re-apply search filter if any
   }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _productsWorker?.dispose();
     super.dispose();
   }
 

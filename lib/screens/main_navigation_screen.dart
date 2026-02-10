@@ -79,6 +79,28 @@ class MainNavigationScreenState extends State<MainNavigationScreen> {
     );
   }
 
+  void _onTabChanged(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+
+    // Reload data when switching tabs
+    switch (index) {
+      case 0: // Home
+        productController.filterByCategory(AppStrings.all);
+        break;
+      case 1: // Explore
+        // Explore will handle its own data loading
+        break;
+      case 2: // Wishlist
+        productController.updateFavoriteProducts();
+        break;
+      case 3: // Profile
+        // Profile doesn't need data reload
+        break;
+    }
+  }
+
   Widget _buildNavItem(
     int index,
     IconData inactiveIcon,
@@ -89,11 +111,7 @@ class MainNavigationScreenState extends State<MainNavigationScreen> {
 
     return Expanded(
       child: GestureDetector(
-        onTap: () {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
+        onTap: () => _onTabChanged(index),
         child: AnimatedContainer(
           duration: Duration(milliseconds: 200),
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -139,11 +157,7 @@ class MainNavigationScreenState extends State<MainNavigationScreen> {
 
     return Expanded(
       child: GestureDetector(
-        onTap: () {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
+        onTap: () => _onTabChanged(index),
         child: AnimatedContainer(
           duration: Duration(milliseconds: 200),
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
