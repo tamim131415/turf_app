@@ -233,36 +233,32 @@ class FirebaseConnectionService {
                                       ),
                                     ),
                                     SizedBox(height: 8),
-                                    ...projectInfo.entries
-                                        .map(
-                                          (entry) => Padding(
-                                            padding: EdgeInsets.only(bottom: 4),
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                SizedBox(
-                                                  width: 120,
-                                                  child: Text(
-                                                    '${entry.key}:',
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                                  ),
+                                    ...projectInfo.entries.map(
+                                      (entry) => Padding(
+                                        padding: EdgeInsets.only(bottom: 4),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              width: 120,
+                                              child: Text(
+                                                '${entry.key}:',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w500,
                                                 ),
-                                                Expanded(
-                                                  child: Text(
-                                                    entry.value.toString(),
-                                                    style: TextStyle(
-                                                      fontSize: 12,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
+                                              ),
                                             ),
-                                          ),
+                                            Expanded(
+                                              child: Text(
+                                                entry.value.toString(),
+                                                style: TextStyle(fontSize: 12),
+                                              ),
+                                            ),
+                                          ],
                                         ),
+                                      ),
+                                    ),
                                   ],
                                 );
                               }
