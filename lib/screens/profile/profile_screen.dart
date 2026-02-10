@@ -221,594 +221,602 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         return Stack(
           children: [
-            ListView(
-              children: [
-                // Cover Image Section
-                Container(
-                  height: 220,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [Colors.green[700]!, Colors.green[900]!],
+            RefreshIndicator(
+              onRefresh: () async {
+                await _loadUserProfile();
+              },
+              child: ListView(
+                physics: AlwaysScrollableScrollPhysics(),
+                children: [
+                  // Cover Image Section
+                  Container(
+                    height: 220,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Colors.green[700]!, Colors.green[900]!],
+                      ),
+                      image: _tempCoverImage != null
+                          ? DecorationImage(
+                              image: FileImage(_tempCoverImage!),
+                              fit: BoxFit.cover,
+                            )
+                          : _coverImageUrl != null
+                          ? DecorationImage(
+                              image: NetworkImage(_coverImageUrl!),
+                              fit: BoxFit.cover,
+                            )
+                          : null,
                     ),
-                    image: _tempCoverImage != null
-                        ? DecorationImage(
-                            image: FileImage(_tempCoverImage!),
-                            fit: BoxFit.cover,
-                          )
-                        : _coverImageUrl != null
-                        ? DecorationImage(
-                            image: NetworkImage(_coverImageUrl!),
-                            fit: BoxFit.cover,
-                          )
-                        : null,
-                  ),
-                  child: Stack(
-                    children: [
-                      // Overlay gradient for better text readability
-                      if (_coverImageUrl != null || _tempCoverImage != null)
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.transparent,
-                                Colors.black.withOpacity(0.3),
-                              ],
-                            ),
-                          ),
-                        ),
-                      // Save Button (Top Right) - shown when editing
-                      if (_isEditingCover &&
-                          (_tempCoverImage != null ||
-                              _tempProfileImage != null))
-                        Positioned(
-                          top: 16,
-                          right: 16,
-                          child: Container(
+                    child: Stack(
+                      children: [
+                        // Overlay gradient for better text readability
+                        if (_coverImageUrl != null || _tempCoverImage != null)
+                          Container(
                             decoration: BoxDecoration(
-                              color: Colors.green[700],
-                              borderRadius: BorderRadius.circular(30),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 8,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(30),
-                                onTap: _uploadImages,
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                    vertical: 10,
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.check,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                      SizedBox(width: 6),
-                                      Text(
-                                        'Save',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black.withOpacity(0.3),
+                                ],
                               ),
                             ),
                           ),
-                        ),
-                      // Upload Cover Image Button (shown when editing)
-                      if (_isEditingCover)
-                        Positioned(
-                          right: 16,
-                          bottom: 80,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.6),
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 8,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.camera_alt,
-                                color: Colors.white,
-                                size: 22,
-                              ),
-                              onPressed: () => _pickImage(false),
-                              tooltip: 'Change Cover',
-                            ),
-                          ),
-                        ),
-                      // Profile Picture
-                      Positioned(
-                        left: 24,
-                        bottom: 16,
-                        child: Stack(
-                          children: [
-                            Container(
+                        // Save Button (Top Right) - shown when editing
+                        if (_isEditingCover &&
+                            (_tempCoverImage != null ||
+                                _tempProfileImage != null))
+                          Positioned(
+                            top: 16,
+                            right: 16,
+                            child: Container(
                               decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 4,
-                                ),
+                                color: Colors.green[700],
+                                borderRadius: BorderRadius.circular(30),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withOpacity(0.2),
-                                    blurRadius: 12,
-                                    offset: Offset(0, 4),
+                                    blurRadius: 8,
+                                    offset: Offset(0, 2),
                                   ),
                                 ],
                               ),
-                              child: CircleAvatar(
-                                radius: 56,
-                                backgroundColor: Colors.green[100],
-                                backgroundImage: _tempProfileImage != null
-                                    ? FileImage(_tempProfileImage!)
-                                    : _profileImageUrl != null
-                                    ? NetworkImage(_profileImageUrl!)
-                                    : null,
-                                child:
-                                    (_tempProfileImage == null &&
-                                        _profileImageUrl == null)
-                                    ? Text(
-                                        username.isNotEmpty
-                                            ? username[0].toUpperCase()
-                                            : 'U',
-                                        style: TextStyle(
-                                          fontSize: 42,
-                                          color: Colors.green[700],
-                                          fontWeight: FontWeight.bold,
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(30),
+                                  onTap: _uploadImages,
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                      vertical: 10,
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.check,
+                                          color: Colors.white,
+                                          size: 20,
                                         ),
-                                      )
-                                    : null,
-                              ),
-                            ),
-                            // Camera button (shown when editing)
-                            if (_isEditingCover)
-                              Positioned(
-                                right: 0,
-                                bottom: 0,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.green[700],
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 3,
+                                        SizedBox(width: 6),
+                                        Text(
+                                          'Save',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.2),
-                                        blurRadius: 8,
-                                        offset: Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: IconButton(
-                                    padding: EdgeInsets.all(8),
-                                    constraints: BoxConstraints(),
-                                    icon: Icon(
-                                      Icons.camera_alt,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                    onPressed: () => _pickImage(true),
-                                    tooltip: 'Change Photo',
                                   ),
                                 ),
                               ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // User Info Section
-                Container(
-                  padding: EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  username,
-                                  style: TextStyle(
-                                    fontSize: 26,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey[900],
-                                    letterSpacing: 0.5,
+                            ),
+                          ),
+                        // Upload Cover Image Button (shown when editing)
+                        if (_isEditingCover)
+                          Positioned(
+                            right: 16,
+                            bottom: 80,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.6),
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    blurRadius: 8,
+                                    offset: Offset(0, 2),
                                   ),
-                                ),
-                                SizedBox(height: 6),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.email_outlined,
-                                      size: 16,
-                                      color: Colors.grey[600],
-                                    ),
-                                    SizedBox(width: 6),
-                                    Expanded(
-                                      child: Text(
-                                        email,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey[600],
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.green[50],
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Colors.green[200]!),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.verified,
-                                  size: 16,
-                                  color: Colors.green[700],
-                                ),
-                                SizedBox(width: 4),
-                                Text(
-                                  'Active',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.green[700],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 8),
-                // Account Section
-                Padding(
-                  padding: EdgeInsets.fromLTRB(24, 16, 24, 8),
-                  child: Text(
-                    'ACCOUNT',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.grey[600],
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                ),
-                _buildProfileTile(
-                  Icons.shopping_bag,
-                  'My Orders',
-                  'View your order history and track deliveries',
-                  () {
-                    Get.toNamed('/my-orders');
-                  },
-                ),
-                _buildProfileTile(
-                  Icons.favorite,
-                  'Wishlist',
-                  'View and manage your favorite products',
-                  () {
-                    Get.toNamed('/wishlist');
-                  },
-                ),
-                _buildProfileTile(
-                  Icons.location_on,
-                  'Addresses',
-                  'Manage your delivery addresses',
-                  () {
-                    Get.toNamed('/addresses');
-                  },
-                ),
-                _buildProfileTile(
-                  Icons.payment,
-                  'Payment Methods',
-                  'Manage your payment cards and methods',
-                  () {
-                    Get.toNamed('/payment-methods');
-                  },
-                ),
-                SizedBox(height: 16),
-                // Settings Section
-                Padding(
-                  padding: EdgeInsets.fromLTRB(24, 16, 24, 8),
-                  child: Text(
-                    'SUPPORT',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.grey[600],
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                ),
-                _buildProfileTile(
-                  Icons.help,
-                  'Help & Support',
-                  'Get help and contact customer support',
-                  () {
-                    Get.to(() => HelpSupportScreen());
-                  },
-                ),
-                _buildProfileTile(
-                  Icons.info_outline,
-                  'About',
-                  'App version and company information',
-                  () {
-                    Get.dialog(
-                      Dialog(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Container(
-                          padding: EdgeInsets.all(24),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [Colors.green[50]!, Colors.white],
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // App Icon
-                              Container(
-                                padding: EdgeInsets.all(16),
-                                decoration: BoxDecoration(
+                                ],
+                              ),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.camera_alt,
                                   color: Colors.white,
+                                  size: 22,
+                                ),
+                                onPressed: () => _pickImage(false),
+                                tooltip: 'Change Cover',
+                              ),
+                            ),
+                          ),
+                        // Profile Picture
+                        Positioned(
+                          left: 24,
+                          bottom: 16,
+                          child: Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
                                   shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 4,
+                                  ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.green.withOpacity(0.2),
-                                      blurRadius: 20,
-                                      offset: Offset(0, 10),
+                                      color: Colors.black.withOpacity(0.2),
+                                      blurRadius: 12,
+                                      offset: Offset(0, 4),
                                     ),
                                   ],
                                 ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: Image.asset(
-                                    'assets/icon.png',
-                                    width: 80,
-                                    height: 80,
-                                    fit: BoxFit.cover,
+                                child: CircleAvatar(
+                                  radius: 56,
+                                  backgroundColor: Colors.green[100],
+                                  backgroundImage: _tempProfileImage != null
+                                      ? FileImage(_tempProfileImage!)
+                                      : _profileImageUrl != null
+                                      ? NetworkImage(_profileImageUrl!)
+                                      : null,
+                                  child:
+                                      (_tempProfileImage == null &&
+                                          _profileImageUrl == null)
+                                      ? Text(
+                                          username.isNotEmpty
+                                              ? username[0].toUpperCase()
+                                              : 'U',
+                                          style: TextStyle(
+                                            fontSize: 42,
+                                            color: Colors.green[700],
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )
+                                      : null,
+                                ),
+                              ),
+                              // Camera button (shown when editing)
+                              if (_isEditingCover)
+                                Positioned(
+                                  right: 0,
+                                  bottom: 0,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.green[700],
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 3,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.2),
+                                          blurRadius: 8,
+                                          offset: Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: IconButton(
+                                      padding: EdgeInsets.all(8),
+                                      constraints: BoxConstraints(),
+                                      icon: Icon(
+                                        Icons.camera_alt,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                      onPressed: () => _pickImage(true),
+                                      tooltip: 'Change Photo',
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 20),
-                              // App Name
-                              Text(
-                                'Turf Mate',
-                                style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green[800],
-                                  letterSpacing: 1.2,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              // Version
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.green[100],
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Text(
-                                  'Version 1.0.0',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.green[700],
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 24),
-                              // Divider
-                              Container(
-                                height: 1,
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.transparent,
-                                      Colors.green[200]!,
-                                      Colors.transparent,
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 24),
-                              // Description
-                              Text(
-                                'Your Premium Destination',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.green[900],
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'for Football Gear & Accessories',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey[700],
-                                  height: 1.5,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(height: 24),
-                              // Features
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // User Info Section
+                  Container(
+                    padding: EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  _buildFeatureChip(
-                                    Icons.verified,
-                                    'Authentic',
+                                  Text(
+                                    username,
+                                    style: TextStyle(
+                                      fontSize: 26,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey[900],
+                                      letterSpacing: 0.5,
+                                    ),
                                   ),
-                                  _buildFeatureChip(
-                                    Icons.local_shipping,
-                                    'Fast Delivery',
-                                  ),
-                                  _buildFeatureChip(
-                                    Icons.support_agent,
-                                    '24/7 Support',
+                                  SizedBox(height: 6),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.email_outlined,
+                                        size: 16,
+                                        color: Colors.grey[600],
+                                      ),
+                                      SizedBox(width: 6),
+                                      Expanded(
+                                        child: Text(
+                                          email,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey[600],
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 32),
-                              // Close Button
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: () => Get.back(),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green[700],
-                                    foregroundColor: Colors.white,
-                                    padding: EdgeInsets.symmetric(vertical: 14),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.green[50],
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: Colors.green[200]!),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.verified,
+                                    size: 16,
+                                    color: Colors.green[700],
+                                  ),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    'Active',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.green[700],
                                     ),
-                                    elevation: 0,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  // Account Section
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(24, 16, 24, 8),
+                    child: Text(
+                      'ACCOUNT',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.grey[600],
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ),
+                  _buildProfileTile(
+                    Icons.shopping_bag,
+                    'My Orders',
+                    'View your order history and track deliveries',
+                    () {
+                      Get.toNamed('/my-orders');
+                    },
+                  ),
+                  _buildProfileTile(
+                    Icons.favorite,
+                    'Wishlist',
+                    'View and manage your favorite products',
+                    () {
+                      Get.toNamed('/wishlist');
+                    },
+                  ),
+                  _buildProfileTile(
+                    Icons.location_on,
+                    'Addresses',
+                    'Manage your delivery addresses',
+                    () {
+                      Get.toNamed('/addresses');
+                    },
+                  ),
+                  _buildProfileTile(
+                    Icons.payment,
+                    'Payment Methods',
+                    'Manage your payment cards and methods',
+                    () {
+                      Get.toNamed('/payment-methods');
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  // Settings Section
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(24, 16, 24, 8),
+                    child: Text(
+                      'SUPPORT',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.grey[600],
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ),
+                  _buildProfileTile(
+                    Icons.help,
+                    'Help & Support',
+                    'Get help and contact customer support',
+                    () {
+                      Get.to(() => HelpSupportScreen());
+                    },
+                  ),
+                  _buildProfileTile(
+                    Icons.info_outline,
+                    'About',
+                    'App version and company information',
+                    () {
+                      Get.dialog(
+                        Dialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Container(
+                            padding: EdgeInsets.all(24),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [Colors.green[50]!, Colors.white],
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                // App Icon
+                                Container(
+                                  padding: EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.green.withOpacity(0.2),
+                                        blurRadius: 20,
+                                        offset: Offset(0, 10),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: Image.asset(
+                                      'assets/icon.png',
+                                      width: 80,
+                                      height: 80,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 20),
+                                // App Name
+                                Text(
+                                  'Turf Mate',
+                                  style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green[800],
+                                    letterSpacing: 1.2,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                // Version
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green[100],
+                                    borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text(
-                                    'Close',
+                                    'Version 1.0.0',
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 12,
+                                      color: Colors.green[700],
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ),
-                              ),
+                                SizedBox(height: 24),
+                                // Divider
+                                Container(
+                                  height: 1,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Colors.transparent,
+                                        Colors.green[200]!,
+                                        Colors.transparent,
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 24),
+                                // Description
+                                Text(
+                                  'Your Premium Destination',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.green[900],
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  'for Football Gear & Accessories',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[700],
+                                    height: 1.5,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: 24),
+                                // Features
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    _buildFeatureChip(
+                                      Icons.verified,
+                                      'Authentic',
+                                    ),
+                                    _buildFeatureChip(
+                                      Icons.local_shipping,
+                                      'Fast Delivery',
+                                    ),
+                                    _buildFeatureChip(
+                                      Icons.support_agent,
+                                      '24/7 Support',
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 32),
+                                // Close Button
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () => Get.back(),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green[700],
+                                      foregroundColor: Colors.white,
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 14,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      elevation: 0,
+                                    ),
+                                    child: Text(
+                                      'Close',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  _buildProfileTile(
+                    Icons.logout,
+                    'Logout',
+                    'Sign out of your account',
+                    () {
+                      Get.dialog(
+                        AlertDialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          title: Row(
+                            children: [
+                              Icon(Icons.logout, color: Colors.red[700]),
+                              SizedBox(width: 12),
+                              Text('Logout'),
                             ],
                           ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                _buildProfileTile(
-                  Icons.logout,
-                  'Logout',
-                  'Sign out of your account',
-                  () {
-                    Get.dialog(
-                      AlertDialog(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        title: Row(
-                          children: [
-                            Icon(Icons.logout, color: Colors.red[700]),
-                            SizedBox(width: 12),
-                            Text('Logout'),
+                          content: Text(
+                            'Are you sure you want to logout?',
+                            style: TextStyle(fontSize: 15),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Get.back(),
+                              child: Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                Get.back();
+                                authController.logout();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red[700],
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 12,
+                                ),
+                              ),
+                              child: Text(
+                                'Logout',
+                                style: TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                            ),
                           ],
                         ),
-                        content: Text(
-                          'Are you sure you want to logout?',
-                          style: TextStyle(fontSize: 15),
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Get.back(),
-                            child: Text(
-                              'Cancel',
-                              style: TextStyle(
-                                color: Colors.grey[700],
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              Get.back();
-                              authController.logout();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red[700],
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 12,
-                              ),
-                            ),
-                            child: Text(
-                              'Logout',
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                  isLogout: true,
-                ),
-                SizedBox(height: 32),
-              ],
+                      );
+                    },
+                    isLogout: true,
+                  ),
+                  SizedBox(height: 32),
+                ],
+              ),
             ),
             // Loading Overlay
             if (_isLoading)

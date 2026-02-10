@@ -254,284 +254,293 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
           // ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Header with Search
-            Container(
-              color: Colors.white,
-              padding: EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  // Enhanced Search Bar with filter
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          productController.loadProducts();
+        },
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              // Header with Search
+              Container(
+                color: Colors.white,
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    // Enhanced Search Bar with filter
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey[50],
+                              borderRadius: BorderRadius.circular(25),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 10,
+                                  offset: Offset(0, 5),
+                                ),
+                              ],
+                            ),
+                            child: TextField(
+                              controller: _searchController,
+                              decoration: InputDecoration(
+                                hintText: 'Search products...',
+                                border: InputBorder.none,
+                                prefixIcon: Icon(
+                                  Icons.search,
+                                  color: Colors.green[700],
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 15,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Container(
                           decoration: BoxDecoration(
-                            color: Colors.grey[50],
-                            borderRadius: BorderRadius.circular(25),
+                            color: Colors.green[700],
+                            shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black12,
+                                color: Colors.green.withOpacity(0.3),
                                 blurRadius: 10,
                                 offset: Offset(0, 5),
                               ),
                             ],
                           ),
-                          child: TextField(
-                            controller: _searchController,
-                            decoration: InputDecoration(
-                              hintText: 'Search products...',
-                              border: InputBorder.none,
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: Colors.green[700],
-                              ),
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 15,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.green[700],
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.green.withOpacity(0.3),
-                              blurRadius: 10,
-                              offset: Offset(0, 5),
-                            ),
-                          ],
-                        ),
-                        child: IconButton(
-                          icon: Icon(Icons.filter_list, color: Colors.white),
-                          onPressed: () {
-                            _showFilterBottomSheet(context);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  // Promo Banner
-                  Container(
-                    width: double.infinity,
-                    constraints: BoxConstraints(minHeight: 160),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Colors.green[700]!, Colors.green[500]!],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.green.withOpacity(0.3),
-                          blurRadius: 15,
-                          offset: Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          right: 20,
-                          top: 20,
-                          child: Icon(
-                            Icons.sports_soccer,
-                            size: 80,
-                            color: Colors.white.withOpacity(0.2),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'SUMMER SALE',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 2,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                '30% OFF',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                'On all national team jerseys',
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.9),
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
+                          child: IconButton(
+                            icon: Icon(Icons.filter_list, color: Colors.white),
+                            onPressed: () {
+                              _showFilterBottomSheet(context);
+                            },
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-            // Categories with horizontal scroll
-            SizedBox(
-              height: 60,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                children: _categories.map((category) {
-                  return Padding(
-                    padding: EdgeInsets.only(right: 10),
-                    child: Obx(
-                      () => ChoiceChip(
-                        label: Text(category),
-                        selected:
-                            productController.selectedCategory.value ==
-                            category,
-                        selectedColor: Colors.green[700],
-                        onSelected: (selected) {
-                          _filterByCategory(category);
-                        },
-                        labelStyle: TextStyle(
-                          color:
-                              productController.selectedCategory.value ==
-                                  category
-                              ? Colors.white
-                              : Colors.grey[700],
+                    SizedBox(height: 20),
+                    // Promo Banner
+                    Container(
+                      width: double.infinity,
+                      constraints: BoxConstraints(minHeight: 160),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.green[700]!, Colors.green[500]!],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.green.withOpacity(0.3),
+                            blurRadius: 15,
+                            offset: Offset(0, 5),
+                          ),
+                        ],
                       ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-            SizedBox(height: 20),
-            // Featured Products
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Featured Products',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green[800],
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Get.toNamed(Routes.ALL_PRODUCTS);
-                    },
-                    child: Text(
-                      'View All',
-                      style: TextStyle(color: Colors.green[700]),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Products Grid
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: Obx(
-                () => productController.isLoading.value
-                    ? Center(
-                        child: Column(
-                          children: [
-                            CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.green[700]!,
-                              ),
-                            ),
-                            SizedBox(height: 16),
-                            Text(
-                              'Loading products...',
-                              style: TextStyle(color: Colors.grey[600]),
-                            ),
-                          ],
-                        ),
-                      )
-                    : _filteredProducts.isEmpty
-                    ? Column(
+                      child: Stack(
                         children: [
-                          Icon(
-                            Icons.sports_soccer,
-                            size: 80,
-                            color: Colors.grey[300],
-                          ),
-                          SizedBox(height: 20),
-                          Text(
-                            'Welcome to Turf-Mate!',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green[800],
+                          Positioned(
+                            right: 20,
+                            top: 20,
+                            child: Icon(
+                              Icons.sports_soccer,
+                              size: 80,
+                              color: Colors.white.withOpacity(0.2),
                             ),
                           ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Your ultimate football products store',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          Text(
-                            'No products found',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.grey[500],
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Obx(
-                            () => Text(
-                              productController.isOnline.value
-                                  ? 'Try selecting a different category'
-                                  : 'Working in offline mode',
-                              style: TextStyle(color: Colors.grey[400]),
+                          Padding(
+                            padding: EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'SUMMER SALE',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 2,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  '30% OFF',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  'On all national team jerseys',
+                                  style: TextStyle(
+                                    color: Colors.white.withOpacity(0.9),
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
-                      )
-                    : GridView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 15,
-                          mainAxisSpacing: 15,
-                          childAspectRatio: 0.7,
-                        ),
-                        itemCount: _filteredProducts.length,
-                        itemBuilder: (context, index) {
-                          return ProductCard(product: _filteredProducts[index]);
-                        },
                       ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+              SizedBox(height: 20),
+              // Categories with horizontal scroll
+              SizedBox(
+                height: 60,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  children: _categories.map((category) {
+                    return Padding(
+                      padding: EdgeInsets.only(right: 10),
+                      child: Obx(
+                        () => ChoiceChip(
+                          label: Text(category),
+                          selected:
+                              productController.selectedCategory.value ==
+                              category,
+                          selectedColor: Colors.green[700],
+                          onSelected: (selected) {
+                            _filterByCategory(category);
+                          },
+                          labelStyle: TextStyle(
+                            color:
+                                productController.selectedCategory.value ==
+                                    category
+                                ? Colors.white
+                                : Colors.grey[700],
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              SizedBox(height: 20),
+              // Featured Products
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Featured Products',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green[800],
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Get.toNamed(Routes.ALL_PRODUCTS);
+                      },
+                      child: Text(
+                        'View All',
+                        style: TextStyle(color: Colors.green[700]),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Products Grid
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: Obx(
+                  () => productController.isLoading.value
+                      ? Center(
+                          child: Column(
+                            children: [
+                              CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.green[700]!,
+                                ),
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                'Loading products...',
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                            ],
+                          ),
+                        )
+                      : _filteredProducts.isEmpty
+                      ? Column(
+                          children: [
+                            Icon(
+                              Icons.sports_soccer,
+                              size: 80,
+                              color: Colors.grey[300],
+                            ),
+                            SizedBox(height: 20),
+                            Text(
+                              'Welcome to Turf-Mate!',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green[800],
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Your ultimate football products store',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                            Text(
+                              'No products found',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Obx(
+                              () => Text(
+                                productController.isOnline.value
+                                    ? 'Try selecting a different category'
+                                    : 'Working in offline mode',
+                                style: TextStyle(color: Colors.grey[400]),
+                              ),
+                            ),
+                          ],
+                        )
+                      : GridView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 15,
+                                mainAxisSpacing: 15,
+                                childAspectRatio: 0.7,
+                              ),
+                          itemCount: _filteredProducts.length,
+                          itemBuilder: (context, index) {
+                            return ProductCard(
+                              product: _filteredProducts[index],
+                            );
+                          },
+                        ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -179,197 +179,213 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
         final filteredProducts = getFilteredProducts();
 
-        return ListView(
-          padding: EdgeInsets.all(16),
-          children: [
-            // Search Bar
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey[200]!),
+        return RefreshIndicator(
+          onRefresh: () async {
+            productController.loadProducts();
+          },
+          child: ListView(
+            physics: AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.all(16),
+            children: [
+              // Search Bar
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey[200]!),
+                ),
+                child: TextField(
+                  controller: searchController,
+                  onChanged: (value) => setState(() {}),
+                  decoration: InputDecoration(
+                    hintText: 'Search products...',
+                    border: InputBorder.none,
+                    prefixIcon: Icon(Icons.search, color: Colors.grey),
+                    suffixIcon: searchController.text.isNotEmpty
+                        ? IconButton(
+                            icon: Icon(Icons.clear, color: Colors.grey),
+                            onPressed: () {
+                              searchController.clear();
+                              setState(() {});
+                            },
+                          )
+                        : null,
+                  ),
+                ),
               ),
-              child: TextField(
-                controller: searchController,
-                onChanged: (value) => setState(() {}),
-                decoration: InputDecoration(
-                  hintText: 'Search products...',
-                  border: InputBorder.none,
-                  prefixIcon: Icon(Icons.search, color: Colors.grey),
-                  suffixIcon: searchController.text.isNotEmpty
-                      ? IconButton(
-                          icon: Icon(Icons.clear, color: Colors.grey),
-                          onPressed: () {
-                            searchController.clear();
-                            setState(() {});
+              SizedBox(height: 16),
+
+              // Filter Chips
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    ...filters.map((filter) {
+                      final isSelected = selectedFilter == filter;
+                      return Padding(
+                        padding: EdgeInsets.only(right: 8),
+                        child: FilterChip(
+                          label: Text(filter),
+                          selected: isSelected,
+                          onSelected: (selected) {
+                            setState(() {
+                              selectedFilter = filter;
+                            });
                           },
-                        )
-                      : null,
+                          selectedColor: Colors.green[100],
+                          checkmarkColor: Colors.green[800],
+                          labelStyle: TextStyle(
+                            color: isSelected
+                                ? Colors.green[800]
+                                : Colors.grey[700],
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ],
                 ),
               ),
-            ),
-            SizedBox(height: 16),
+              SizedBox(height: 12),
 
-            // Filter Chips
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  ...filters.map((filter) {
-                    final isSelected = selectedFilter == filter;
-                    return Padding(
-                      padding: EdgeInsets.only(right: 8),
-                      child: FilterChip(
-                        label: Text(filter),
-                        selected: isSelected,
-                        onSelected: (selected) {
-                          setState(() {
-                            selectedFilter = filter;
-                          });
-                        },
-                        selectedColor: Colors.green[100],
-                        checkmarkColor: Colors.green[800],
-                        labelStyle: TextStyle(
-                          color: isSelected
-                              ? Colors.green[800]
-                              : Colors.grey[700],
-                          fontWeight: isSelected
-                              ? FontWeight.bold
-                              : FontWeight.normal,
+              // Category Chips
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    ...categories.map((category) {
+                      final isSelected = selectedCategory == category;
+                      return Padding(
+                        padding: EdgeInsets.only(right: 8),
+                        child: ChoiceChip(
+                          label: Text(category),
+                          selected: isSelected,
+                          onSelected: (selected) {
+                            setState(() {
+                              selectedCategory = category;
+                            });
+                          },
+                          selectedColor: Colors.blue[100],
+                          labelStyle: TextStyle(
+                            color: isSelected
+                                ? Colors.blue[800]
+                                : Colors.grey[700],
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
                         ),
-                      ),
-                    );
-                  }).toList(),
+                      );
+                    }).toList(),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+
+              // Summary Cards
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildSummaryCard(
+                      'Total Products',
+                      productController.products.length.toString(),
+                      Icons.inventory_2,
+                      Colors.blue,
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: _buildSummaryCard(
+                      'Total Stock',
+                      productController.products
+                          .fold<int>(
+                            0,
+                            (sum, product) => sum + product.quantity,
+                          )
+                          .toString(),
+                      Icons.widgets,
+                      Colors.green,
+                    ),
+                  ),
                 ],
               ),
-            ),
-            SizedBox(height: 12),
-
-            // Category Chips
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
+              SizedBox(height: 16),
+              Row(
                 children: [
-                  ...categories.map((category) {
-                    final isSelected = selectedCategory == category;
-                    return Padding(
-                      padding: EdgeInsets.only(right: 8),
-                      child: ChoiceChip(
-                        label: Text(category),
-                        selected: isSelected,
-                        onSelected: (selected) {
-                          setState(() {
-                            selectedCategory = category;
-                          });
-                        },
-                        selectedColor: Colors.blue[100],
-                        labelStyle: TextStyle(
-                          color: isSelected
-                              ? Colors.blue[800]
-                              : Colors.grey[700],
-                          fontWeight: isSelected
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                        ),
-                      ),
-                    );
-                  }).toList(),
+                  Expanded(
+                    child: _buildSummaryCard(
+                      'Low Stock',
+                      productController.products
+                          .where((p) => p.quantity < 10)
+                          .length
+                          .toString(),
+                      Icons.warning_amber,
+                      Colors.orange,
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: _buildSummaryCard(
+                      'Out of Stock',
+                      productController.products
+                          .where((p) => p.quantity == 0)
+                          .length
+                          .toString(),
+                      Icons.error_outline,
+                      Colors.red,
+                    ),
+                  ),
                 ],
               ),
-            ),
-            SizedBox(height: 20),
+              SizedBox(height: 24),
 
-            // Summary Cards
-            Row(
-              children: [
-                Expanded(
-                  child: _buildSummaryCard(
-                    'Total Products',
-                    productController.products.length.toString(),
-                    Icons.inventory_2,
-                    Colors.blue,
+              // Products List
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Products (${filteredProducts.length})',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[800],
+                    ),
                   ),
-                ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: _buildSummaryCard(
-                    'Total Stock',
-                    productController.products
-                        .fold<int>(0, (sum, product) => sum + product.quantity)
-                        .toString(),
-                    Icons.widgets,
-                    Colors.green,
+                ],
+              ),
+              SizedBox(height: 12),
+              if (filteredProducts.isEmpty)
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(32),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.search_off,
+                          size: 60,
+                          color: Colors.grey[400],
+                        ),
+                        SizedBox(height: 12),
+                        Text(
+                          'No products found',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildSummaryCard(
-                    'Low Stock',
-                    productController.products
-                        .where((p) => p.quantity < 10)
-                        .length
-                        .toString(),
-                    Icons.warning_amber,
-                    Colors.orange,
-                  ),
-                ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: _buildSummaryCard(
-                    'Out of Stock',
-                    productController.products
-                        .where((p) => p.quantity == 0)
-                        .length
-                        .toString(),
-                    Icons.error_outline,
-                    Colors.red,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 24),
-
-            // Products List
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Products (${filteredProducts.length})',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[800],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 12),
-            if (filteredProducts.isEmpty)
-              Center(
-                child: Padding(
-                  padding: EdgeInsets.all(32),
-                  child: Column(
-                    children: [
-                      Icon(Icons.search_off, size: 60, color: Colors.grey[400]),
-                      SizedBox(height: 12),
-                      Text(
-                        'No products found',
-                        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            else
-              ...filteredProducts.map((product) {
-                return _buildInventoryItem(product);
-              }).toList(),
-          ],
+                )
+              else
+                ...filteredProducts.map((product) {
+                  return _buildInventoryItem(product);
+                }).toList(),
+            ],
+          ),
         );
       }),
     );

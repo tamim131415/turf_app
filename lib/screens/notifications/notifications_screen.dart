@@ -32,49 +32,62 @@ class NotificationsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView(
-        children: [
-          _buildNotificationItem(
-            'Order Shipped',
-            'Your order #TM-2024-00123 has been shipped and will arrive in 2-3 business days',
-            Icons.local_shipping,
-            Colors.green,
-            '2 hours ago',
-            false,
-          ),
-          _buildNotificationItem(
-            'Special Offer',
-            '30% off on all national team jerseys this weekend! Limited time offer.',
-            Icons.local_offer,
-            Colors.orange,
-            '1 day ago',
-            false,
-          ),
-          _buildNotificationItem(
-            'New Arrival',
-            'Check out the new Brazil 2024 kit collection with exclusive designs',
-            Icons.new_releases,
-            Colors.blue,
-            '2 days ago',
-            false,
-          ),
-          _buildNotificationItem(
-            'Payment Successful',
-            'Your payment of ৳4,998 has been processed successfully',
-            Icons.payment,
-            Colors.purple,
-            '3 days ago',
-            true,
-          ),
-          _buildNotificationItem(
-            'Welcome!',
-            'Welcome to TurfMart! Enjoy exclusive deals and premium football gear.',
-            Icons.waving_hand,
-            Colors.indigo,
-            '1 week ago',
-            true,
-          ),
-        ],
+      body: RefreshIndicator(
+        onRefresh: () async {
+          // Simulate refresh - in a real app, this would fetch new notifications
+          await Future.delayed(Duration(seconds: 1));
+          Get.snackbar(
+            'Refreshed',
+            'Notifications updated',
+            backgroundColor: Colors.green[100],
+            duration: Duration(seconds: 1),
+          );
+        },
+        child: ListView(
+          physics: AlwaysScrollableScrollPhysics(),
+          children: [
+            _buildNotificationItem(
+              'Order Shipped',
+              'Your order #TM-2024-00123 has been shipped and will arrive in 2-3 business days',
+              Icons.local_shipping,
+              Colors.green,
+              '2 hours ago',
+              false,
+            ),
+            _buildNotificationItem(
+              'Special Offer',
+              '30% off on all national team jerseys this weekend! Limited time offer.',
+              Icons.local_offer,
+              Colors.orange,
+              '1 day ago',
+              false,
+            ),
+            _buildNotificationItem(
+              'New Arrival',
+              'Check out the new Brazil 2024 kit collection with exclusive designs',
+              Icons.new_releases,
+              Colors.blue,
+              '2 days ago',
+              false,
+            ),
+            _buildNotificationItem(
+              'Payment Successful',
+              'Your payment of ৳4,998 has been processed successfully',
+              Icons.payment,
+              Colors.purple,
+              '3 days ago',
+              true,
+            ),
+            _buildNotificationItem(
+              'Welcome!',
+              'Welcome to TurfMart! Enjoy exclusive deals and premium football gear.',
+              Icons.waving_hand,
+              Colors.indigo,
+              '1 week ago',
+              true,
+            ),
+          ],
+        ),
       ),
     );
   }

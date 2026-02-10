@@ -55,55 +55,70 @@ class WishlistScreen extends StatelessWidget {
                   ),
                 ],
         ),
-        body: productController.favoriteProducts.isEmpty
-            ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+        body: RefreshIndicator(
+          onRefresh: () async {
+            productController.loadProducts();
+          },
+          child: productController.favoriteProducts.isEmpty
+              ? ListView(
+                  physics: AlwaysScrollableScrollPhysics(),
                   children: [
-                    Icon(
-                      Icons.favorite_border,
-                      size: 80,
-                      color: Colors.grey[300],
-                    ),
-                    SizedBox(height: 20),
-                    Text(
-                      'Your wishlist is empty',
-                      style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Start adding your favorite products',
-                      style: TextStyle(color: Colors.grey[400]),
-                    ),
-                    SizedBox(height: 30),
-                    ElevatedButton(
-                      onPressed: () {
-                        Get.offAllNamed('/home');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green[700],
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 30,
-                          vertical: 15,
-                        ),
-                      ),
-                      child: Text(
-                        'Start Shopping',
-                        style: TextStyle(color: Colors.white),
+                    SizedBox(height: 100),
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.favorite_border,
+                            size: 80,
+                            color: Colors.grey[300],
+                          ),
+                          SizedBox(height: 20),
+                          Text(
+                            'Your wishlist is empty',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'Start adding your favorite products',
+                            style: TextStyle(color: Colors.grey[400]),
+                          ),
+                          SizedBox(height: 30),
+                          ElevatedButton(
+                            onPressed: () {
+                              Get.offAllNamed('/home');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green[700],
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 30,
+                                vertical: 15,
+                              ),
+                            ),
+                            child: Text(
+                              'Start Shopping',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
+                )
+              : ListView.builder(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  padding: EdgeInsets.all(16),
+                  itemCount: productController.favoriteProducts.length,
+                  itemBuilder: (context, index) {
+                    return WishlistItem(
+                      product: productController.favoriteProducts[index],
+                    );
+                  },
                 ),
-              )
-            : ListView.builder(
-                padding: EdgeInsets.all(16),
-                itemCount: productController.favoriteProducts.length,
-                itemBuilder: (context, index) {
-                  return WishlistItem(
-                    product: productController.favoriteProducts[index],
-                  );
-                },
-              ),
+        ),
       ),
     );
   }

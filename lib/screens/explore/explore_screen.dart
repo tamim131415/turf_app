@@ -55,37 +55,43 @@ class ExploreScreen extends StatelessWidget {
         elevation: 0,
       ),
       body: Obx(() {
-        return ListView(
-          children: [
-            _buildCategorySection('Popular Teams', Icons.group, [
-              'Argentina',
-              'Brazil',
-              'Germany',
-              'France',
-              'Spain',
-              'England',
-              'Others',
-            ]),
-            _buildCategorySection('Categories', Icons.category, [
-              'Jerseys',
-              'Shoes',
-              'Accessories',
-              'Balls',
-              'Training',
-              'Others',
-            ]),
-            _buildCategorySection('Brands', Icons.business, [
-              'Nike',
-              'Adidas',
-              'Puma',
-              'New Balance',
-              'Others',
-            ]),
-            _buildProductSection(
-              'Trending Products',
-              productController.products.take(4).toList(),
-            ),
-          ],
+        return RefreshIndicator(
+          onRefresh: () async {
+            productController.loadProducts();
+          },
+          child: ListView(
+            physics: AlwaysScrollableScrollPhysics(),
+            children: [
+              _buildCategorySection('Popular Teams', Icons.group, [
+                'Argentina',
+                'Brazil',
+                'Germany',
+                'France',
+                'Spain',
+                'England',
+                'Others',
+              ]),
+              _buildCategorySection('Categories', Icons.category, [
+                'Jerseys',
+                'Shoes',
+                'Accessories',
+                'Balls',
+                'Training',
+                'Others',
+              ]),
+              _buildCategorySection('Brands', Icons.business, [
+                'Nike',
+                'Adidas',
+                'Puma',
+                'New Balance',
+                'Others',
+              ]),
+              _buildProductSection(
+                'Trending Products',
+                productController.products.take(4).toList(),
+              ),
+            ],
+          ),
         );
       }),
     );
