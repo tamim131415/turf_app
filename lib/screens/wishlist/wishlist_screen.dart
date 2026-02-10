@@ -45,7 +45,10 @@ class WishlistScreen extends StatelessWidget {
                                   productController.toggleFavorite(product);
                                 }
                                 Get.back();
-                                Get.snackbar(AppStrings.success, AppStrings.wishlistCleared);
+                                Get.snackbar(
+                                  AppStrings.success,
+                                  AppStrings.wishlistCleared,
+                                );
                               },
                               child: Text(AppStrings.clearAll),
                             ),

@@ -405,7 +405,7 @@ class InventoryDetailScreen extends StatelessWidget {
                       if (product.description.isNotEmpty) ...[
                         SizedBox(height: 16),
                         Text(
-                          'Description',
+                          AppStrings.productDescription,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

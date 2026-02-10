@@ -118,7 +118,7 @@ class EditProductScreenState extends State<EditProductScreen> {
       }
     } catch (e) {
       Get.snackbar(
-        'Error',
+        AppStrings.error,
         'Failed to pick image: ${e.toString()}',
         backgroundColor: Colors.red[100],
         colorText: Colors.red[800],
@@ -142,7 +142,7 @@ class EditProductScreenState extends State<EditProductScreen> {
       }
     } catch (e) {
       Get.snackbar(
-        'Error',
+        AppStrings.error,
         'Failed to take photo: ${e.toString()}',
         backgroundColor: Colors.red[100],
         colorText: Colors.red[800],
@@ -154,7 +154,7 @@ class EditProductScreenState extends State<EditProductScreen> {
   Future<void> _updateProduct() async {
     if (nameController.text.isEmpty || priceController.text.isEmpty) {
       Get.snackbar(
-        'Error',
+        AppStrings.error,
         'Please fill in product name and price',
         backgroundColor: Colors.red[100],
         colorText: Colors.red[800],
@@ -165,7 +165,7 @@ class EditProductScreenState extends State<EditProductScreen> {
 
     if (quantityController.text.isEmpty) {
       Get.snackbar(
-        'Error',
+        AppStrings.error,
         'Please enter the stock quantity',
         backgroundColor: Colors.red[100],
         colorText: Colors.red[800],
@@ -178,7 +178,7 @@ class EditProductScreenState extends State<EditProductScreen> {
     if ((selectedCategory == 'Jerseys' || selectedCategory == 'Shoes') &&
         selectedSizes.isEmpty) {
       Get.snackbar(
-        'Error',
+        AppStrings.error,
         'Please select at least one size for ${selectedCategory.toLowerCase()}',
         backgroundColor: Colors.red[100],
         colorText: Colors.red[800],
@@ -271,7 +271,7 @@ class EditProductScreenState extends State<EditProductScreen> {
         isUploading = false;
       });
       Get.snackbar(
-        'Error',
+        AppStrings.error,
         'Failed to update product: ${e.toString()}',
         backgroundColor: Colors.red[100],
         colorText: Colors.red[800],

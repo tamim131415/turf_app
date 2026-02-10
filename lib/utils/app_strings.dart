@@ -19,6 +19,7 @@ class AppStrings {
   // Common
   static const String success = 'Success';
   static const String error = 'Error';
+  static const String uploading = 'Uploading';
   static const String warning = 'Warning';
   static const String cancel = 'Cancel';
   static const String submit = 'Submit';
@@ -29,6 +30,8 @@ class AppStrings {
   static const String update = 'Update';
   static const String add = 'Add';
   static const String remove = 'Remove';
+  static const String removed = 'Removed';
+  static const String close = 'Close';
   static const String search = 'Search';
   static const String filter = 'Filter';
   static const String sort = 'Sort';
@@ -56,6 +59,7 @@ class AppStrings {
   static const String productSize = 'Size';
   static const String productColor = 'Color';
   static const String productQuantity = 'Quantity';
+  static const String discount = 'Discount';
   static const String addToCart = 'Add to Cart';
   static const String buyNow = 'Buy Now';
   static const String outOfStock = 'Out of Stock';
@@ -289,11 +293,14 @@ class AppStrings {
   static const String clearAll = 'Clear All';
   static const String setAsDefault = 'Set as Default';
   static const String setAsDefaultAddress = 'Set as default address';
-  static const String setAsDefaultPaymentMethod = 'Set as default payment method';
+  static const String setAsDefaultPaymentMethod =
+      'Set as default payment method';
   static const String deleteAddress = 'Delete Address';
   static const String deletePaymentMethod = 'Delete Payment Method';
-  static const String areYouSureDeleteAddress = 'Are you sure you want to delete this address?';
-  static const String areYouSureDeletePaymentMethod = 'Are you sure you want to delete this payment method?';
+  static const String areYouSureDeleteAddress =
+      'Are you sure you want to delete this address?';
+  static const String areYouSureDeletePaymentMethod =
+      'Are you sure you want to delete this payment method?';
   static const String addNewProduct = 'Add New Product';
   static const String allProducts = 'All Products';
   static const String allTeams = 'All Teams';
@@ -320,9 +327,11 @@ class AppStrings {
   static const String no = 'No';
   static const String applyFilters = 'APPLY FILTERS';
   static const String deleteAllProducts = 'Delete All Products?';
-  static const String deleteAllProductsMessage = 'This will permanently delete all products from your inventory. This action cannot be undone.';
+  static const String deleteAllProductsMessage =
+      'This will permanently delete all products from your inventory. This action cannot be undone.';
   static const String deleteProduct = 'Delete Product';
-  static const String deleteProductMessage = 'Are you sure you want to delete this product? This action cannot be undone.';
+  static const String deleteProductMessage =
+      'Are you sure you want to delete this product? This action cannot be undone.';
   static const String noSavedAddresses = 'No saved addresses';
   static const String noSavedPaymentMethods = 'No saved payment methods';
   static const String addAddressButton = 'Add Address';
@@ -330,14 +339,17 @@ class AppStrings {
   static const String addAddressLabel = 'Add Address';
   static const String selectAddressLabel = 'Select Address';
   static const String selectPaymentMethod = 'Select Payment Method';
-  
+
   // Onboarding
   static const String authenticJerseys = 'Authentic Jerseys';
-  static const String authenticJerseysDesc = 'Browse and shop authentic team jerseys from top brands';
+  static const String authenticJerseysDesc =
+      'Browse and shop authentic team jerseys from top brands';
   static const String fastDelivery = 'Fast Delivery';
-  static const String fastDeliveryDesc = 'Get your orders delivered quickly to your doorstep';
+  static const String fastDeliveryDesc =
+      'Get your orders delivered quickly to your doorstep';
   static const String securePayment = 'Secure Payment';
-  static const String securePaymentDesc = 'Pay securely with multiple payment options';
+  static const String securePaymentDesc =
+      'Pay securely with multiple payment options';
   static const String getStarted = 'GET STARTED';
   static const String skip = 'Skip';
 
@@ -350,25 +362,35 @@ class AppStrings {
   static const String addedToCart = 'added to cart';
   static const String removedFromCart = 'removed from cart';
   static const String failedToFilterProducts = 'Failed to filter products';
-  static const String paymentMethodAddedSuccessfully = 'Payment method added successfully';
+  static const String paymentMethodAddedSuccessfully =
+      'Payment method added successfully';
   static const String failedToAddPaymentMethod = 'Failed to add payment method';
-  static const String paymentMethodUpdatedSuccessfully = 'Payment method updated successfully';
-  static const String failedToUpdatePaymentMethod = 'Failed to update payment method';
-  static const String paymentMethodDeletedSuccessfully = 'Payment method deleted successfully';
-  static const String failedToDeletePaymentMethod = 'Failed to delete payment method';
-  static const String defaultPaymentMethodUpdated = 'Default payment method updated';
-  static const String failedToSetDefaultPaymentMethod = 'Failed to set default payment method';
+  static const String paymentMethodUpdatedSuccessfully =
+      'Payment method updated successfully';
+  static const String failedToUpdatePaymentMethod =
+      'Failed to update payment method';
+  static const String paymentMethodDeletedSuccessfully =
+      'Payment method deleted successfully';
+  static const String failedToDeletePaymentMethod =
+      'Failed to delete payment method';
+  static const String defaultPaymentMethodUpdated =
+      'Default payment method updated';
+  static const String failedToSetDefaultPaymentMethod =
+      'Failed to set default payment method';
   static const String adminLoginSuccessful = 'Admin login successful!';
   static const String loginSuccessful = 'Login successful!';
   static const String failedToLogin = 'Failed to login';
   static const String failedToRegister = 'Failed to register';
-  static const String failedToSendVerificationEmail = 'Failed to send verification email';
+  static const String failedToSendVerificationEmail =
+      'Failed to send verification email';
   static const String loggedOutSuccessfully = 'Logged out successfully';
   static const String failedToLogout = 'Failed to logout';
-  static const String passwordResetLinkSent = 'Password reset link sent to your email';
+  static const String passwordResetLinkSent =
+      'Password reset link sent to your email';
   static const String failedToSendResetEmail = 'Failed to send reset email';
   static const String addressAddedSuccessfully = 'Address added successfully';
   static const String failedToAddAddress = 'Failed to add address';
-  static const String addressUpdatedSuccessfully = 'Address updated successfully';
+  static const String addressUpdatedSuccessfully =
+      'Address updated successfully';
   static const String failedToUpdateAddress = 'Failed to update address';
 }

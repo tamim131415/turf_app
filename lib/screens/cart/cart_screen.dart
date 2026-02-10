@@ -74,7 +74,10 @@ class CartScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(AppStrings.subtotalLabel, style: TextStyle(fontSize: 16)),
+                      Text(
+                        AppStrings.subtotalLabel,
+                        style: TextStyle(fontSize: 16),
+                      ),
                       Obx(
                         () => Text(
                           '৳${controller.cartTotal.toStringAsFixed(2)}',
@@ -90,8 +93,14 @@ class CartScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(AppStrings.shippingLabel, style: TextStyle(fontSize: 16)),
-                      Text(AppStrings.shippingAmount, style: TextStyle(fontSize: 16)),
+                      Text(
+                        AppStrings.shippingLabel,
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      Text(
+                        AppStrings.shippingAmount,
+                        style: TextStyle(fontSize: 16),
+                      ),
                     ],
                   ),
                   SizedBox(height: 8),

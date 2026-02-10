@@ -102,7 +102,10 @@ class ProductController extends GetxController {
 
       updateFavoriteProducts();
     } catch (e) {
-      Get.snackbar(AppStrings.error, '${AppStrings.failedToUpdateFavorite}: $e');
+      Get.snackbar(
+        AppStrings.error,
+        '${AppStrings.failedToUpdateFavorite}: $e',
+      );
     }
   }
 
@@ -126,13 +129,19 @@ class ProductController extends GetxController {
     }
 
     await _localStorageService.saveCartItems(cartItems);
-    Get.snackbar(AppStrings.success, '${product.name} ${AppStrings.addedToCart}');
+    Get.snackbar(
+      AppStrings.success,
+      '${product.name} ${AppStrings.addedToCart}',
+    );
   }
 
   void removeFromCart(CartItem cartItem) async {
     cartItems.remove(cartItem);
     await _localStorageService.saveCartItems(cartItems);
-    Get.snackbar(AppStrings.success, '${cartItem.product.name} ${AppStrings.removedFromCart}');
+    Get.snackbar(
+      AppStrings.success,
+      '${cartItem.product.name} ${AppStrings.removedFromCart}',
+    );
   }
 
   void updateCartItemQuantity(CartItem cartItem, int newQuantity) async {
@@ -494,7 +503,7 @@ class ProductController extends GetxController {
       }
 
       Get.snackbar(
-        'Uploading',
+        AppStrings.uploading,
         'Sending ${localProducts.length} products to Firebase...',
         duration: Duration(seconds: 2),
       );

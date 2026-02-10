@@ -613,7 +613,7 @@ class AddProductScreenState extends State<AddProductScreen> {
                 controller: descriptionController,
                 maxLines: 4,
                 decoration: InputDecoration(
-                  labelText: 'Description',
+                  labelText: AppStrings.productDescription,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),

@@ -81,7 +81,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                 child: TextField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                    labelText: 'Email',
+                    labelText: AppStrings.email,
                     border: InputBorder.none,
                     prefixIcon: Icon(Icons.email, color: Colors.green[700]),
                     contentPadding: EdgeInsets.symmetric(
@@ -102,7 +102,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                   controller: _passwordController,
                   obscureText: _obscureText,
                   decoration: InputDecoration(
-                    labelText: 'Password',
+                    labelText: AppStrings.password,
                     border: InputBorder.none,
                     prefixIcon: Icon(Icons.lock, color: Colors.green[700]),
                     suffixIcon: IconButton(
@@ -165,7 +165,10 @@ class RegisterScreenState extends State<RegisterScreen> {
                         : () {
                             if (_passwordController.text !=
                                 _confirmPasswordController.text) {
-                              Get.snackbar(AppStrings.error, AppStrings.passwordsDoNotMatch);
+                              Get.snackbar(
+                                AppStrings.error,
+                                AppStrings.passwordsDoNotMatch,
+                              );
                               return;
                             }
                             _authController.register(
@@ -192,7 +195,10 @@ class RegisterScreenState extends State<RegisterScreen> {
                   Expanded(child: Divider(color: Colors.grey[300])),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: Text(AppStrings.or, style: TextStyle(color: Colors.grey)),
+                    child: Text(
+                      AppStrings.or,
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   ),
                   Expanded(child: Divider(color: Colors.grey[300])),
                 ],

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../utils/app_strings.dart';
 
 class ImageUploadService extends GetxService {
   static ImageUploadService get instance => Get.find<ImageUploadService>();
@@ -93,7 +94,7 @@ class ImageUploadService extends GetxService {
 
       // Show success message
       Get.snackbar(
-        'Success',
+        AppStrings.success,
         'Image uploaded successfully!',
         backgroundColor: Colors.green[100],
         colorText: Colors.green[800],

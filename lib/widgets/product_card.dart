@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../controllers/product_controller.dart';
 import '../models/product.dart';
 import '../app/routes/app_routes.dart';
+import '../utils/app_strings.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -92,7 +93,7 @@ class ProductCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
-                        'Discount',
+                        AppStrings.discount,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 10,
@@ -123,7 +124,7 @@ class ProductCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            'OUT OF STOCK',
+                            AppStrings.outOfStock.toUpperCase(),
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 12,

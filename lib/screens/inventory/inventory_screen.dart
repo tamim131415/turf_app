@@ -90,7 +90,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
-                'Cancel',
+                AppStrings.cancel,
                 style: TextStyle(color: Colors.grey[700], fontSize: 16),
               ),
             ),

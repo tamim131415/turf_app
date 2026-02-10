@@ -70,7 +70,10 @@ class AddressesScreen extends StatelessWidget {
         },
         backgroundColor: Colors.green[700],
         icon: Icon(Icons.add, color: Colors.white),
-        label: Text(AppStrings.addAddress, style: TextStyle(color: Colors.white)),
+        label: Text(
+          AppStrings.addAddress,
+          style: TextStyle(color: Colors.white),
+        ),
       ),
     );
   }
@@ -196,7 +199,10 @@ class AddressesScreen extends StatelessWidget {
         title: Text(AppStrings.deleteAddress),
         content: Text(AppStrings.areYouSureDeleteAddress),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: Text(AppStrings.cancel)),
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text(AppStrings.cancel),
+          ),
           TextButton(
             onPressed: () {
               Get.back();

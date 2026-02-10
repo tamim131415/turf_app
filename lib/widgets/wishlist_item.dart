@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/product.dart';
 import '../controllers/product_controller.dart';
+import '../utils/app_strings.dart';
 
 class WishlistItem extends StatelessWidget {
   final Product product;
@@ -57,7 +58,7 @@ class WishlistItem extends StatelessWidget {
               onTap: () {
                 productController.toggleFavorite(product);
                 Get.snackbar(
-                  'Removed',
+                  AppStrings.removed,
                   '${product.name} removed from wishlist',
                   backgroundColor: Colors.red[100],
                 );
@@ -78,7 +79,7 @@ class WishlistItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Text(
-                  'Add to Cart',
+                  AppStrings.addToCart,
                   style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),

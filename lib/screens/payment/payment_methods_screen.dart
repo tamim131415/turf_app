@@ -119,7 +119,10 @@ class PaymentMethodsScreen extends StatelessWidget {
                           children: [
                             Icon(Icons.delete, size: 20, color: Colors.red),
                             SizedBox(width: 8),
-                            Text(AppStrings.delete, style: TextStyle(color: Colors.red)),
+                            Text(
+                              AppStrings.delete,
+                              style: TextStyle(color: Colors.red),
+                            ),
                           ],
                         ),
                       ),
@@ -178,7 +181,10 @@ class PaymentMethodsScreen extends StatelessWidget {
         title: Text(AppStrings.deletePaymentMethod),
         content: Text(AppStrings.areYouSureDeletePaymentMethod),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: Text(AppStrings.cancel)),
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text(AppStrings.cancel),
+          ),
           TextButton(
             onPressed: () {
               Get.back();

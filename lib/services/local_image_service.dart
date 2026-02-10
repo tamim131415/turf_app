@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:image/image.dart' as img;
+import '../utils/app_strings.dart';
 
 class LocalImageService extends GetxService {
   static LocalImageService get instance => Get.find<LocalImageService>();
@@ -52,7 +53,7 @@ class LocalImageService extends GetxService {
       }
 
       Get.snackbar(
-        'Success',
+        AppStrings.success,
         'Image saved to device storage!',
         backgroundColor: Colors.blue[100],
         colorText: Colors.blue[800],
@@ -63,7 +64,7 @@ class LocalImageService extends GetxService {
       return localPath;
     } catch (e) {
       Get.snackbar(
-        'Error',
+        AppStrings.error,
         'Failed to save image: $e',
         backgroundColor: Colors.red[100],
         colorText: Colors.red[800],
@@ -184,7 +185,7 @@ class LocalImageService extends GetxService {
         await cacheProductsDir.delete(recursive: true);
 
         Get.snackbar(
-          'Success',
+          AppStrings.success,
           'Cache cleared successfully!',
           backgroundColor: Colors.green[100],
           colorText: Colors.green[800],

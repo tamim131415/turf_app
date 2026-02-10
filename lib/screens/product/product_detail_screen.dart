@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../controllers/product_controller.dart';
 import '../../models/product.dart';
 import '../../app/routes/app_routes.dart';
+import '../../utils/app_strings.dart';
 
 class ProductDetailController extends GetxController {
   final RxString selectedSize = ''.obs;
@@ -455,7 +456,7 @@ class ProductDetailScreen extends StatelessWidget {
                                         );
                                       },
                                       child: Text(
-                                        'ADD TO CART',
+                                        AppStrings.addToCart.toUpperCase(),
                                         style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,

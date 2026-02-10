@@ -337,7 +337,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Checkout',
+          AppStrings.checkout,
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.green[700],
@@ -530,7 +530,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
-                                children: [Text(AppStrings.shipping), Text(AppStrings.shippingAmount)],
+                                children: [
+                                  Text(AppStrings.shipping),
+                                  Text(AppStrings.shippingAmount),
+                                ],
                               ),
                               Divider(),
                               Obx(

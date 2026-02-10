@@ -5,6 +5,7 @@ import 'explore/explore_screen.dart';
 import 'wishlist/wishlist_screen.dart';
 import 'profile/profile_screen.dart';
 import '../controllers/product_controller.dart';
+import '../utils/app_strings.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -46,20 +47,30 @@ class MainNavigationScreenState extends State<MainNavigationScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildNavItem(0, Icons.home_outlined, Icons.home, 'Home'),
+                _buildNavItem(
+                  0,
+                  Icons.home_outlined,
+                  Icons.home,
+                  AppStrings.home,
+                ),
                 _buildNavItem(
                   1,
                   Icons.explore_outlined,
                   Icons.explore,
-                  'Explore',
+                  AppStrings.explore,
                 ),
                 _buildNavItemWithBadge(
                   2,
                   Icons.favorite_outline,
                   Icons.favorite,
-                  'Wishlist',
+                  AppStrings.wishlist,
                 ),
-                _buildNavItem(3, Icons.person_outline, Icons.person, 'Profile'),
+                _buildNavItem(
+                  3,
+                  Icons.person_outline,
+                  Icons.person,
+                  AppStrings.profile,
+                ),
               ],
             ),
           ),

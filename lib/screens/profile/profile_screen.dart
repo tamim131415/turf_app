@@ -94,7 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
     } catch (e) {
       Get.snackbar(
-        'Error',
+        AppStrings.error,
         'Failed to pick image: $e',
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -165,7 +165,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (uploadedAny) {
         setState(() => _isEditingCover = false);
         Get.snackbar(
-          'Success',
+          AppStrings.success,
           'Image(s) uploaded successfully',
           backgroundColor: Colors.green,
           colorText: Colors.white,
@@ -173,7 +173,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     } catch (e) {
       Get.snackbar(
-        'Error',
+        AppStrings.error,
         'Failed to upload image: $e',
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -305,7 +305,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ),
                                         SizedBox(width: 6),
                                         Text(
-                                          'Save',
+                                          AppStrings.save,
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.w600,
@@ -747,7 +747,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       elevation: 0,
                                     ),
                                     child: Text(
-                                      'Close',
+                                      AppStrings.close,
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,
@@ -764,7 +764,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   _buildProfileTile(
                     Icons.logout,
-                    'Logout',
+                    AppStrings.logout,
                     'Sign out of your account',
                     () {
                       Get.dialog(
@@ -787,7 +787,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             TextButton(
                               onPressed: () => Get.back(),
                               child: Text(
-                                'Cancel',
+                                AppStrings.cancel,
                                 style: TextStyle(
                                   color: Colors.grey[700],
                                   fontWeight: FontWeight.w600,
@@ -811,7 +811,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               ),
                               child: Text(
-                                'Logout',
+                                AppStrings.logout,
                                 style: TextStyle(fontWeight: FontWeight.w600),
                               ),
                             ),

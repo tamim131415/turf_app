@@ -26,7 +26,10 @@ class PaymentMethodController extends GetxController {
         paymentMethods.value = methods;
       }
     } catch (e) {
-      Get.snackbar(AppStrings.error, '${AppStrings.failedToLoadPaymentMethods}: $e');
+      Get.snackbar(
+        AppStrings.error,
+        '${AppStrings.failedToLoadPaymentMethods}: $e',
+      );
     } finally {
       isLoading.value = false;
     }
@@ -55,9 +58,15 @@ class PaymentMethodController extends GetxController {
       await _firestoreService.savePaymentMethod(paymentMethod);
       await loadPaymentMethods();
       Get.back();
-      Get.snackbar(AppStrings.success, AppStrings.paymentMethodAddedSuccessfully);
+      Get.snackbar(
+        AppStrings.success,
+        AppStrings.paymentMethodAddedSuccessfully,
+      );
     } catch (e) {
-      Get.snackbar(AppStrings.error, '${AppStrings.failedToAddPaymentMethod}: $e');
+      Get.snackbar(
+        AppStrings.error,
+        '${AppStrings.failedToAddPaymentMethod}: $e',
+      );
     } finally {
       isLoading.value = false;
     }
@@ -84,9 +93,15 @@ class PaymentMethodController extends GetxController {
       );
       await loadPaymentMethods();
       Get.back();
-      Get.snackbar(AppStrings.success, AppStrings.paymentMethodUpdatedSuccessfully);
+      Get.snackbar(
+        AppStrings.success,
+        AppStrings.paymentMethodUpdatedSuccessfully,
+      );
     } catch (e) {
-      Get.snackbar(AppStrings.error, '${AppStrings.failedToUpdatePaymentMethod}: $e');
+      Get.snackbar(
+        AppStrings.error,
+        '${AppStrings.failedToUpdatePaymentMethod}: $e',
+      );
     } finally {
       isLoading.value = false;
     }
@@ -97,9 +112,15 @@ class PaymentMethodController extends GetxController {
       isLoading.value = true;
       await _firestoreService.deletePaymentMethod(id);
       await loadPaymentMethods();
-      Get.snackbar(AppStrings.success, AppStrings.paymentMethodDeletedSuccessfully);
+      Get.snackbar(
+        AppStrings.success,
+        AppStrings.paymentMethodDeletedSuccessfully,
+      );
     } catch (e) {
-      Get.snackbar(AppStrings.error, '${AppStrings.failedToDeletePaymentMethod}: $e');
+      Get.snackbar(
+        AppStrings.error,
+        '${AppStrings.failedToDeletePaymentMethod}: $e',
+      );
     } finally {
       isLoading.value = false;
     }
@@ -124,7 +145,10 @@ class PaymentMethodController extends GetxController {
       await loadPaymentMethods();
       Get.snackbar(AppStrings.success, AppStrings.defaultPaymentMethodUpdated);
     } catch (e) {
-      Get.snackbar(AppStrings.error, '${AppStrings.failedToSetDefaultPaymentMethod}: $e');
+      Get.snackbar(
+        AppStrings.error,
+        '${AppStrings.failedToSetDefaultPaymentMethod}: $e',
+      );
     } finally {
       isLoading.value = false;
     }
