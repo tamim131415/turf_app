@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
 import '../../app/routes/app_routes.dart';
+import '../../utils/app_strings.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -29,16 +30,16 @@ class LoginScreenState extends State<LoginScreen> {
         final shouldExit = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Exit App'),
-            content: Text('Do you want to exit the app?'),
+            title: Text(AppStrings.exitApp),
+            content: Text(AppStrings.doYouWantToExit),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: Text('No'),
+                child: Text(AppStrings.no),
               ),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: Text('Yes'),
+                child: Text(AppStrings.yes),
               ),
             ],
           ),
@@ -135,7 +136,7 @@ class LoginScreenState extends State<LoginScreen> {
                       },
                       activeColor: Colors.green[700],
                     ),
-                    Text('Remember me'),
+                    Text(AppStrings.rememberMe),
                     Spacer(),
                     TextButton(
                       onPressed: () {
@@ -187,7 +188,7 @@ class LoginScreenState extends State<LoginScreen> {
                     Expanded(child: Divider(color: Colors.grey[300])),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 15),
-                      child: Text('Or', style: TextStyle(color: Colors.grey)),
+                      child: Text(AppStrings.or, style: TextStyle(color: Colors.grey)),
                     ),
                     Expanded(child: Divider(color: Colors.grey[300])),
                   ],

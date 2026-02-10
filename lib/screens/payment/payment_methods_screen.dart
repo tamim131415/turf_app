@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/payment_method_controller.dart';
 import '../../app/routes/app_routes.dart';
+import '../../utils/app_strings.dart';
 
 class PaymentMethodsScreen extends StatelessWidget {
   final PaymentMethodController controller = Get.put(PaymentMethodController());
@@ -11,7 +12,7 @@ class PaymentMethodsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Payment Methods'), centerTitle: true),
+      appBar: AppBar(title: Text(AppStrings.paymentMethods), centerTitle: true),
       body: Obx(() {
         if (controller.isLoading.value && controller.paymentMethods.isEmpty) {
           return Center(child: CircularProgressIndicator());
@@ -32,7 +33,7 @@ class PaymentMethodsScreen extends StatelessWidget {
                 ElevatedButton.icon(
                   onPressed: () => Get.toNamed(Routes.addPaymentMethod),
                   icon: Icon(Icons.add),
-                  label: Text('Add Payment Method'),
+                  label: Text(AppStrings.addPaymentMethod),
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
@@ -98,7 +99,7 @@ class PaymentMethodsScreen extends StatelessWidget {
                             children: [
                               Icon(Icons.check_circle, size: 20),
                               SizedBox(width: 8),
-                              Text('Set as Default'),
+                              Text(AppStrings.setAsDefault),
                             ],
                           ),
                         ),
@@ -108,7 +109,7 @@ class PaymentMethodsScreen extends StatelessWidget {
                           children: [
                             Icon(Icons.edit, size: 20),
                             SizedBox(width: 8),
-                            Text('Edit'),
+                            Text(AppStrings.edit),
                           ],
                         ),
                       ),
@@ -118,7 +119,7 @@ class PaymentMethodsScreen extends StatelessWidget {
                           children: [
                             Icon(Icons.delete, size: 20, color: Colors.red),
                             SizedBox(width: 8),
-                            Text('Delete', style: TextStyle(color: Colors.red)),
+                            Text(AppStrings.delete, style: TextStyle(color: Colors.red)),
                           ],
                         ),
                       ),
@@ -152,7 +153,7 @@ class PaymentMethodsScreen extends StatelessWidget {
             : FloatingActionButton.extended(
                 onPressed: () => Get.toNamed(Routes.addPaymentMethod),
                 icon: Icon(Icons.add),
-                label: Text('Add Payment'),
+                label: Text(AppStrings.addPayment),
               ),
       ),
     );
@@ -174,16 +175,16 @@ class PaymentMethodsScreen extends StatelessWidget {
   void _showDeleteDialog(BuildContext context, String paymentMethodId) {
     Get.dialog(
       AlertDialog(
-        title: Text('Delete Payment Method'),
-        content: Text('Are you sure you want to delete this payment method?'),
+        title: Text(AppStrings.deletePaymentMethod),
+        content: Text(AppStrings.areYouSureDeletePaymentMethod),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: Text('Cancel')),
+          TextButton(onPressed: () => Get.back(), child: Text(AppStrings.cancel)),
           TextButton(
             onPressed: () {
               Get.back();
               controller.deletePaymentMethod(paymentMethodId);
             },
-            child: Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text(AppStrings.delete, style: TextStyle(color: Colors.red)),
           ),
         ],
       ),

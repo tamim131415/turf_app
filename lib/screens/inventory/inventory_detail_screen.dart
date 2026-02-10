@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../models/product.dart';
 import '../../app/routes/app_routes.dart';
 import '../../controllers/product_controller.dart';
+import '../../utils/app_strings.dart';
 
 class InventoryDetailScreen extends StatelessWidget {
   const InventoryDetailScreen({super.key});
@@ -463,14 +464,14 @@ class InventoryDetailScreen extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Delete Product'),
+          title: Text(AppStrings.deleteProduct),
           content: Text(
             'Are you sure you want to delete "${product.name}"? This action cannot be undone.',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancel'),
+              child: Text(AppStrings.cancel),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -486,7 +487,7 @@ class InventoryDetailScreen extends StatelessWidget {
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
               ),
-              child: Text('Delete'),
+              child: Text(AppStrings.delete),
             ),
           ],
         );

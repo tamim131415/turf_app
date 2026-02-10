@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../controllers/product_controller.dart';
 import '../../models/product.dart';
 import '../../app/routes/app_routes.dart';
+import '../../utils/app_strings.dart';
 
 class InventoryScreen extends StatefulWidget {
   const InventoryScreen({super.key});
@@ -78,7 +79,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
             children: [
               Icon(Icons.warning_amber_rounded, color: Colors.red, size: 28),
               SizedBox(width: 12),
-              Text('Delete All Products?'),
+              Text(AppStrings.deleteAllProducts),
             ],
           ),
           content: Text(
@@ -109,7 +110,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
               ),
-              child: Text('Delete All', style: TextStyle(fontSize: 16)),
+              child: Text(AppStrings.delete, style: TextStyle(fontSize: 16)),
             ),
           ],
         );

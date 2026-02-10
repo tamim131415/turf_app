@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../app/routes/app_routes.dart';
 import '../services/auth_service.dart';
+import '../utils/app_strings.dart';
 
 class AuthController extends GetxController {
   final AuthService _authService = AuthService();
@@ -74,10 +75,10 @@ class AuthController extends GetxController {
         // Skip email verification for admin user
         if (email == 'admin@turfmate.com') {
           Get.offAllNamed(Routes.home);
-          Get.snackbar('Success', 'Admin login successful!');
+          Get.snackbar(AppStrings.success, AppStrings.adminLoginSuccessful);
         } else if (userCredential.user?.emailVerified == true) {
           Get.offAllNamed(Routes.home);
-          Get.snackbar('Success', 'Login successful!');
+          Get.snackbar(AppStrings.success, AppStrings.loginSuccessful);
         } else {
           // Email not verified, go to verification screen
           Get.offAllNamed(Routes.emailVerification);
@@ -209,7 +210,7 @@ class AuthController extends GetxController {
 
       await _authService.signOut();
       Get.offAllNamed(Routes.login);
-      Get.snackbar('Success', 'Logged out successfully');
+      Get.snackbar(AppStrings.success, AppStrings.loggedOutSuccessfully);
     } catch (e) {
       Get.snackbar('Error', 'Failed to logout: ${e.toString()}');
     } finally {
@@ -222,7 +223,7 @@ class AuthController extends GetxController {
 
     try {
       await _authService.resetPassword(email);
-      Get.snackbar('Success', 'Password reset link sent to your email');
+      Get.snackbar(AppStrings.success, AppStrings.passwordResetLinkSent);
     } on FirebaseAuthException catch (e) {
       String errorMessage = 'An error occurred';
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/product_controller.dart';
+import '../../utils/app_strings.dart';
 
 class ExploreScreen extends StatelessWidget {
   const ExploreScreen({super.key});
@@ -49,7 +50,7 @@ class ExploreScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Explore'),
+        title: Text(AppStrings.explore),
         backgroundColor: Colors.white,
         foregroundColor: Colors.green[800],
         elevation: 0,

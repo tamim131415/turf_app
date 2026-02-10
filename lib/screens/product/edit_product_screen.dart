@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../controllers/product_controller.dart';
 import '../../models/product.dart';
 import '../../services/cloudinary_service.dart';
+import '../../utils/app_strings.dart';
 
 class EditProductScreen extends StatefulWidget {
   const EditProductScreen({super.key});
@@ -316,7 +317,7 @@ class EditProductScreenState extends State<EditProductScreen> {
                         children: [
                           ListTile(
                             leading: Icon(Icons.photo_library),
-                            title: Text('Choose from Gallery'),
+                            title: Text(AppStrings.chooseFromGallery),
                             onTap: () {
                               Navigator.pop(context);
                               _pickImageFromGallery();
@@ -324,7 +325,7 @@ class EditProductScreenState extends State<EditProductScreen> {
                           ),
                           ListTile(
                             leading: Icon(Icons.camera_alt),
-                            title: Text('Take a Photo'),
+                            title: Text(AppStrings.takeAPhoto),
                             onTap: () {
                               Navigator.pop(context);
                               _pickImageFromCamera();

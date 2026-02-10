@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../controllers/product_controller.dart';
 import '../../models/product.dart';
 import '../../services/cloudinary_service.dart';
+import '../../utils/app_strings.dart';
 
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key});
@@ -276,7 +277,7 @@ class AddProductScreenState extends State<AddProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add New Product'),
+        title: Text(AppStrings.addNewProduct),
         backgroundColor: Colors.white,
         foregroundColor: Colors.green[800],
         elevation: 0,
@@ -585,7 +586,7 @@ class AddProductScreenState extends State<AddProductScreen> {
                             ),
                             onPressed: _pickImageFromGallery,
                             icon: Icon(Icons.photo_library),
-                            label: Text('Gallery'),
+                            label: Text(AppStrings.gallery),
                           ),
                         ),
                         SizedBox(width: 10),
@@ -597,7 +598,7 @@ class AddProductScreenState extends State<AddProductScreen> {
                             ),
                             onPressed: _pickImageFromCamera,
                             icon: Icon(Icons.camera_alt),
-                            label: Text('Camera'),
+                            label: Text(AppStrings.camera),
                           ),
                         ),
                       ],
@@ -647,7 +648,7 @@ class AddProductScreenState extends State<AddProductScreen> {
                               ),
                             ),
                             SizedBox(width: 12),
-                            Text('Adding Product...'),
+                            Text(AppStrings.addingProduct),
                           ],
                         )
                       : Row(

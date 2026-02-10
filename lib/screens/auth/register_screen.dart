@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
+import '../../utils/app_strings.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -164,7 +165,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                         : () {
                             if (_passwordController.text !=
                                 _confirmPasswordController.text) {
-                              Get.snackbar('Error', 'Passwords do not match');
+                              Get.snackbar(AppStrings.error, AppStrings.passwordsDoNotMatch);
                               return;
                             }
                             _authController.register(
@@ -191,7 +192,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                   Expanded(child: Divider(color: Colors.grey[300])),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: Text('Or', style: TextStyle(color: Colors.grey)),
+                    child: Text(AppStrings.or, style: TextStyle(color: Colors.grey)),
                   ),
                   Expanded(child: Divider(color: Colors.grey[300])),
                 ],

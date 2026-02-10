@@ -1,7 +1,8 @@
 import 'package:get/get.dart';
 import '../models/address.dart';
-import '../services/firestore_service.dart';
 import '../services/auth_service.dart';
+import '../services/firestore_service.dart';
+import '../utils/app_strings.dart';
 
 class AddressController extends GetxController {
   final FirestoreService _firestoreService = Get.find<FirestoreService>();
@@ -25,7 +26,7 @@ class AddressController extends GetxController {
         addresses.value = await _firestoreService.getUserAddresses(userId);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to load addresses');
+      Get.snackbar(AppStrings.error, AppStrings.failedToLoadAddresses);
     } finally {
       isLoading.value = false;
     }
@@ -45,10 +46,10 @@ class AddressController extends GetxController {
       if (addressId != null) {
         await loadAddresses();
         Get.back();
-        Get.snackbar('Success', 'Address added successfully');
+        Get.snackbar(AppStrings.success, AppStrings.addressAddedSuccessfully);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to add address');
+      Get.snackbar(AppStrings.error, AppStrings.failedToAddAddress);
     } finally {
       isLoading.value = false;
     }
@@ -71,10 +72,10 @@ class AddressController extends GetxController {
       if (success) {
         await loadAddresses();
         Get.back();
-        Get.snackbar('Success', 'Address updated successfully');
+        Get.snackbar(AppStrings.success, AppStrings.addressUpdatedSuccessfully);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to update address');
+      Get.snackbar(AppStrings.error, AppStrings.failedToUpdateAddress);
     } finally {
       isLoading.value = false;
     }
@@ -88,10 +89,10 @@ class AddressController extends GetxController {
 
       if (success) {
         await loadAddresses();
-        Get.snackbar('Success', 'Address deleted successfully');
+        Get.snackbar(AppStrings.success, AppStrings.addressDeletedSuccessfully);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to delete address');
+      Get.snackbar(AppStrings.error, AppStrings.failedToDeleteAddress);
     } finally {
       isLoading.value = false;
     }
@@ -108,9 +109,9 @@ class AddressController extends GetxController {
       await _firestoreService.updateAddress(addressId, {'isDefault': true});
 
       await loadAddresses();
-      Get.snackbar('Success', 'Default address updated');
+      Get.snackbar(AppStrings.success, AppStrings.defaultAddressUpdated);
     } catch (e) {
-      Get.snackbar('Error', 'Failed to set default address');
+      Get.snackbar(AppStrings.error, AppStrings.failedToSetDefaultAddress);
     } finally {
       isLoading.value = false;
     }

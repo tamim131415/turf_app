@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/product_controller.dart';
 import '../../widgets/product_card.dart';
+import '../../utils/app_strings.dart';
 
 class AllProductsScreen extends StatefulWidget {
   const AllProductsScreen({super.key});
@@ -46,7 +47,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                   ),
                   style: TextStyle(color: Colors.green[800], fontSize: 18),
                 )
-              : Text('All Products'),
+              : Text(AppStrings.allProducts),
         ),
         backgroundColor: Colors.white,
         foregroundColor: Colors.green[800],
@@ -91,38 +92,38 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
               itemBuilder: (context) {
                 if (filterType == 'team') {
                   return [
-                    PopupMenuItem(value: 'All', child: Text('All Teams')),
-                    PopupMenuItem(value: 'Argentina', child: Text('Argentina')),
-                    PopupMenuItem(value: 'Brazil', child: Text('Brazil')),
-                    PopupMenuItem(value: 'Germany', child: Text('Germany')),
-                    PopupMenuItem(value: 'France', child: Text('France')),
-                    PopupMenuItem(value: 'Spain', child: Text('Spain')),
-                    PopupMenuItem(value: 'England', child: Text('England')),
-                    PopupMenuItem(value: 'Others', child: Text('Others')),
+                    PopupMenuItem(value: 'All', child: Text(AppStrings.allTeams)),
+                    PopupMenuItem(value: 'Argentina', child: Text(AppStrings.argentina)),
+                    PopupMenuItem(value: 'Brazil', child: Text(AppStrings.brazil)),
+                    PopupMenuItem(value: 'Germany', child: Text(AppStrings.germany)),
+                    PopupMenuItem(value: 'France', child: Text(AppStrings.france)),
+                    PopupMenuItem(value: 'Spain', child: Text(AppStrings.spain)),
+                    PopupMenuItem(value: 'England', child: Text(AppStrings.england)),
+                    PopupMenuItem(value: 'Others', child: Text(AppStrings.others)),
                   ];
                 } else if (filterType == 'brand') {
                   return [
-                    PopupMenuItem(value: 'All', child: Text('All Brands')),
-                    PopupMenuItem(value: 'Nike', child: Text('Nike')),
-                    PopupMenuItem(value: 'Adidas', child: Text('Adidas')),
-                    PopupMenuItem(value: 'Puma', child: Text('Puma')),
+                    PopupMenuItem(value: 'All', child: Text(AppStrings.allBrands)),
+                    PopupMenuItem(value: 'Nike', child: Text(AppStrings.nike)),
+                    PopupMenuItem(value: 'Adidas', child: Text(AppStrings.adidas)),
+                    PopupMenuItem(value: 'Puma', child: Text(AppStrings.puma)),
                     PopupMenuItem(
                       value: 'New Balance',
-                      child: Text('New Balance'),
+                      child: Text(AppStrings.newBalance),
                     ),
-                    PopupMenuItem(value: 'Others', child: Text('Others')),
+                    PopupMenuItem(value: 'Others', child: Text(AppStrings.others)),
                   ];
                 } else {
                   return [
-                    PopupMenuItem(value: 'All', child: Text('All Categories')),
-                    PopupMenuItem(value: 'Jerseys', child: Text('Jerseys')),
-                    PopupMenuItem(value: 'Shoes', child: Text('Shoes')),
-                    PopupMenuItem(value: 'Balls', child: Text('Balls')),
+                    PopupMenuItem(value: 'All', child: Text(AppStrings.allCategories)),
+                    PopupMenuItem(value: 'Jerseys', child: Text(AppStrings.jerseys)),
+                    PopupMenuItem(value: 'Shoes', child: Text(AppStrings.shoes)),
+                    PopupMenuItem(value: 'Balls', child: Text(AppStrings.balls)),
                     PopupMenuItem(
                       value: 'Accessories',
-                      child: Text('Accessories'),
+                      child: Text(AppStrings.accessories),
                     ),
-                    PopupMenuItem(value: 'Training', child: Text('Training')),
+                    PopupMenuItem(value: 'Training', child: Text(AppStrings.training)),
                   ];
                 }
               },

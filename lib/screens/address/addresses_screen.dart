@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/address_controller.dart';
 import '../../models/address.dart';
+import '../../utils/app_strings.dart';
 import 'add_address_screen.dart';
 
 class AddressesScreen extends StatelessWidget {
@@ -13,7 +14,7 @@ class AddressesScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Addresses'),
+        title: Text(AppStrings.myAddresses),
         backgroundColor: Colors.green[700],
         foregroundColor: Colors.white,
       ),
@@ -69,7 +70,7 @@ class AddressesScreen extends StatelessWidget {
         },
         backgroundColor: Colors.green[700],
         icon: Icon(Icons.add, color: Colors.white),
-        label: Text('Add Address', style: TextStyle(color: Colors.white)),
+        label: Text(AppStrings.addAddress, style: TextStyle(color: Colors.white)),
       ),
     );
   }
@@ -146,7 +147,7 @@ class AddressesScreen extends StatelessWidget {
                         controller.setDefaultAddress(address.id);
                       },
                       icon: Icon(Icons.check_circle_outline, size: 18),
-                      label: Text('Set as Default'),
+                      label: Text(AppStrings.setAsDefault),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.green[700],
                         side: BorderSide(color: Colors.green[700]!),
@@ -160,7 +161,7 @@ class AddressesScreen extends StatelessWidget {
                       Get.to(() => AddAddressScreen(address: address));
                     },
                     icon: Icon(Icons.edit, size: 18),
-                    label: Text('Edit'),
+                    label: Text(AppStrings.edit),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.blue[700],
                       side: BorderSide(color: Colors.blue[700]!),
@@ -174,7 +175,7 @@ class AddressesScreen extends StatelessWidget {
                       _showDeleteConfirmation(address, controller);
                     },
                     icon: Icon(Icons.delete, size: 18),
-                    label: Text('Delete'),
+                    label: Text(AppStrings.delete),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.red[700],
                       side: BorderSide(color: Colors.red[700]!),
@@ -192,16 +193,16 @@ class AddressesScreen extends StatelessWidget {
   void _showDeleteConfirmation(Address address, AddressController controller) {
     Get.dialog(
       AlertDialog(
-        title: Text('Delete Address'),
-        content: Text('Are you sure you want to delete this address?'),
+        title: Text(AppStrings.deleteAddress),
+        content: Text(AppStrings.areYouSureDeleteAddress),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: Text('Cancel')),
+          TextButton(onPressed: () => Get.back(), child: Text(AppStrings.cancel)),
           TextButton(
             onPressed: () {
               Get.back();
               controller.deleteAddress(address.id);
             },
-            child: Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text(AppStrings.delete, style: TextStyle(color: Colors.red)),
           ),
         ],
       ),

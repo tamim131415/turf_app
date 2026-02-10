@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import '../models/order.dart' as app_models;
 import '../services/firestore_service.dart';
 import '../services/auth_service.dart';
+import '../utils/app_strings.dart';
 
 class OrderController extends GetxController {
   final FirestoreService _firestoreService = Get.find<FirestoreService>();
@@ -25,7 +26,7 @@ class OrderController extends GetxController {
         orders.value = await _firestoreService.getUserOrders(userId);
       } else {}
     } catch (e) {
-      Get.snackbar('Error', 'Failed to load orders');
+      Get.snackbar(AppStrings.error, AppStrings.failedToLoadOrders);
     } finally {
       isLoading.value = false;
     }

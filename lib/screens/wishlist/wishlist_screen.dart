@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/product_controller.dart';
 import '../../widgets/wishlist_item.dart';
+import '../../utils/app_strings.dart';
 
 class WishlistScreen extends StatelessWidget {
   const WishlistScreen({super.key});
@@ -14,7 +15,7 @@ class WishlistScreen extends StatelessWidget {
     return Obx(
       () => Scaffold(
         appBar: AppBar(
-          title: Text('My Wishlist'),
+          title: Text(AppStrings.myWishlist),
           backgroundColor: Colors.white,
           foregroundColor: Colors.green[800],
           elevation: 0,
@@ -27,14 +28,14 @@ class WishlistScreen extends StatelessWidget {
                     onPressed: () {
                       Get.dialog(
                         AlertDialog(
-                          title: Text('Clear Wishlist'),
+                          title: Text(AppStrings.clearWishlist),
                           content: Text(
                             'Are you sure you want to remove all items from your wishlist?',
                           ),
                           actions: [
                             TextButton(
                               onPressed: () => Get.back(),
-                              child: Text('Cancel'),
+                              child: Text(AppStrings.cancel),
                             ),
                             TextButton(
                               onPressed: () {
@@ -44,9 +45,9 @@ class WishlistScreen extends StatelessWidget {
                                   productController.toggleFavorite(product);
                                 }
                                 Get.back();
-                                Get.snackbar('Success', 'Wishlist cleared');
+                                Get.snackbar(AppStrings.success, AppStrings.wishlistCleared);
                               },
-                              child: Text('Clear All'),
+                              child: Text(AppStrings.clearAll),
                             ),
                           ],
                         ),

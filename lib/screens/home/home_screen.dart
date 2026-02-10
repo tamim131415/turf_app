@@ -5,6 +5,7 @@ import '../../controllers/auth_controller.dart';
 import '../../models/product.dart';
 import '../../widgets/product_card.dart';
 import '../../app/routes/app_routes.dart';
+import '../../utils/app_strings.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -589,7 +590,7 @@ class HomeScreenContentState extends State<HomeScreenContent> {
                   onPressed: () {
                     Get.back();
                   },
-                  child: Text('APPLY FILTERS'),
+                  child: Text(AppStrings.applyFilters),
                 ),
               ),
             ],

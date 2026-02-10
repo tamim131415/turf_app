@@ -7,6 +7,7 @@ import '../models/order.dart' as app_models;
 import '../services/firestore_service.dart';
 import '../services/local_storage_service.dart';
 import '../services/auth_service.dart';
+import '../utils/app_strings.dart';
 
 class ProductController extends GetxController {
   final RxList<Product> products = <Product>[].obs;
@@ -54,7 +55,7 @@ class ProductController extends GetxController {
 
       updateFavoriteProducts();
     } catch (e) {
-      Get.snackbar('Error', 'Failed to load products: $e');
+      Get.snackbar(AppStrings.error, '${AppStrings.failedToLoadProducts}: $e');
     } finally {
       isLoading.value = false;
     }
@@ -101,7 +102,7 @@ class ProductController extends GetxController {
 
       updateFavoriteProducts();
     } catch (e) {
-      Get.snackbar('Error', 'Failed to update favorite: $e');
+      Get.snackbar(AppStrings.error, '${AppStrings.failedToUpdateFavorite}: $e');
     }
   }
 
@@ -125,13 +126,13 @@ class ProductController extends GetxController {
     }
 
     await _localStorageService.saveCartItems(cartItems);
-    Get.snackbar('Success', '${product.name} added to cart');
+    Get.snackbar(AppStrings.success, '${product.name} ${AppStrings.addedToCart}');
   }
 
   void removeFromCart(CartItem cartItem) async {
     cartItems.remove(cartItem);
     await _localStorageService.saveCartItems(cartItems);
-    Get.snackbar('Success', '${cartItem.product.name} removed from cart');
+    Get.snackbar(AppStrings.success, '${cartItem.product.name} ${AppStrings.removedFromCart}');
   }
 
   void updateCartItemQuantity(CartItem cartItem, int newQuantity) async {

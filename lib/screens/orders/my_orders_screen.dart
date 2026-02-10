@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/order_controller.dart';
+import '../../utils/app_strings.dart';
 import '../../models/order.dart' as app_models;
 import 'package:intl/intl.dart';
 
@@ -13,7 +14,7 @@ class MyOrdersScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Orders'),
+        title: Text(AppStrings.myOrders),
         backgroundColor: Colors.green[700],
         foregroundColor: Colors.white,
       ),

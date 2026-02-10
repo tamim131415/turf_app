@@ -7,6 +7,7 @@ import '../../controllers/payment_method_controller.dart';
 import '../../models/address.dart';
 import '../../models/payment_method.dart';
 import '../../app/routes/app_routes.dart';
+import '../../utils/app_strings.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -116,8 +117,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             color: Colors.grey,
                           ),
                           SizedBox(height: 16),
-                          Text('No saved addresses'),
-                          SizedBox(height: 8),
+                          Text(AppStrings.noSavedAddresses),
+                          SizedBox(height: 16),
                           ElevatedButton(
                             onPressed: () {
                               Get.back();
@@ -125,7 +126,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 _loadDefaultAddress();
                               });
                             },
-                            child: Text('Add Address'),
+                            child: Text(AppStrings.addAddressButton),
                           ),
                         ],
                       ),
@@ -242,8 +243,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         children: [
                           Icon(Icons.payment, size: 64, color: Colors.grey),
                           SizedBox(height: 16),
-                          Text('No saved payment methods'),
-                          SizedBox(height: 8),
+                          Text(AppStrings.noSavedPaymentMethods),
+                          SizedBox(height: 16),
                           ElevatedButton(
                             onPressed: () {
                               Get.back();
@@ -251,7 +252,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 _loadDefaultPaymentMethod();
                               });
                             },
-                            child: Text('Add Payment Method'),
+                            child: Text(AppStrings.addPaymentMethodButton),
                           ),
                         ],
                       ),
@@ -529,7 +530,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
-                                children: [Text('Shipping:'), Text('৳100.00')],
+                                children: [Text(AppStrings.shipping), Text(AppStrings.shippingAmount)],
                               ),
                               Divider(),
                               Obx(

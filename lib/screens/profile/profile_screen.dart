@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
 import '../../services/auth_service.dart';
+import '../../utils/app_strings.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:turf_app/services/cloudinary_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -109,7 +110,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final userId = authController.firebaseUser.value?.uid ?? '';
 
       if (userId.isEmpty) {
-        Get.snackbar('Error', 'User not logged in');
+        Get.snackbar(AppStrings.error, AppStrings.userNotLoggedIn);
         return;
       }
 
@@ -775,7 +776,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             children: [
                               Icon(Icons.logout, color: Colors.red[700]),
                               SizedBox(width: 12),
-                              Text('Logout'),
+                              Text(AppStrings.logout),
                             ],
                           ),
                           content: Text(

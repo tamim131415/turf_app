@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../controllers/product_controller.dart';
 import '../../widgets/cart_item.dart';
 import '../../app/routes/app_routes.dart';
+import '../../utils/app_strings.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -44,7 +45,7 @@ class CartScreen extends StatelessWidget {
                     backgroundColor: Colors.green[700],
                   ),
                   onPressed: () => Get.back(),
-                  child: Text('Continue Shopping'),
+                  child: Text(AppStrings.continueShopping),
                 ),
               ],
             ),
@@ -73,7 +74,7 @@ class CartScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Subtotal:', style: TextStyle(fontSize: 16)),
+                      Text(AppStrings.subtotalLabel, style: TextStyle(fontSize: 16)),
                       Obx(
                         () => Text(
                           '৳${controller.cartTotal.toStringAsFixed(2)}',
@@ -89,8 +90,8 @@ class CartScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Shipping:', style: TextStyle(fontSize: 16)),
-                      Text('৳100.00', style: TextStyle(fontSize: 16)),
+                      Text(AppStrings.shippingLabel, style: TextStyle(fontSize: 16)),
+                      Text(AppStrings.shippingAmount, style: TextStyle(fontSize: 16)),
                     ],
                   ),
                   SizedBox(height: 8),

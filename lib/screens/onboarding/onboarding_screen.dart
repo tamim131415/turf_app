@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../app/routes/app_routes.dart';
+import '../../utils/app_strings.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -15,21 +16,20 @@ class OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<OnboardingPage> _pages = [
     OnboardingPage(
-      title: "Authentic Jerseys",
-      description:
-          "Get official team jerseys from top football clubs around the world",
+      title: AppStrings.authenticJerseys,
+      description: AppStrings.authenticJerseysDesc,
       image: Icons.sports_baseball,
       color: Colors.blue,
     ),
     OnboardingPage(
-      title: "Fast Delivery",
-      description: "Quick delivery across Bangladesh with secure packaging",
+      title: AppStrings.fastDelivery,
+      description: AppStrings.fastDeliveryDesc,
       image: Icons.local_shipping,
       color: Colors.orange,
     ),
     OnboardingPage(
-      title: "Secure Payment",
-      description: "Pay with bKash, Nagad or cards safely and securely",
+      title: AppStrings.securePayment,
+      description: AppStrings.securePaymentDesc,
       image: Icons.security,
       color: Colors.green,
     ),
@@ -83,7 +83,7 @@ class OnboardingScreenState extends State<OnboardingScreen> {
                             Get.toNamed(Routes.login);
                           },
                           child: Text(
-                            'GET STARTED',
+                            AppStrings.getStarted,
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -105,7 +105,7 @@ class OnboardingScreenState extends State<OnboardingScreen> {
                   Get.offAllNamed(Routes.login);
                 },
                 child: Text(
-                  'Skip',
+                  AppStrings.skip,
                   style: TextStyle(
                     color: Colors.grey[700],
                     fontSize: 16,

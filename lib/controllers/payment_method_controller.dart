@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import '../models/payment_method.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
+import '../utils/app_strings.dart';
 
 class PaymentMethodController extends GetxController {
   final FirestoreService _firestoreService = FirestoreService();
@@ -25,7 +26,7 @@ class PaymentMethodController extends GetxController {
         paymentMethods.value = methods;
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to load payment methods: $e');
+      Get.snackbar(AppStrings.error, '${AppStrings.failedToLoadPaymentMethods}: $e');
     } finally {
       isLoading.value = false;
     }
@@ -36,7 +37,7 @@ class PaymentMethodController extends GetxController {
       isLoading.value = true;
       final userId = _authService.currentUser?.uid;
       if (userId == null) {
-        Get.snackbar('Error', 'User not authenticated');
+        Get.snackbar(AppStrings.error, AppStrings.userNotAuthenticated);
         return;
       }
 
@@ -54,9 +55,9 @@ class PaymentMethodController extends GetxController {
       await _firestoreService.savePaymentMethod(paymentMethod);
       await loadPaymentMethods();
       Get.back();
-      Get.snackbar('Success', 'Payment method added successfully');
+      Get.snackbar(AppStrings.success, AppStrings.paymentMethodAddedSuccessfully);
     } catch (e) {
-      Get.snackbar('Error', 'Failed to add payment method: $e');
+      Get.snackbar(AppStrings.error, '${AppStrings.failedToAddPaymentMethod}: $e');
     } finally {
       isLoading.value = false;
     }
@@ -83,9 +84,9 @@ class PaymentMethodController extends GetxController {
       );
       await loadPaymentMethods();
       Get.back();
-      Get.snackbar('Success', 'Payment method updated successfully');
+      Get.snackbar(AppStrings.success, AppStrings.paymentMethodUpdatedSuccessfully);
     } catch (e) {
-      Get.snackbar('Error', 'Failed to update payment method: $e');
+      Get.snackbar(AppStrings.error, '${AppStrings.failedToUpdatePaymentMethod}: $e');
     } finally {
       isLoading.value = false;
     }
@@ -96,9 +97,9 @@ class PaymentMethodController extends GetxController {
       isLoading.value = true;
       await _firestoreService.deletePaymentMethod(id);
       await loadPaymentMethods();
-      Get.snackbar('Success', 'Payment method deleted successfully');
+      Get.snackbar(AppStrings.success, AppStrings.paymentMethodDeletedSuccessfully);
     } catch (e) {
-      Get.snackbar('Error', 'Failed to delete payment method: $e');
+      Get.snackbar(AppStrings.error, '${AppStrings.failedToDeletePaymentMethod}: $e');
     } finally {
       isLoading.value = false;
     }
@@ -121,9 +122,9 @@ class PaymentMethodController extends GetxController {
       await _firestoreService.updatePaymentMethod(id, {'isDefault': true});
 
       await loadPaymentMethods();
-      Get.snackbar('Success', 'Default payment method updated');
+      Get.snackbar(AppStrings.success, AppStrings.defaultPaymentMethodUpdated);
     } catch (e) {
-      Get.snackbar('Error', 'Failed to set default payment method: $e');
+      Get.snackbar(AppStrings.error, '${AppStrings.failedToSetDefaultPaymentMethod}: $e');
     } finally {
       isLoading.value = false;
     }
