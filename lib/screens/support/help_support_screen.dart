@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../utils/app_strings.dart';
 
 class HelpSupportScreen extends StatelessWidget {
   const HelpSupportScreen({super.key});
@@ -11,7 +12,7 @@ class HelpSupportScreen extends StatelessWidget {
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
         title: Text(
-          'Help & Support',
+          AppStrings.helpSupport,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.white,
@@ -44,7 +45,7 @@ class HelpSupportScreen extends StatelessWidget {
                 Icon(Icons.support_agent, size: 64, color: Colors.white),
                 SizedBox(height: 16),
                 Text(
-                  'We\'re Here to Help',
+                  AppStrings.weAreHereToHelp,
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -54,7 +55,7 @@ class HelpSupportScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 8),
                 Text(
-                  'Get assistance anytime, 24/7',
+                  AppStrings.getAssistanceAnytime,
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white.withValues(alpha: 0.9),
@@ -67,26 +68,26 @@ class HelpSupportScreen extends StatelessWidget {
           SizedBox(height: 24),
 
           // Contact Options Section
-          _buildSectionTitle('CONTACT US'),
+          _buildSectionTitle(AppStrings.contactUsLabel),
           SizedBox(height: 12),
           _buildSupportTile(
             icon: Icons.phone,
-            title: 'Call Us',
-            subtitle: '+880 1998-354369',
+            title: AppStrings.callUs,
+            subtitle: AppStrings.phoneNumberContact,
             color: Colors.blue,
             onTap: () => _makePhoneCall('+8801998354369'),
           ),
           _buildSupportTile(
             icon: Icons.email,
-            title: 'Email Support',
-            subtitle: 'tamim.cse.vu@gmail.com',
+            title: AppStrings.emailSupport,
+            subtitle: AppStrings.emailContact,
             color: Colors.orange,
-            onTap: () => _sendEmail('tamim.cse.vu@gmail.com'),
+            onTap: () => _sendEmail(AppStrings.emailContact),
           ),
           _buildSupportTile(
             icon: Icons.messenger,
-            title: 'WhatsApp',
-            subtitle: 'Message us on WhatsApp',
+            title: AppStrings.whatsapp,
+            subtitle: AppStrings.messageUsOnWhatsApp,
             color: Colors.teal,
             onTap: () => _openWhatsApp('+8801998354369'),
           ),
@@ -94,33 +95,33 @@ class HelpSupportScreen extends StatelessWidget {
           SizedBox(height: 24),
 
           // Quick Actions Section
-          _buildSectionTitle('QUICK ACTIONS'),
+          _buildSectionTitle(AppStrings.quickActions),
           SizedBox(height: 12),
           _buildSupportTile(
             icon: Icons.question_answer,
-            title: 'FAQs',
-            subtitle: 'Find answers to common questions',
+            title: AppStrings.faqs,
+            subtitle: AppStrings.findAnswersToCommonQuestions,
             color: Colors.purple,
             onTap: () => Get.to(() => FAQScreen()),
           ),
           _buildSupportTile(
             icon: Icons.report_problem,
-            title: 'Report a Problem',
-            subtitle: 'Let us know about any issues',
+            title: AppStrings.reportProblem,
+            subtitle: AppStrings.letUsKnowAboutAnyIssues,
             color: Colors.red,
             onTap: () => _showReportDialog(),
           ),
           _buildSupportTile(
             icon: Icons.track_changes,
-            title: 'Track Your Order',
-            subtitle: 'Check your order status',
+            title: AppStrings.trackYourOrder,
+            subtitle: AppStrings.checkYourOrderStatus,
             color: Colors.indigo,
             onTap: () => Get.toNamed('/my-orders'),
           ),
           _buildSupportTile(
             icon: Icons.local_shipping,
-            title: 'Shipping & Delivery',
-            subtitle: 'Learn about our delivery policy',
+            title: AppStrings.shippingDelivery,
+            subtitle: AppStrings.learnAboutOurDeliveryPolicy,
             color: Colors.cyan,
             onTap: () => _showShippingInfo(),
           ),
@@ -128,26 +129,26 @@ class HelpSupportScreen extends StatelessWidget {
           SizedBox(height: 24),
 
           // Legal Section
-          _buildSectionTitle('LEGAL'),
+          _buildSectionTitle(AppStrings.legal),
           SizedBox(height: 12),
           _buildSupportTile(
             icon: Icons.description,
-            title: 'Terms & Conditions',
-            subtitle: 'Read our terms of service',
+            title: AppStrings.termsConditions,
+            subtitle: AppStrings.readOurTermsOfService,
             color: Colors.grey,
             onTap: () => _showTerms(),
           ),
           _buildSupportTile(
             icon: Icons.privacy_tip,
-            title: 'Privacy Policy',
-            subtitle: 'How we protect your data',
+            title: AppStrings.privacyPolicy,
+            subtitle: AppStrings.howWeProtectYourData,
             color: Colors.blueGrey,
             onTap: () => _showPrivacyPolicy(),
           ),
           _buildSupportTile(
             icon: Icons.assignment_return,
-            title: 'Return & Refund Policy',
-            subtitle: 'Learn about returns',
+            title: AppStrings.returnRefundPolicy,
+            subtitle: AppStrings.learnAboutReturns,
             color: Colors.brown,
             onTap: () => _showReturnPolicy(),
           ),
@@ -167,7 +168,7 @@ class HelpSupportScreen extends StatelessWidget {
                 Icon(Icons.access_time, color: Colors.green[700], size: 32),
                 SizedBox(height: 12),
                 Text(
-                  'Support Hours',
+                  AppStrings.supportHours,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -176,7 +177,7 @@ class HelpSupportScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 8),
                 Text(
-                  'Monday - Saturday: 9:00 AM - 10:00 PM\nSunday: 10:00 AM - 8:00 PM',
+                  AppStrings.supportHoursText,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
@@ -286,8 +287,8 @@ class HelpSupportScreen extends StatelessWidget {
       await launchUrl(launchUri);
     } catch (e) {
       Get.snackbar(
-        'Error',
-        'Could not launch phone dialer',
+        AppStrings.error,
+        AppStrings.couldNotLaunchPhoneDialer,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -304,8 +305,8 @@ class HelpSupportScreen extends StatelessWidget {
       await launchUrl(launchUri);
     } catch (e) {
       Get.snackbar(
-        'Error',
-        'Could not launch email client',
+        AppStrings.error,
+        AppStrings.couldNotLaunchEmailClient,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -323,8 +324,8 @@ class HelpSupportScreen extends StatelessWidget {
       await launchUrl(launchUri, mode: LaunchMode.externalApplication);
     } catch (e) {
       Get.snackbar(
-        'Error',
-        'Could not open WhatsApp. Please make sure WhatsApp is installed.',
+        AppStrings.error,
+        AppStrings.couldNotOpenWhatsApp,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -347,7 +348,7 @@ class HelpSupportScreen extends StatelessWidget {
                   Icon(Icons.report_problem, color: Colors.red[700], size: 28),
                   SizedBox(width: 12),
                   Text(
-                    'Report a Problem',
+                    AppStrings.reportProblem,
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -357,7 +358,7 @@ class HelpSupportScreen extends StatelessWidget {
                 controller: issueController,
                 maxLines: 5,
                 decoration: InputDecoration(
-                  hintText: 'Describe the issue you\'re facing...',
+                  hintText: AppStrings.describeTheIssue,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -371,7 +372,7 @@ class HelpSupportScreen extends StatelessWidget {
                 children: [
                   TextButton(
                     onPressed: () => Get.back(),
-                    child: Text('Cancel'),
+                    child: Text(AppStrings.cancel),
                   ),
                   SizedBox(width: 12),
                   ElevatedButton(
@@ -379,8 +380,8 @@ class HelpSupportScreen extends StatelessWidget {
                       if (issueController.text.isNotEmpty) {
                         Get.back();
                         Get.snackbar(
-                          'Success',
-                          'Your report has been submitted. We\'ll get back to you soon.',
+                          AppStrings.success,
+                          AppStrings.reportSubmitted,
                           backgroundColor: Colors.green,
                           colorText: Colors.white,
                         );
@@ -396,7 +397,7 @@ class HelpSupportScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: Text('Submit'),
+                    child: Text(AppStrings.submit),
                   ),
                 ],
               ),
@@ -427,7 +428,7 @@ class HelpSupportScreen extends StatelessWidget {
                     ),
                     SizedBox(width: 12),
                     Text(
-                      'Shipping & Delivery',
+                      AppStrings.shippingDelivery,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -460,7 +461,7 @@ class HelpSupportScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: Text('Got It', style: TextStyle(fontSize: 16)),
+                    child: Text(AppStrings.gotIt, style: TextStyle(fontSize: 16)),
                   ),
                 ),
               ],
@@ -473,7 +474,7 @@ class HelpSupportScreen extends StatelessWidget {
 
   void _showTerms() {
     _showLegalDialog(
-      'Terms & Conditions',
+      AppStrings.termsConditions,
       Icons.description,
       Colors.grey[700]!,
       '''By using Turf Mate, you agree to our terms and conditions:
@@ -508,7 +509,7 @@ For complete terms, visit our website.''',
 
   void _showPrivacyPolicy() {
     _showLegalDialog(
-      'Privacy Policy',
+      AppStrings.privacyPolicy,
       Icons.privacy_tip,
       Colors.blueGrey[700]!,
       '''We value your privacy and are committed to protecting your personal data:
@@ -546,7 +547,7 @@ Contact us for privacy concerns: tamim.cse.vu@gmail.com''',
 
   void _showReturnPolicy() {
     _showLegalDialog(
-      'Return & Refund Policy',
+      AppStrings.returnRefundPolicy,
       Icons.assignment_return,
       Colors.brown[700]!,
       '''Our return and refund policy ensures customer satisfaction:
@@ -682,54 +683,44 @@ class FAQScreen extends StatelessWidget {
 
   final List<FAQItem> faqs = const [
     FAQItem(
-      question: 'How do I place an order?',
-      answer:
-          'Browse products, add items to cart, proceed to checkout, enter shipping details, choose payment method, and confirm your order.',
+      question: AppStrings.faqHowToPlaceOrder,
+      answer: AppStrings.faqAnswerHowToPlaceOrder,
     ),
     FAQItem(
-      question: 'What payment methods do you accept?',
-      answer:
-          'We accept Credit/Debit Cards, Mobile Banking (bKash, Nagad, Rocket), and Cash on Delivery.',
+      question: AppStrings.faqWhatPaymentMethods,
+      answer: AppStrings.faqAnswerWhatPaymentMethods,
     ),
     FAQItem(
-      question: 'How can I track my order?',
-      answer:
-          'Go to "My Orders" section in your profile. Click on the order you want to track to see its current status and tracking details.',
+      question: AppStrings.faqHowToTrackOrder,
+      answer: AppStrings.faqAnswerHowToTrackOrder,
     ),
     FAQItem(
-      question: 'Can I change or cancel my order?',
-      answer:
-          'You can cancel your order within 1 hour of placing it. After that, please contact customer support for assistance.',
+      question: AppStrings.faqCanChangeOrCancel,
+      answer: AppStrings.faqAnswerCanChangeOrCancel,
     ),
     FAQItem(
-      question: 'What is your return policy?',
-      answer:
-          'We accept returns within 7 days of delivery. Items must be unused and in original packaging with proof of purchase.',
+      question: AppStrings.faqWhatIsReturnPolicy,
+      answer: AppStrings.faqAnswerWhatIsReturnPolicy,
     ),
     FAQItem(
-      question: 'How long does delivery take?',
-      answer:
-          'Standard delivery: 3-5 business days. Express delivery: 1-2 business days. Delivery times may vary based on location.',
+      question: AppStrings.faqHowLongDelivery,
+      answer: AppStrings.faqAnswerHowLongDelivery,
     ),
     FAQItem(
-      question: 'Are the products authentic?',
-      answer:
-          'Yes, all our products are 100% authentic. We source directly from authorized distributors and manufacturers.',
+      question: AppStrings.faqAreProductsAuthentic,
+      answer: AppStrings.faqAnswerAreProductsAuthentic,
     ),
     FAQItem(
-      question: 'Do you offer gift wrapping?',
-      answer:
-          'Yes, gift wrapping is available for an additional charge. You can select this option during checkout.',
+      question: AppStrings.faqOfferGiftWrapping,
+      answer: AppStrings.faqAnswerOfferGiftWrapping,
     ),
     FAQItem(
-      question: 'What if I receive a damaged product?',
-      answer:
-          'Contact us immediately with photos of the damage. We will arrange a replacement or full refund.',
+      question: AppStrings.faqWhatIfDamaged,
+      answer: AppStrings.faqAnswerWhatIfDamaged,
     ),
     FAQItem(
-      question: 'Can I change my delivery address?',
-      answer:
-          'Yes, you can change the address before the order is shipped. Go to "My Orders" and select "Change Address".',
+      question: AppStrings.faqCanChangeAddress,
+      answer: AppStrings.faqAnswerCanChangeAddress,
     ),
   ];
 
