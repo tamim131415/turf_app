@@ -146,7 +146,7 @@ class ProductCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      product.team,
+                      product.category,
                       style: TextStyle(
                         color: Colors.green[700],
                         fontSize: 11,

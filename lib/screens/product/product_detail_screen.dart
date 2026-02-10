@@ -151,7 +151,7 @@ class ProductDetailScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            product.team,
+                            product.category,
                             style: TextStyle(
                               color: Colors.green[700],
                               fontSize: 16,
@@ -523,6 +523,7 @@ class ProductDetailScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
+                          SizedBox(height: 32),
                         ],
                       ),
                     ),

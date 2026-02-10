@@ -39,7 +39,7 @@ class WishlistItem extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(product.team),
+            Text(product.category),
             SizedBox(height: 4),
             Text(
               '৳${product.price.toStringAsFixed(2)}',
