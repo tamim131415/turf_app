@@ -381,25 +381,6 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                                   fontSize: 14,
                                 ),
                               ),
-                              SizedBox(height: 12),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 8,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Text(
-                                  'Shop Now',
-                                  style: TextStyle(
-                                    color: Colors.green[700],
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ),
                             ],
                           ),
                         ),
