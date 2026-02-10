@@ -41,7 +41,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
     'Balls',
     'Accessories',
     'Training',
-    'Others',
   ];
 
   final List<String> brands = [
@@ -146,10 +145,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
       return;
     }
 
-    if (selectedSizes.isEmpty) {
+    // Only validate sizes for Jerseys and Shoes
+    if ((selectedCategory == 'Jerseys' || selectedCategory == 'Shoes') &&
+        selectedSizes.isEmpty) {
       Get.snackbar(
         'Error',
-        'Please select at least one size',
+        'Please select at least one size for ${selectedCategory.toLowerCase()}',
         backgroundColor: Colors.red[100],
         colorText: Colors.red[800],
         snackPosition: SnackPosition.TOP,
@@ -213,7 +214,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
         rating: rating,
         reviewCount: reviewCount,
         isFavorite: false,
-        sizes: selectedSizes,
+        sizes: (selectedCategory == 'Jerseys' || selectedCategory == 'Shoes')
+            ? selectedSizes
+            : [],
         colors: [Colors.green, Colors.white],
         description: descriptionController.text.isEmpty
             ? 'Custom added product'
@@ -475,56 +478,58 @@ class _AddProductScreenState extends State<AddProductScreen> {
               ),
               SizedBox(height: 16),
 
-              // Sizes Selection
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.straighten, color: Colors.grey[600]),
-                        SizedBox(width: 8),
-                        Text(
-                          'Available Sizes',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey[700],
+              // Sizes Selection (Only for Jerseys and Shoes)
+              if (selectedCategory == 'Jerseys' || selectedCategory == 'Shoes')
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.straighten, color: Colors.grey[600]),
+                          SizedBox(width: 8),
+                          Text(
+                            'Available Sizes',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[700],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 12),
-                    Wrap(
-                      spacing: 8,
-                      children: availableSizes.map((size) {
-                        final isSelected = selectedSizes.contains(size);
-                        return FilterChip(
-                          label: Text(size),
-                          selected: isSelected,
-                          onSelected: (selected) {
-                            setState(() {
-                              if (selected) {
-                                selectedSizes.add(size);
-                              } else {
-                                selectedSizes.remove(size);
-                              }
-                            });
-                          },
-                          selectedColor: Colors.green[100],
-                          checkmarkColor: Colors.green[700],
-                        );
-                      }).toList(),
-                    ),
-                  ],
+                        ],
+                      ),
+                      SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8,
+                        children: availableSizes.map((size) {
+                          final isSelected = selectedSizes.contains(size);
+                          return FilterChip(
+                            label: Text(size),
+                            selected: isSelected,
+                            onSelected: (selected) {
+                              setState(() {
+                                if (selected) {
+                                  selectedSizes.add(size);
+                                } else {
+                                  selectedSizes.remove(size);
+                                }
+                              });
+                            },
+                            selectedColor: Colors.green[100],
+                            checkmarkColor: Colors.green[700],
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 16),
+              if (selectedCategory == 'Jerseys' || selectedCategory == 'Shoes')
+                SizedBox(height: 16),
 
               // Image Section
               Container(

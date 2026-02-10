@@ -323,8 +323,10 @@ class ProductDetailScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 20),
-                          // Size Selection
-                          if (product.sizes.isNotEmpty) ...[
+                          // Size Selection (Only for Jerseys and Shoes)
+                          if ((product.category == 'Jerseys' ||
+                                  product.category == 'Shoes') &&
+                              product.sizes.isNotEmpty) ...[
                             Text(
                               'Select Size',
                               style: TextStyle(

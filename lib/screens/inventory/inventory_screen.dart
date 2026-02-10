@@ -25,7 +25,6 @@ class _InventoryScreenState extends State<InventoryScreen> {
     'Balls',
     'Accessories',
     'Training',
-    'Others',
   ];
 
   @override

@@ -77,7 +77,6 @@ class ExploreScreen extends StatelessWidget {
                 'Accessories',
                 'Balls',
                 'Training',
-                'Others',
               ]),
               _buildCategorySection('Brands', Icons.business, [
                 'Nike',

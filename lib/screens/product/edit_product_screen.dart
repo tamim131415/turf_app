@@ -42,7 +42,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
     'Balls',
     'Accessories',
     'Training',
-    'Others',
   ];
 
   final List<String> brands = [
@@ -174,10 +173,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
       return;
     }
 
-    if (selectedSizes.isEmpty) {
+    // Only validate sizes for Jerseys and Shoes
+    if ((selectedCategory == 'Jerseys' || selectedCategory == 'Shoes') &&
+        selectedSizes.isEmpty) {
       Get.snackbar(
         'Error',
-        'Please select at least one size',
+        'Please select at least one size for ${selectedCategory.toLowerCase()}',
         backgroundColor: Colors.red[100],
         colorText: Colors.red[800],
         snackPosition: SnackPosition.TOP,
@@ -234,7 +235,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
         rating: rating,
         reviewCount: reviewCount,
         isFavorite: product.isFavorite,
-        sizes: selectedSizes,
+        sizes: (selectedCategory == 'Jerseys' || selectedCategory == 'Shoes')
+            ? selectedSizes
+            : [],
         colors: [Colors.green, Colors.white],
         description: descriptionController.text.isEmpty
             ? 'Product description'
@@ -517,38 +520,41 @@ class _EditProductScreenState extends State<EditProductScreen> {
             ),
             SizedBox(height: 16),
 
-            // Sizes Selection
-            Text(
-              'Available Sizes',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey[700],
+            // Sizes Selection (Only for Jerseys and Shoes)
+            if (selectedCategory == 'Jerseys' ||
+                selectedCategory == 'Shoes') ...[
+              Text(
+                'Available Sizes',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[700],
+                ),
               ),
-            ),
-            SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: availableSizes.map((size) {
-                final isSelected = selectedSizes.contains(size);
-                return FilterChip(
-                  label: Text(size),
-                  selected: isSelected,
-                  onSelected: (selected) {
-                    setState(() {
-                      if (selected) {
-                        selectedSizes.add(size);
-                      } else {
-                        selectedSizes.remove(size);
-                      }
-                    });
-                  },
-                  selectedColor: Colors.green[100],
-                  checkmarkColor: Colors.green[800],
-                );
-              }).toList(),
-            ),
-            SizedBox(height: 16),
+              SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                children: availableSizes.map((size) {
+                  final isSelected = selectedSizes.contains(size);
+                  return FilterChip(
+                    label: Text(size),
+                    selected: isSelected,
+                    onSelected: (selected) {
+                      setState(() {
+                        if (selected) {
+                          selectedSizes.add(size);
+                        } else {
+                          selectedSizes.remove(size);
+                        }
+                      });
+                    },
+                    selectedColor: Colors.green[100],
+                    checkmarkColor: Colors.green[800],
+                  );
+                }).toList(),
+              ),
+              SizedBox(height: 16),
+            ],
 
             // Rating
             Text(

@@ -124,7 +124,6 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                       child: Text('Accessories'),
                     ),
                     PopupMenuItem(value: 'Training', child: Text('Training')),
-                    PopupMenuItem(value: 'Others', child: Text('Others')),
                   ];
                 }
               },
@@ -311,7 +310,6 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
         _buildFilterChip('Balls', 'category'),
         _buildFilterChip('Accessories', 'category'),
         _buildFilterChip('Training', 'category'),
-        _buildFilterChip('Others', 'category'),
       ];
     }
   }
