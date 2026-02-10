@@ -461,7 +461,10 @@ class HelpSupportScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: Text(AppStrings.gotIt, style: TextStyle(fontSize: 16)),
+                    child: Text(
+                      AppStrings.gotIt,
+                      style: TextStyle(fontSize: 16),
+                    ),
                   ),
                 ),
               ],

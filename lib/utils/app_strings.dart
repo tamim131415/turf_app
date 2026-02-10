@@ -150,17 +150,20 @@ class AppStrings {
   static const String weAreHereToHelp = 'We\'re Here to Help';
   static const String getAssistanceAnytime = 'Get assistance anytime, 24/7';
   static const String messageUsOnWhatsApp = 'Message us on WhatsApp';
-  static const String findAnswersToCommonQuestions = 'Find answers to common questions';
+  static const String findAnswersToCommonQuestions =
+      'Find answers to common questions';
   static const String letUsKnowAboutAnyIssues = 'Let us know about any issues';
   static const String checkYourOrderStatus = 'Check your order status';
-  static const String learnAboutOurDeliveryPolicy = 'Learn about our delivery policy';
+  static const String learnAboutOurDeliveryPolicy =
+      'Learn about our delivery policy';
   static const String readOurTermsOfService = 'Read our terms of service';
   static const String howWeProtectYourData = 'How we protect your data';
   static const String learnAboutReturns = 'Learn about returns';
 
   // FAQ Questions
   static const String faqHowToPlaceOrder = 'How do I place an order?';
-  static const String faqWhatPaymentMethods = 'What payment methods do you accept?';
+  static const String faqWhatPaymentMethods =
+      'What payment methods do you accept?';
   static const String faqHowToTrackOrder = 'How can I track my order?';
   static const String faqCanChangeOrCancel = 'Can I change or cancel my order?';
   static const String faqWhatIsReturnPolicy = 'What is your return policy?';
@@ -203,12 +206,15 @@ class AppStrings {
   static const String productAddedToCart = 'Product added to cart';
   static const String productRemovedFromCart = 'Product removed from cart';
   static const String addressSavedSuccessfully = 'Address saved successfully';
-  static const String addressDeletedSuccessfully = 'Address deleted successfully';
+  static const String addressDeletedSuccessfully =
+      'Address deleted successfully';
   static const String defaultAddressUpdated = 'Default address updated';
   static const String reportSubmitted =
       'Your report has been submitted. We\'ll get back to you soon.';
-  static const String couldNotLaunchPhoneDialer = 'Could not launch phone dialer';
-  static const String couldNotLaunchEmailClient = 'Could not launch email client';
+  static const String couldNotLaunchPhoneDialer =
+      'Could not launch phone dialer';
+  static const String couldNotLaunchEmailClient =
+      'Could not launch email client';
   static const String couldNotOpenWhatsApp =
       'Could not open WhatsApp. Please make sure WhatsApp is installed.';
 
@@ -222,8 +228,10 @@ class AppStrings {
   static const String failedToLoadAddresses = 'Failed to load addresses';
   static const String failedToSaveAddress = 'Failed to save address';
   static const String failedToDeleteAddress = 'Failed to delete address';
-  static const String failedToSetDefaultAddress = 'Failed to set default address';
-  static const String failedToLoadPaymentMethods = 'Failed to load payment methods';
+  static const String failedToSetDefaultAddress =
+      'Failed to set default address';
+  static const String failedToLoadPaymentMethods =
+      'Failed to load payment methods';
   static const String noInternetConnection = 'No internet connection';
 
   // Profile
@@ -233,10 +241,14 @@ class AppStrings {
   static const String addresses = 'Addresses';
   static const String logout = 'Logout';
   static const String manageYourAccount = 'Manage your account settings';
-  static const String viewYourOrderHistory = 'View your order history and track deliveries';
-  static const String viewAndManageFavorites = 'View and manage your favorite products';
-  static const String manageDeliveryAddresses = 'Manage your delivery addresses';
-  static const String managePaymentMethods = 'Manage your payment cards and methods';
+  static const String viewYourOrderHistory =
+      'View your order history and track deliveries';
+  static const String viewAndManageFavorites =
+      'View and manage your favorite products';
+  static const String manageDeliveryAddresses =
+      'Manage your delivery addresses';
+  static const String managePaymentMethods =
+      'Manage your payment cards and methods';
 
   // Inventory
   static const String inventory = 'Inventory';
