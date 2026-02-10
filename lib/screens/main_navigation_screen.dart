@@ -10,10 +10,10 @@ class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
 
   @override
-  _MainNavigationScreenState createState() => _MainNavigationScreenState();
+  MainNavigationScreenState createState() => MainNavigationScreenState();
 }
 
-class _MainNavigationScreenState extends State<MainNavigationScreen> {
+class MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
   final ProductController productController = Get.find<ProductController>();
 
@@ -33,7 +33,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 15,
               offset: Offset(0, -5),
             ),
@@ -89,7 +89,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           margin: EdgeInsets.symmetric(horizontal: 2),
           decoration: BoxDecoration(
             color: isSelected
-                ? Colors.green[700]?.withOpacity(0.1)
+                ? Colors.green[700]?.withValues(alpha: 0.1)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(15),
           ),
@@ -139,7 +139,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           margin: EdgeInsets.symmetric(horizontal: 2),
           decoration: BoxDecoration(
             color: isSelected
-                ? Colors.green[700]?.withOpacity(0.1)
+                ? Colors.green[700]?.withValues(alpha: 0.1)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(15),
           ),

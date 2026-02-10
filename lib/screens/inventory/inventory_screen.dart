@@ -66,7 +66,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
   }
 
   void _showProductDetails(Product product) {
-    Get.toNamed(Routes.INVENTORY_DETAIL, arguments: product);
+    Get.toNamed(Routes.inventoryDetail, arguments: product);
   }
 
   void _showDeleteAllConfirmation(BuildContext context) {
@@ -145,7 +145,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
           IconButton(
             icon: Icon(Icons.add_circle_outline, color: Colors.green[700]),
             onPressed: () {
-              Get.toNamed(Routes.ADD_PRODUCT);
+              Get.toNamed(Routes.addProduct);
             },
             tooltip: 'Add Product',
           ),
@@ -244,7 +244,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                           ),
                         ),
                       );
-                    }).toList(),
+                    }),
                   ],
                 ),
               ),
@@ -278,7 +278,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                           ),
                         ),
                       );
-                    }).toList(),
+                    }),
                   ],
                 ),
               ),
@@ -382,7 +382,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
               else
                 ...filteredProducts.map((product) {
                   return _buildInventoryItem(product);
-                }).toList(),
+                }),
             ],
           ),
         );
@@ -403,7 +403,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: Offset(0, 2),
           ),
@@ -447,7 +447,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 8,
               offset: Offset(0, 2),
             ),
@@ -539,7 +539,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: stockColor.withOpacity(0.1),
+                color: stockColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: stockColor, width: 1),
               ),

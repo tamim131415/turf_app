@@ -21,16 +21,10 @@ class OrderController extends GetxController {
       isLoading.value = true;
       final userId = _authService.currentUser?.uid;
 
-      print('📱 OrderController: Loading orders for user: $userId');
-
       if (userId != null) {
         orders.value = await _firestoreService.getUserOrders(userId);
-        print('📱 OrderController: Loaded ${orders.length} orders');
-      } else {
-        print('⚠️ OrderController: No user ID found');
-      }
+      } else {}
     } catch (e) {
-      print('❌ OrderController: Error loading orders: $e');
       Get.snackbar('Error', 'Failed to load orders');
     } finally {
       isLoading.value = false;

@@ -8,11 +8,10 @@ class EmailVerificationScreen extends StatefulWidget {
   const EmailVerificationScreen({super.key});
 
   @override
-  _EmailVerificationScreenState createState() =>
-      _EmailVerificationScreenState();
+  EmailVerificationScreenState createState() => EmailVerificationScreenState();
 }
 
-class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
+class EmailVerificationScreenState extends State<EmailVerificationScreen> {
   final AuthController _authController = Get.find<AuthController>();
   Timer? _timer;
   bool _isResendEnabled = false;
@@ -35,7 +34,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
           'Email verified successfully!',
           snackPosition: SnackPosition.BOTTOM,
         );
-        Get.offAllNamed(Routes.HOME);
+        Get.offAllNamed(Routes.home);
       }
     });
   }

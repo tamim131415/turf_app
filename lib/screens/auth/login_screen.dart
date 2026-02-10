@@ -8,10 +8,10 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   bool _obscureText = true;
   bool _rememberMe = false;
   final TextEditingController _emailController = TextEditingController();
@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
         // Exit app when back button is pressed
         final shouldExit = await showDialog<bool>(
@@ -139,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Spacer(),
                     TextButton(
                       onPressed: () {
-                        Get.toNamed(Routes.FORGOT_PASSWORD);
+                        Get.toNamed(Routes.forgotPassword);
                       },
                       child: Text(
                         'Forgot Password?',
@@ -247,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Center(
                   child: GestureDetector(
                     onTap: () {
-                      Get.toNamed(Routes.REGISTER);
+                      Get.toNamed(Routes.register);
                     },
                     child: RichText(
                       text: TextSpan(

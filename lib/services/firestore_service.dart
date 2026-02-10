@@ -27,7 +27,6 @@ class FirestoreService extends GetxService {
       QuerySnapshot snapshot = await productsCollection.get();
       return snapshot.docs.map((doc) => Product.fromFirestore(doc)).toList();
     } catch (e) {
-      print('Error getting products: $e');
       return [];
     }
   }
@@ -47,10 +46,8 @@ class FirestoreService extends GetxService {
       // Use set instead of add to use custom ID
       await productsCollection.doc(productId).set(productData);
 
-      print('Product added to Firebase: ${product.name} with ID: $productId');
       return productId;
     } catch (e) {
-      print('Error adding product: $e');
       return null;
     }
   }
@@ -63,10 +60,8 @@ class FirestoreService extends GetxService {
     try {
       updates['updated_at'] = FieldValue.serverTimestamp();
       await productsCollection.doc(productId).update(updates);
-      print('Product updated: $productId');
       return true;
     } catch (e) {
-      print('Error updating product: $e');
       return false;
     }
   }
@@ -75,10 +70,8 @@ class FirestoreService extends GetxService {
   Future<bool> deleteProduct(String productId) async {
     try {
       await productsCollection.doc(productId).delete();
-      print('Product deleted: $productId');
       return true;
     } catch (e) {
-      print('Error deleting product: $e');
       return false;
     }
   }
@@ -91,7 +84,6 @@ class FirestoreService extends GetxService {
       });
       return true;
     } catch (e) {
-      print('Error toggling favorite: $e');
       return false;
     }
   }
@@ -109,7 +101,6 @@ class FirestoreService extends GetxService {
       }
       return snapshot.docs.map((doc) => Product.fromFirestore(doc)).toList();
     } catch (e) {
-      print('Error getting products by category: $e');
       return [];
     }
   }
@@ -122,7 +113,6 @@ class FirestoreService extends GetxService {
           .get();
       return snapshot.docs.map((doc) => Product.fromFirestore(doc)).toList();
     } catch (e) {
-      print('Error getting favorite products: $e');
       return [];
     }
   }
@@ -142,18 +132,10 @@ class FirestoreService extends GetxService {
       Map<String, dynamic> orderData = order.toMap();
       orderData['created_at'] = FieldValue.serverTimestamp();
 
-      print('📦 Saving order to Firebase...');
-      print('   Order ID: $orderId');
-      print('   User ID: ${order.userId}');
-      print('   Items count: ${order.items.length}');
-      print('   Total amount: ${order.totalAmount}');
-
       await ordersCollection.doc(orderId).set(orderData);
 
-      print('✅ Order saved successfully: $orderId');
       return orderId;
     } catch (e) {
-      print('❌ Error saving order: $e');
       return null;
     }
   }
@@ -161,13 +143,9 @@ class FirestoreService extends GetxService {
   // Get user orders
   Future<List<app_models.Order>> getUserOrders(String userId) async {
     try {
-      print('📋 Fetching orders for user: $userId');
-
       QuerySnapshot snapshot = await ordersCollection
           .where('userId', isEqualTo: userId)
           .get();
-
-      print('   Found ${snapshot.docs.length} orders');
 
       final orders = snapshot.docs
           .map((doc) => app_models.Order.fromFirestore(doc))
@@ -176,10 +154,8 @@ class FirestoreService extends GetxService {
       // Sort by date in memory (descending - newest first)
       orders.sort((a, b) => b.orderDate.compareTo(a.orderDate));
 
-      print('✅ Returning ${orders.length} orders');
       return orders;
     } catch (e) {
-      print('❌ Error getting user orders: $e');
       return [];
     }
   }
@@ -193,7 +169,6 @@ class FirestoreService extends GetxService {
       }
       return null;
     } catch (e) {
-      print('Error getting order: $e');
       return null;
     }
   }
@@ -208,10 +183,8 @@ class FirestoreService extends GetxService {
 
       await addressesCollection.doc(addressId).set(addressData);
 
-      print('Address saved to Firebase: $addressId');
       return addressId;
     } catch (e) {
-      print('Error saving address: $e');
       return null;
     }
   }
@@ -225,7 +198,6 @@ class FirestoreService extends GetxService {
 
       return snapshot.docs.map((doc) => Address.fromFirestore(doc)).toList();
     } catch (e) {
-      print('Error getting user addresses: $e');
       return [];
     }
   }
@@ -238,10 +210,8 @@ class FirestoreService extends GetxService {
     try {
       updates['updated_at'] = FieldValue.serverTimestamp();
       await addressesCollection.doc(addressId).update(updates);
-      print('Address updated: $addressId');
       return true;
     } catch (e) {
-      print('Error updating address: $e');
       return false;
     }
   }
@@ -250,10 +220,8 @@ class FirestoreService extends GetxService {
   Future<bool> deleteAddress(String addressId) async {
     try {
       await addressesCollection.doc(addressId).delete();
-      print('Address deleted: $addressId');
       return true;
     } catch (e) {
-      print('Error deleting address: $e');
       return false;
     }
   }
@@ -265,10 +233,8 @@ class FirestoreService extends GetxService {
         ...paymentMethod.toMap(),
         'created_at': FieldValue.serverTimestamp(),
       });
-      print('Payment method saved: ${paymentMethod.id}');
       return true;
     } catch (e) {
-      print('Error saving payment method: $e');
       return false;
     }
   }
@@ -283,7 +249,6 @@ class FirestoreService extends GetxService {
           .map((doc) => PaymentMethod.fromFirestore(doc))
           .toList();
     } catch (e) {
-      print('Error getting payment methods: $e');
       return [];
     }
   }
@@ -296,10 +261,8 @@ class FirestoreService extends GetxService {
     try {
       updates['updated_at'] = FieldValue.serverTimestamp();
       await paymentMethodsCollection.doc(paymentMethodId).update(updates);
-      print('Payment method updated: $paymentMethodId');
       return true;
     } catch (e) {
-      print('Error updating payment method: $e');
       return false;
     }
   }
@@ -308,10 +271,8 @@ class FirestoreService extends GetxService {
   Future<bool> deletePaymentMethod(String paymentMethodId) async {
     try {
       await paymentMethodsCollection.doc(paymentMethodId).delete();
-      print('Payment method deleted: $paymentMethodId');
       return true;
     } catch (e) {
-      print('Error deleting payment method: $e');
       return false;
     }
   }

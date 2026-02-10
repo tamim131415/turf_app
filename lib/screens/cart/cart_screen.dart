@@ -125,7 +125,7 @@ class CartScreen extends StatelessWidget {
                         backgroundColor: Colors.green[700],
                       ),
                       onPressed: () {
-                        Get.toNamed(Routes.CHECKOUT);
+                        Get.toNamed(Routes.checkout);
                       },
                       child: Text(
                         'PROCEED TO CHECKOUT',

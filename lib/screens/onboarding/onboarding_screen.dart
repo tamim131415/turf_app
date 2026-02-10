@@ -6,10 +6,10 @@ class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
 
   @override
-  _OnboardingScreenState createState() => _OnboardingScreenState();
+  OnboardingScreenState createState() => OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
@@ -80,7 +80,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             elevation: 5,
                           ),
                           onPressed: () {
-                            Get.toNamed(Routes.LOGIN);
+                            Get.toNamed(Routes.login);
                           },
                           child: Text(
                             'GET STARTED',
@@ -102,7 +102,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               right: 10,
               child: TextButton(
                 onPressed: () {
-                  Get.offAllNamed(Routes.LOGIN);
+                  Get.offAllNamed(Routes.login);
                 },
                 child: Text(
                   'Skip',
@@ -169,7 +169,7 @@ class OnboardingPageWidget extends StatelessWidget {
             width: 200,
             height: 200,
             decoration: BoxDecoration(
-              color: page.color.withOpacity(0.1),
+              color: page.color.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(page.image, size: 80, color: page.color),

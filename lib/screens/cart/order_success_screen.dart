@@ -134,7 +134,7 @@ class OrderSuccessScreen extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-                          Get.offAllNamed(Routes.HOME);
+                          Get.offAllNamed(Routes.home);
                         },
                         child: Text(
                           'CONTINUE SHOPPING',

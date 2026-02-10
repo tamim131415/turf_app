@@ -5,27 +5,16 @@ import '../../controllers/auth_controller.dart';
 import '../../models/product.dart';
 import '../../widgets/product_card.dart';
 import '../../app/routes/app_routes.dart';
-import '../../services/firebase_connection_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> {
   final ProductController productController = Get.find<ProductController>();
-  final int _currentIndex = 0;
-
-  final List<String> _categories = [
-    'All',
-    'Jerseys',
-    'Shoes',
-    'Accessories',
-    'Balls',
-    'Training',
-  ];
 
   final TextEditingController _searchController = TextEditingController();
   final RxList<Product> _filteredProducts = <Product>[].obs;
@@ -56,11 +45,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _filterByCategory(String category) {
-    productController.filterByCategory(category);
-    _filterProducts(); // Re-apply search filter if any
-  }
-
   @override
   void dispose() {
     _searchController.dispose();
@@ -78,10 +62,10 @@ class HomeScreenContent extends StatefulWidget {
   const HomeScreenContent({super.key});
 
   @override
-  _HomeScreenContentState createState() => _HomeScreenContentState();
+  HomeScreenContentState createState() => HomeScreenContentState();
 }
 
-class _HomeScreenContentState extends State<HomeScreenContent> {
+class HomeScreenContentState extends State<HomeScreenContent> {
   final ProductController productController = Get.find<ProductController>();
   final AuthController authController = Get.find<AuthController>();
 
@@ -200,7 +184,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                   color: Colors.green[700],
                 ),
                 onPressed: () {
-                  Get.toNamed(Routes.INVENTORY);
+                  Get.toNamed(Routes.inventory);
                 },
                 tooltip: 'Inventory',
               );
@@ -235,13 +219,13 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
               ],
             ),
             onPressed: () {
-              Get.toNamed(Routes.CART);
+              Get.toNamed(Routes.cart);
             },
           ),
           // IconButton(
           //   icon: Icon(Icons.notifications, color: Colors.grey[700]),
           //   onPressed: () {
-          //     Get.toNamed(Routes.NOTIFICATIONS);
+          //     Get.toNamed(Routes.notifications);
           //   },
           // ),
           // // Firebase Connection Test Button
@@ -308,7 +292,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.green.withOpacity(0.3),
+                                color: Colors.green.withValues(alpha: 0.3),
                                 blurRadius: 10,
                                 offset: Offset(0, 5),
                               ),
@@ -337,7 +321,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.green.withOpacity(0.3),
+                            color: Colors.green.withValues(alpha: 0.3),
                             blurRadius: 15,
                             offset: Offset(0, 5),
                           ),
@@ -351,7 +335,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                             child: Icon(
                               Icons.sports_soccer,
                               size: 80,
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white.withValues(alpha: 0.2),
                             ),
                           ),
                           Padding(
@@ -382,7 +366,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                                 Text(
                                   'On all national team jerseys',
                                   style: TextStyle(
-                                    color: Colors.white.withOpacity(0.9),
+                                    color: Colors.white.withValues(alpha: 0.9),
                                     fontSize: 14,
                                   ),
                                 ),
@@ -445,7 +429,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                     ),
                     TextButton(
                       onPressed: () {
-                        Get.toNamed(Routes.ALL_PRODUCTS);
+                        Get.toNamed(Routes.allProducts);
                       },
                       child: Text(
                         'View All',

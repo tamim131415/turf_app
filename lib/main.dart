@@ -22,9 +22,8 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    print('Firebase initialized successfully');
   } catch (e) {
-    print('Firebase initialization failed: $e');
+    // Firebase already initialized or configuration error - app continues in offline mode
   }
 
   // Initialize services
@@ -55,7 +54,7 @@ class TurfMateApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Turf-Mate',
       theme: AppTheme.lightTheme,
-      initialRoute: Routes.SPLASH,
+      initialRoute: Routes.splash,
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
     );

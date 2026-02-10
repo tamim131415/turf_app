@@ -33,7 +33,7 @@ class FirebaseConnectionService {
         await firestore.enableNetwork();
 
         // Try to read from Firestore with timeout
-        final testDoc = await firestore
+        await firestore
             .collection('connection_test')
             .doc('test')
             .get()
@@ -75,7 +75,7 @@ class FirebaseConnectionService {
       return {
         'project_id': app.options.projectId,
         'app_id': app.options.appId,
-        'api_key': (app.options.apiKey?.substring(0, 10) ?? 'N/A') + '...',
+        'api_key': '${app.options.apiKey.substring(0, 10)}...',
         'storage_bucket': app.options.storageBucket,
         'messaging_sender_id': app.options.messagingSenderId,
         'auth_domain': app.options.authDomain,
@@ -262,8 +262,7 @@ class FirebaseConnectionService {
                                               ],
                                             ),
                                           ),
-                                        )
-                                        .toList(),
+                                        ),
                                   ],
                                 );
                               }

@@ -6,7 +6,7 @@ import '../../app/routes/app_routes.dart';
 class PaymentMethodsScreen extends StatelessWidget {
   final PaymentMethodController controller = Get.put(PaymentMethodController());
 
-  PaymentMethodsScreen({Key? key}) : super(key: key);
+  PaymentMethodsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class PaymentMethodsScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 24),
                 ElevatedButton.icon(
-                  onPressed: () => Get.toNamed(Routes.ADD_PAYMENT_METHOD),
+                  onPressed: () => Get.toNamed(Routes.addPaymentMethod),
                   icon: Icon(Icons.add),
                   label: Text('Add Payment Method'),
                   style: ElevatedButton.styleFrom(
@@ -130,7 +130,7 @@ class PaymentMethodsScreen extends StatelessWidget {
                           break;
                         case 'edit':
                           Get.toNamed(
-                            Routes.ADD_PAYMENT_METHOD,
+                            Routes.addPaymentMethod,
                             arguments: paymentMethod,
                           );
                           break;
@@ -150,7 +150,7 @@ class PaymentMethodsScreen extends StatelessWidget {
         () => controller.paymentMethods.isEmpty
             ? SizedBox.shrink()
             : FloatingActionButton.extended(
-                onPressed: () => Get.toNamed(Routes.ADD_PAYMENT_METHOD),
+                onPressed: () => Get.toNamed(Routes.addPaymentMethod),
                 icon: Icon(Icons.add),
                 label: Text('Add Payment'),
               ),

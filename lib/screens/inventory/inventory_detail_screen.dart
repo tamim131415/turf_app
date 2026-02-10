@@ -71,7 +71,7 @@ class InventoryDetailScreen extends StatelessWidget {
                     Spacer(),
                     GestureDetector(
                       onTap: () {
-                        Get.toNamed(Routes.EDIT_PRODUCT, arguments: product);
+                        Get.toNamed(Routes.editProduct, arguments: product);
                       },
                       child: Container(
                         padding: EdgeInsets.all(8),
@@ -248,7 +248,7 @@ class InventoryDetailScreen extends StatelessWidget {
                       Container(
                         padding: EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: stockColor.withOpacity(0.1),
+                          color: stockColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(color: stockColor, width: 2),
                         ),

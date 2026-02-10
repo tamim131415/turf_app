@@ -49,7 +49,6 @@ class AuthService {
 
       return userCredential;
     } catch (e) {
-      print('Error signing in with Google: $e');
       rethrow;
     }
   }
@@ -77,7 +76,7 @@ class AuthService {
         await userDoc.update({'lastLogin': FieldValue.serverTimestamp()});
       }
     } catch (e) {
-      print('Error saving user to Firestore: $e');
+      // Failed to update last login timestamp - non-critical
     }
   }
 
@@ -91,7 +90,6 @@ class AuthService {
         });
       }
     } catch (e) {
-      print('Error updating profile image: $e');
       rethrow;
     }
   }
@@ -106,7 +104,6 @@ class AuthService {
         });
       }
     } catch (e) {
-      print('Error updating cover image: $e');
       rethrow;
     }
   }
@@ -121,7 +118,6 @@ class AuthService {
       }
       return null;
     } catch (e) {
-      print('Error getting user profile: $e');
       return null;
     }
   }
@@ -132,7 +128,6 @@ class AuthService {
       await _googleSignIn.signOut();
       await _auth.signOut();
     } catch (e) {
-      print('Error signing out: $e');
       rethrow;
     }
   }
@@ -143,7 +138,6 @@ class AuthService {
       final doc = await _firestore.collection('users').doc(uid).get();
       return doc.data();
     } catch (e) {
-      print('Error getting user data: $e');
       return null;
     }
   }
@@ -163,7 +157,6 @@ class AuthService {
 
       return userCredential;
     } catch (e) {
-      print('Error signing in with email: $e');
       rethrow;
     }
   }
@@ -200,7 +193,6 @@ class AuthService {
 
       return userCredential;
     } catch (e) {
-      print('Error registering with email: $e');
       rethrow;
     }
   }
@@ -213,7 +205,6 @@ class AuthService {
         await user.sendEmailVerification();
       }
     } catch (e) {
-      print('Error sending email verification: $e');
       rethrow;
     }
   }
@@ -234,7 +225,7 @@ class AuthService {
         });
       }
     } catch (e) {
-      print('Error updating email verification status: $e');
+      // Failed to update email verification status - non-critical
     }
   }
 
@@ -243,7 +234,6 @@ class AuthService {
     try {
       await _auth.sendPasswordResetEmail(email: email);
     } catch (e) {
-      print('Error sending password reset email: $e');
       rethrow;
     }
   }

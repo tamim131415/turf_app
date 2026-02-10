@@ -10,10 +10,10 @@ class EditProductScreen extends StatefulWidget {
   const EditProductScreen({super.key});
 
   @override
-  _EditProductScreenState createState() => _EditProductScreenState();
+  EditProductScreenState createState() => EditProductScreenState();
 }
 
-class _EditProductScreenState extends State<EditProductScreen> {
+class EditProductScreenState extends State<EditProductScreen> {
   final ProductController productController = Get.find<ProductController>();
   final CloudinaryService cloudinaryService = Get.find<CloudinaryService>();
 
@@ -453,6 +453,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
             // Team Dropdown
             DropdownButtonFormField<String>(
+              // ignore: deprecated_member_use
               value: selectedTeam,
               decoration: InputDecoration(
                 labelText: 'Team',
@@ -474,6 +475,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
             // Category Dropdown
             DropdownButtonFormField<String>(
+              // ignore: deprecated_member_use
               value: selectedCategory,
               decoration: InputDecoration(
                 labelText: 'Category',
@@ -498,6 +500,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
             // Brand Dropdown
             DropdownButtonFormField<String>(
+              // ignore: deprecated_member_use
               value: selectedBrand,
               decoration: InputDecoration(
                 labelText: 'Brand',

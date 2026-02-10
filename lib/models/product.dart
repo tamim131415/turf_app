@@ -50,6 +50,7 @@ class Product {
       'reviewCount': reviewCount,
       'isFavorite': isFavorite,
       'sizes': sizes,
+      // ignore: deprecated_member_use
       'colors': colors.map((color) => color.value).toList(),
       'description': description,
       'quantity': quantity,

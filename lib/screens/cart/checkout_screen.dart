@@ -91,7 +91,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   TextButton(
                     onPressed: () {
                       Get.back();
-                      Get.toNamed(Routes.ADD_ADDRESS)?.then((_) {
+                      Get.toNamed(Routes.addAddress)?.then((_) {
                         _loadDefaultAddress();
                       });
                     },
@@ -121,7 +121,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           ElevatedButton(
                             onPressed: () {
                               Get.back();
-                              Get.toNamed(Routes.ADD_ADDRESS)?.then((_) {
+                              Get.toNamed(Routes.addAddress)?.then((_) {
                                 _loadDefaultAddress();
                               });
                             },
@@ -221,7 +221,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   TextButton(
                     onPressed: () {
                       Get.back();
-                      Get.toNamed(Routes.ADD_PAYMENT_METHOD)?.then((_) {
+                      Get.toNamed(Routes.addPaymentMethod)?.then((_) {
                         _loadDefaultPaymentMethod();
                       });
                     },
@@ -247,7 +247,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           ElevatedButton(
                             onPressed: () {
                               Get.back();
-                              Get.toNamed(Routes.ADD_PAYMENT_METHOD)?.then((_) {
+                              Get.toNamed(Routes.addPaymentMethod)?.then((_) {
                                 _loadDefaultPaymentMethod();
                               });
                             },
@@ -591,7 +591,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 );
                                 if (orderId != null) {
                                   Get.toNamed(
-                                    Routes.ORDER_SUCCESS,
+                                    Routes.orderSuccess,
                                     arguments: orderId,
                                   );
                                 }

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HelpSupportScreen extends StatelessWidget {
-  const HelpSupportScreen({Key? key}) : super(key: key);
+  const HelpSupportScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class HelpSupportScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.green.withOpacity(0.3),
+                  color: Colors.green.withValues(alpha: 0.3),
                   blurRadius: 12,
                   offset: Offset(0, 4),
                 ),
@@ -57,7 +57,7 @@ class HelpSupportScreen extends StatelessWidget {
                   'Get assistance anytime, 24/7',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -223,7 +223,7 @@ class HelpSupportScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 8,
             offset: Offset(0, 2),
           ),
@@ -241,7 +241,7 @@ class HelpSupportScreen extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
+                    color: color.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(icon, color: color, size: 24),
@@ -599,7 +599,7 @@ Call: +880 1998-354369''',
               Container(
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(16),
                     topRight: Radius.circular(16),
@@ -678,7 +678,9 @@ Call: +880 1998-354369''',
 
 // FAQ Screen
 class FAQScreen extends StatelessWidget {
-  final List<FAQItem> faqs = [
+  const FAQScreen({super.key});
+
+  final List<FAQItem> faqs = const [
     FAQItem(
       question: 'How do I place an order?',
       answer:
@@ -759,13 +761,13 @@ class FAQItem {
   final String question;
   final String answer;
 
-  FAQItem({required this.question, required this.answer});
+  const FAQItem({required this.question, required this.answer});
 }
 
 class FAQTile extends StatefulWidget {
   final FAQItem faq;
 
-  const FAQTile({Key? key, required this.faq}) : super(key: key);
+  const FAQTile({super.key, required this.faq});
 
   @override
   State<FAQTile> createState() => _FAQTileState();
@@ -783,7 +785,7 @@ class _FAQTileState extends State<FAQTile> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 8,
             offset: Offset(0, 2),
           ),
@@ -797,7 +799,7 @@ class _FAQTileState extends State<FAQTile> {
           leading: Container(
             padding: EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.purple.withOpacity(0.1),
+              color: Colors.purple.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(Icons.help_outline, color: Colors.purple[700]),

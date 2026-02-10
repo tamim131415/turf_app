@@ -45,7 +45,6 @@ class ProductController extends GetxController {
           await _localStorageService.saveProducts(firestoreProducts);
         }
       } catch (e) {
-        print('Firestore failed: $e, trying local storage...');
         isOnline.value = false;
 
         // Fallback to local storage
@@ -74,7 +73,6 @@ class ProductController extends GetxController {
         try {
           await _firestoreService.toggleFavorite(product.id, newFavoriteStatus);
         } catch (e) {
-          print('Firebase update failed: $e');
           isOnline.value = false;
         }
       }
@@ -166,7 +164,7 @@ class ProductController extends GetxController {
     try {
       cartItems.value = await _localStorageService.getCartItems();
     } catch (e) {
-      print('Error loading cart items: $e');
+      // Silently fail - cart will be empty on error
     }
   }
 
@@ -224,7 +222,7 @@ class ProductController extends GetxController {
           products.value = localProducts;
         }
       } catch (e) {
-        print('Error loading products: $e');
+        // Fallback to offline data already loaded
       }
 
       updateFavoriteProducts();
@@ -255,7 +253,7 @@ class ProductController extends GetxController {
           products.value = localProducts;
         }
       } catch (e) {
-        print('Error loading products: $e');
+        // Fallback to offline data already loaded
       }
 
       updateFavoriteProducts();
@@ -278,7 +276,7 @@ class ProductController extends GetxController {
   }
 
   double get cartTotal {
-    return cartItems.fold(0.0, (sum, item) => sum + item.totalPrice);
+    return cartItems.fold(0.0, (total, item) => total + item.totalPrice);
   }
 
   // Place order and reduce inventory
@@ -314,18 +312,12 @@ class ProductController extends GetxController {
         orderDate: DateTime.now(),
       );
 
-      print('🛒 Placing order for user: $userId');
-      print('   Items: ${cartItems.length}');
-      print('   Total: ${cartTotal + 100}');
-
       // Save order to Firebase
       final orderId = await _firestoreService.saveOrder(order);
 
       if (orderId == null) {
         throw Exception('Failed to save order');
       }
-
-      print('✅ Order saved with ID: $orderId');
 
       // Reduce inventory for each cart item
       for (CartItem cartItem in cartItems) {
@@ -360,7 +352,7 @@ class ProductController extends GetxController {
               updatedProduct.toMap(),
             );
           } catch (e) {
-            print('Failed to update product in Firebase: $e');
+            // Update offline, will sync later
           }
 
           // Update locally
@@ -372,8 +364,6 @@ class ProductController extends GetxController {
       // Clear cart
       cartItems.clear();
       await _localStorageService.saveCartItems(cartItems);
-
-      print('✅ Order completed successfully! ID: $orderId');
 
       Get.snackbar(
         'Success',
@@ -394,7 +384,6 @@ class ProductController extends GetxController {
     } finally {
       isLoading.value = false;
     }
-    return null;
   }
 
   // Sync local data to Firebase when connection is restored
@@ -417,7 +406,7 @@ class ProductController extends GetxController {
             await _firestoreService.addProduct(product);
             successCount++;
           } catch (e) {
-            print('Failed to upload product ${product.name}: $e');
+            // Skip failed product, continue syncing others
           }
         }
 
@@ -528,7 +517,7 @@ class ProductController extends GetxController {
             );
           }
         } catch (e) {
-          print('Failed to upload product: $e');
+          // Skip failed product, continue uploading others
         }
       }
 
@@ -637,10 +626,8 @@ class ProductController extends GetxController {
           batch.delete(docRef);
         }
         await batch.commit();
-        print('All products deleted from Firebase');
         isOnline.value = true;
       } catch (e) {
-        print('Firebase batch delete failed: $e');
         isOnline.value = false;
       }
 
@@ -680,10 +667,8 @@ class ProductController extends GetxController {
             .collection('products')
             .doc(productId)
             .delete();
-        print('Product deleted from Firebase');
         isOnline.value = true;
       } catch (e) {
-        print('Firebase delete failed: $e');
         isOnline.value = false;
       }
 
@@ -728,10 +713,8 @@ class ProductController extends GetxController {
       // Try to update in Firebase first
       try {
         await _firestoreService.updateProduct(product.id, product.toMap());
-        print('Product updated in Firebase: ${product.name}');
         isOnline.value = true;
       } catch (e) {
-        print('Firebase update failed: $e');
         isOnline.value = false;
       }
 
@@ -759,8 +742,6 @@ class ProductController extends GetxController {
 
       // Save to local storage
       await _localStorageService.saveProducts(products);
-
-      print('Product updated locally: ${product.name}');
     } catch (e) {
       Get.snackbar(
         'Error',

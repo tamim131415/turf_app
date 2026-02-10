@@ -27,8 +27,6 @@ class LocalImageService extends GetxService {
     bool compress = true,
   }) async {
     try {
-      print('💾 Saving image locally for product: $productId');
-
       // Choose directory (cache vs permanent)
       Directory directory = permanent
           ? await getDocumentsDirectory()
@@ -45,19 +43,13 @@ class LocalImageService extends GetxService {
           '${permanent ? '' : 'scaled_'}${productId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
       String localPath = path.join(productsDir.path, fileName);
 
-      File savedFile;
-
       if (compress) {
         // Compress and resize image
-        print('🔧 Compressing image...');
-        savedFile = await _compressAndSaveImage(imageFile, localPath);
+        await _compressAndSaveImage(imageFile, localPath);
       } else {
         // Just copy the file
-        savedFile = await imageFile.copy(localPath);
+        await imageFile.copy(localPath);
       }
-
-      print('✅ Image saved locally: $localPath');
-      print('📏 File size: ${await savedFile.length()} bytes');
 
       Get.snackbar(
         'Success',
@@ -70,7 +62,6 @@ class LocalImageService extends GetxService {
 
       return localPath;
     } catch (e) {
-      print('❌ Error saving image locally: $e');
       Get.snackbar(
         'Error',
         'Failed to save image: $e',
@@ -138,7 +129,6 @@ class LocalImageService extends GetxService {
 
       return imagePaths;
     } catch (e) {
-      print('Error getting local images: $e');
       return [];
     }
   }
@@ -149,12 +139,10 @@ class LocalImageService extends GetxService {
       File imageFile = File(imagePath);
       if (await imageFile.exists()) {
         await imageFile.delete();
-        print('🗑️ Deleted local image: $imagePath');
         return true;
       }
       return false;
     } catch (e) {
-      print('Error deleting local image: $e');
       return false;
     }
   }
@@ -182,7 +170,6 @@ class LocalImageService extends GetxService {
         'documentsDirectory': (await getDocumentsDirectory()).path,
       };
     } catch (e) {
-      print('Error getting storage info: $e');
       return {};
     }
   }
@@ -195,7 +182,6 @@ class LocalImageService extends GetxService {
 
       if (await cacheProductsDir.exists()) {
         await cacheProductsDir.delete(recursive: true);
-        print('🧹 Cache cleared');
 
         Get.snackbar(
           'Success',
@@ -205,7 +191,7 @@ class LocalImageService extends GetxService {
         );
       }
     } catch (e) {
-      print('Error clearing cache: $e');
+      // Failed to clear cache - directory may not exist or be inaccessible
     }
   }
 }

@@ -43,7 +43,7 @@ class AuthController extends GetxController {
       final userCredential = await _authService.signInWithGoogle();
 
       if (userCredential != null) {
-        Get.offAllNamed(Routes.HOME);
+        Get.offAllNamed(Routes.home);
         Get.snackbar(
           'Success',
           'Welcome ${userCredential.user?.displayName ?? 'User'}!',
@@ -73,14 +73,14 @@ class AuthController extends GetxController {
       if (userCredential != null) {
         // Skip email verification for admin user
         if (email == 'admin@turfmate.com') {
-          Get.offAllNamed(Routes.HOME);
+          Get.offAllNamed(Routes.home);
           Get.snackbar('Success', 'Admin login successful!');
         } else if (userCredential.user?.emailVerified == true) {
-          Get.offAllNamed(Routes.HOME);
+          Get.offAllNamed(Routes.home);
           Get.snackbar('Success', 'Login successful!');
         } else {
           // Email not verified, go to verification screen
-          Get.offAllNamed(Routes.EMAIL_VERIFICATION);
+          Get.offAllNamed(Routes.emailVerification);
           Get.snackbar(
             'Email Not Verified',
             'Please verify your email to continue',
@@ -133,7 +133,7 @@ class AuthController extends GetxController {
       if (userCredential != null) {
         // Skip email verification for admin user
         if (email == 'admin@turfmate.com') {
-          Get.offAllNamed(Routes.HOME);
+          Get.offAllNamed(Routes.home);
           Get.snackbar(
             'Success',
             'Admin account created successfully!',
@@ -142,7 +142,7 @@ class AuthController extends GetxController {
           );
         } else {
           // Navigate to email verification screen
-          Get.offAllNamed(Routes.EMAIL_VERIFICATION);
+          Get.offAllNamed(Routes.emailVerification);
           Get.snackbar(
             'Success',
             'Account created! Please verify your email.',
@@ -185,7 +185,6 @@ class AuthController extends GetxController {
       }
       return isVerified;
     } catch (e) {
-      print('Error checking email verification: $e');
       return false;
     }
   }
@@ -209,7 +208,7 @@ class AuthController extends GetxController {
       await prefs.remove('cover_image_url');
 
       await _authService.signOut();
-      Get.offAllNamed(Routes.LOGIN);
+      Get.offAllNamed(Routes.login);
       Get.snackbar('Success', 'Logged out successfully');
     } catch (e) {
       Get.snackbar('Error', 'Failed to logout: ${e.toString()}');

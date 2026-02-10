@@ -7,10 +7,10 @@ class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  SplashScreenState createState() => SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
+class SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -29,9 +29,9 @@ class _SplashScreenState extends State<SplashScreen>
       final authController = Get.find<AuthController>();
       // Check if user is already logged in
       if (authController.isLoggedIn.value) {
-        Get.offNamed(Routes.HOME);
+        Get.offNamed(Routes.home);
       } else {
-        Get.offNamed(Routes.ONBOARDING);
+        Get.offNamed(Routes.onboarding);
       }
     });
   }

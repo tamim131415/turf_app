@@ -5,7 +5,7 @@ import '../../services/auth_service.dart';
 import '../../models/payment_method.dart';
 
 class AddPaymentMethodScreen extends StatefulWidget {
-  const AddPaymentMethodScreen({Key? key}) : super(key: key);
+  const AddPaymentMethodScreen({super.key});
 
   @override
   State<AddPaymentMethodScreen> createState() => _AddPaymentMethodScreenState();
@@ -84,6 +84,7 @@ class _AddPaymentMethodScreenState extends State<AddPaymentMethodScreen> {
             ),
             SizedBox(height: 8),
             DropdownButtonFormField<String>(
+              // ignore: deprecated_member_use
               value: _selectedType,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
@@ -242,6 +243,7 @@ class _AddPaymentMethodScreenState extends State<AddPaymentMethodScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         DropdownButtonFormField<String>(
+          // ignore: deprecated_member_use
           value: _selectedMobileProvider,
           decoration: InputDecoration(
             labelText: 'Mobile Banking Provider',

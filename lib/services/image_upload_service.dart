@@ -20,43 +20,30 @@ class ImageUploadService extends GetxService {
   // Test Firebase Storage connection
   Future<void> _testFirebaseStorageConnection() async {
     try {
-      print('🔥 Testing Firebase Storage connection...');
-
       // Try to get storage bucket info
       final ref = _storage.ref();
-      print('📦 Storage bucket: ${ref.bucket}');
 
       // Try to list root directory (should work even if empty)
       await ref.list(ListOptions(maxResults: 1));
-
-      print('✅ Firebase Storage connection successful!');
     } catch (e) {
-      print('❌ Firebase Storage connection failed: $e');
-      print('🚨 Please check Firebase configuration and Storage rules');
+      // Offline or permission error - Firebase Storage unavailable
     }
   }
 
   // Upload image to Firebase Storage
   Future<String?> uploadProductImage(File imageFile, String productId) async {
     try {
-      print('🔥 Starting image upload for product: $productId');
-      print('📁 File path: ${imageFile.path}');
-      print('📏 File size: ${await imageFile.length()} bytes');
-
       // Check if file exists
       if (!await imageFile.exists()) {
-        print('❌ File does not exist');
         throw Exception('Selected file does not exist');
       }
 
       // Create a unique filename
       final String fileName =
           'products/${productId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      print('📝 Upload filename: $fileName');
 
       // Get reference to the file location
       final Reference storageRef = _storage.ref().child(fileName);
-      print('🎯 Storage reference: ${storageRef.fullPath}');
 
       // Show upload progress
       Get.dialog(
@@ -78,8 +65,6 @@ class ImageUploadService extends GetxService {
         barrierDismissible: false,
       );
 
-      print('🚀 Starting Firebase upload...');
-
       // Upload the file
       final UploadTask uploadTask = storageRef.putFile(
         imageFile,
@@ -94,27 +79,17 @@ class ImageUploadService extends GetxService {
 
       // Listen to upload progress
       uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
-        double progress = snapshot.bytesTransferred / snapshot.totalBytes;
-        print('📊 Upload progress: ${(progress * 100).toStringAsFixed(1)}%');
+        // Progress tracking
       });
 
-      print('⏳ Waiting for upload completion...');
       // Wait for upload to complete
       final TaskSnapshot snapshot = await uploadTask;
 
-      print('✅ Upload completed successfully!');
-      print('📊 Upload state: ${snapshot.state}');
-      print('📈 Bytes transferred: ${snapshot.bytesTransferred}');
-
-      print('🔗 Getting download URL...');
       // Get download URL
       final String downloadUrl = await snapshot.ref.getDownloadURL();
 
       // Close loading dialog
       Get.back();
-
-      print('🎉 Image upload successful!');
-      print('🌐 Download URL: $downloadUrl');
 
       // Show success message
       Get.snackbar(
@@ -127,11 +102,7 @@ class ImageUploadService extends GetxService {
       );
 
       return downloadUrl;
-    } catch (e, stackTrace) {
-      print('❌ ERROR during image upload:');
-      print('🔥 Error: $e');
-      print('📍 Stack trace: $stackTrace');
-
+    } catch (e) {
       // Close loading dialog if still open
       if (Get.isDialogOpen ?? false) {
         Get.back();
@@ -167,10 +138,8 @@ class ImageUploadService extends GetxService {
       final Reference imageRef = _storage.refFromURL(imageUrl);
       await imageRef.delete();
 
-      print('Image deleted successfully: $imageUrl');
       return true;
     } catch (e) {
-      print('Error deleting image: $e');
       return false;
     }
   }
@@ -200,7 +169,6 @@ class ImageUploadService extends GetxService {
         'totalSizeMB': (totalSize / (1024 * 1024)).toStringAsFixed(2),
       };
     } catch (e) {
-      print('Error getting storage info: $e');
       return {'totalFiles': 0, 'totalSize': 0, 'totalSizeMB': '0.00'};
     }
   }

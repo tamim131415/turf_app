@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/product_controller.dart';
-import '../../models/product.dart';
 import '../../widgets/product_card.dart';
 
 class AllProductsScreen extends StatefulWidget {
@@ -339,32 +338,6 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
             } else {
               productController.filterByCategory(value);
             }
-          },
-          selectedColor: Colors.green[100],
-          checkmarkColor: Colors.green[700],
-          labelStyle: TextStyle(
-            color: isSelected ? Colors.green[700] : Colors.grey[700],
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          ),
-          side: BorderSide(
-            color: isSelected ? Colors.green[700]! : Colors.grey[300]!,
-          ),
-        ),
-      );
-    });
-  }
-
-  Widget _buildCategoryChip(String category) {
-    return Obx(() {
-      final isSelected = productController.selectedCategory.value == category;
-
-      return Container(
-        margin: EdgeInsets.only(right: 8),
-        child: FilterChip(
-          label: Text(category),
-          selected: isSelected,
-          onSelected: (selected) {
-            productController.filterByCategory(category);
           },
           selectedColor: Colors.green[100],
           checkmarkColor: Colors.green[700],

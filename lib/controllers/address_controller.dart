@@ -25,7 +25,6 @@ class AddressController extends GetxController {
         addresses.value = await _firestoreService.getUserAddresses(userId);
       }
     } catch (e) {
-      print('Error loading addresses: $e');
       Get.snackbar('Error', 'Failed to load addresses');
     } finally {
       isLoading.value = false;
@@ -49,7 +48,6 @@ class AddressController extends GetxController {
         Get.snackbar('Success', 'Address added successfully');
       }
     } catch (e) {
-      print('Error adding address: $e');
       Get.snackbar('Error', 'Failed to add address');
     } finally {
       isLoading.value = false;
@@ -76,7 +74,6 @@ class AddressController extends GetxController {
         Get.snackbar('Success', 'Address updated successfully');
       }
     } catch (e) {
-      print('Error updating address: $e');
       Get.snackbar('Error', 'Failed to update address');
     } finally {
       isLoading.value = false;
@@ -94,7 +91,6 @@ class AddressController extends GetxController {
         Get.snackbar('Success', 'Address deleted successfully');
       }
     } catch (e) {
-      print('Error deleting address: $e');
       Get.snackbar('Error', 'Failed to delete address');
     } finally {
       isLoading.value = false;
@@ -114,7 +110,6 @@ class AddressController extends GetxController {
       await loadAddresses();
       Get.snackbar('Success', 'Default address updated');
     } catch (e) {
-      print('Error setting default address: $e');
       Get.snackbar('Error', 'Failed to set default address');
     } finally {
       isLoading.value = false;

@@ -177,7 +177,7 @@ class ProductDetailScreen extends StatelessWidget {
                                   vertical: 6,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.amber.withOpacity(0.1),
+                                  color: Colors.amber.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Row(
@@ -484,7 +484,7 @@ class ProductDetailScreen extends StatelessWidget {
                                           quantity:
                                               detailController.quantity.value,
                                         );
-                                        Get.toNamed(Routes.CART);
+                                        Get.toNamed(Routes.cart);
                                       },
                                       child: Text(
                                         'BUY NOW',
