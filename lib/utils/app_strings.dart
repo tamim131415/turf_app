@@ -393,4 +393,40 @@ class AppStrings {
   static const String addressUpdatedSuccessfully =
       'Address updated successfully';
   static const String failedToUpdateAddress = 'Failed to update address';
+
+  // Additional Controller Messages
+  static const String failedToSaveOrder = 'Failed to save order';
+  static const String uploadingDataToFirebase = 'Uploading data to Firebase...';
+  static const String sendingProductsToFirebase =
+      'Sending ${0} products to Firebase...';
+  static const String successfullySyncedProducts =
+      'Successfully synced ${0} products to Firebase!';
+  static const String noProductsFoundToSync = 'No products found to sync';
+  static const String noProductsFoundToUpload = 'No products found to upload';
+  static const String connectionSuccessful =
+      'Connection successful! Found ${0} products.';
+  static const String connectionFailed = 'Connection failed';
+  static const String failedToSyncData = 'Failed to sync data';
+  static const String failedToTestConnection = 'Failed to test connection';
+  static const String failedToPickImage = 'Failed to pick image';
+  static const String failedToTakePhoto = 'Failed to take photo';
+  static const String pleaseFillProductNameAndPrice =
+      'Please fill in product name and price';
+  static const String pleaseEnterStockQuantity =
+      'Please enter the stock quantity';
+  static const String pleaseSelectAtLeastOneSize =
+      'Please select at least one size for';
+
+  // Additional Error Messages
+  static const String failedToSignInWithGoogle =
+      'Failed to sign in with Google';
+  static const String emailNotVerified = 'Email Not Verified';
+  static const String pleaseVerifyEmail =
+      'Please verify your email to continue';
+  static const String syncing = 'Syncing';
+  static const String syncComplete = 'Sync Complete';
+  static const String syncError = 'Sync Error';
+  static const String firebaseTest = 'Firebase Test';
+  static const String noProductsToUpload = 'No Data';
+  static const String pending = 'Pending';
 }

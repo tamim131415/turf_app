@@ -90,8 +90,8 @@ class AddProductScreenState extends State<AddProductScreen> {
       }
     } catch (e) {
       Get.snackbar(
-        'Error',
-        'Failed to pick image: ${e.toString()}',
+        AppStrings.error,
+        '${AppStrings.failedToPickImage}: ${e.toString()}',
         backgroundColor: Colors.red[100],
         colorText: Colors.red[800],
         snackPosition: SnackPosition.TOP,
@@ -114,8 +114,8 @@ class AddProductScreenState extends State<AddProductScreen> {
       }
     } catch (e) {
       Get.snackbar(
-        'Error',
-        'Failed to take photo: ${e.toString()}',
+        AppStrings.error,
+        '${AppStrings.failedToTakePhoto}: ${e.toString()}',
         backgroundColor: Colors.red[100],
         colorText: Colors.red[800],
         snackPosition: SnackPosition.TOP,
@@ -126,8 +126,8 @@ class AddProductScreenState extends State<AddProductScreen> {
   Future<void> _addProduct() async {
     if (nameController.text.isEmpty || priceController.text.isEmpty) {
       Get.snackbar(
-        'Error',
-        'Please fill in product name and price',
+        AppStrings.error,
+        AppStrings.pleaseFillProductNameAndPrice,
         backgroundColor: Colors.red[100],
         colorText: Colors.red[800],
         snackPosition: SnackPosition.TOP,
@@ -137,8 +137,8 @@ class AddProductScreenState extends State<AddProductScreen> {
 
     if (quantityController.text.isEmpty) {
       Get.snackbar(
-        'Error',
-        'Please enter the stock quantity',
+        AppStrings.error,
+        AppStrings.pleaseEnterStockQuantity,
         backgroundColor: Colors.red[100],
         colorText: Colors.red[800],
         snackPosition: SnackPosition.TOP,
@@ -150,8 +150,8 @@ class AddProductScreenState extends State<AddProductScreen> {
     if ((selectedCategory == 'Jerseys' || selectedCategory == 'Shoes') &&
         selectedSizes.isEmpty) {
       Get.snackbar(
-        'Error',
-        'Please select at least one size for ${selectedCategory.toLowerCase()}',
+        AppStrings.error,
+        '${AppStrings.pleaseSelectAtLeastOneSize} ${selectedCategory.toLowerCase()}',
         backgroundColor: Colors.red[100],
         colorText: Colors.red[800],
         snackPosition: SnackPosition.TOP,
@@ -264,8 +264,8 @@ class AddProductScreenState extends State<AddProductScreen> {
       });
 
       Get.snackbar(
-        'Error',
-        'Failed to add product: ${e.toString()}',
+        AppStrings.error,
+        '${AppStrings.failedToAddProduct}: ${e.toString()}',
         backgroundColor: Colors.red[100],
         colorText: Colors.red[800],
         snackPosition: SnackPosition.TOP,

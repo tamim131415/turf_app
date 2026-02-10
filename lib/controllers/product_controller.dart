@@ -206,7 +206,10 @@ class ProductController extends GetxController {
       products.value = categoryProducts;
       updateFavoriteProducts();
     } catch (e) {
-      Get.snackbar('Error', 'Failed to filter products: $e');
+      Get.snackbar(
+        AppStrings.error,
+        '${AppStrings.failedToFilterProducts}: $e',
+      );
     } finally {
       isLoading.value = false;
     }
@@ -216,8 +219,8 @@ class ProductController extends GetxController {
     try {
       filterType.value = 'team';
       selectedTeam.value = team;
-      selectedCategory.value = 'All';
-      selectedBrand.value = 'All';
+      selectedCategory.value = AppStrings.all;
+      selectedBrand.value = AppStrings.all;
       isLoading.value = true;
 
       // Load all products and filter by team
@@ -237,7 +240,10 @@ class ProductController extends GetxController {
 
       updateFavoriteProducts();
     } catch (e) {
-      Get.snackbar('Error', 'Failed to filter products: $e');
+      Get.snackbar(
+        AppStrings.error,
+        '${AppStrings.failedToFilterProducts}: $e',
+      );
     } finally {
       isLoading.value = false;
     }
@@ -247,8 +253,8 @@ class ProductController extends GetxController {
     try {
       filterType.value = 'brand';
       selectedBrand.value = brand;
-      selectedCategory.value = 'All';
-      selectedTeam.value = 'All';
+      selectedCategory.value = AppStrings.all;
+      selectedTeam.value = AppStrings.all;
       isLoading.value = true;
 
       // Load all products and filter by brand (currently we'll show all)
@@ -268,16 +274,20 @@ class ProductController extends GetxController {
 
       updateFavoriteProducts();
     } catch (e) {
-      Get.snackbar('Error', 'Failed to filter products: $e');
+      Get.snackbar(
+        AppStrings.error,
+        '${AppStrings.failedToFilterProducts}: $e',
+      );
     } finally {
       isLoading.value = false;
     }
   }
 
   List<Product> get filteredProducts {
-    if (filterType.value == 'team' && selectedTeam.value != 'All') {
+    if (filterType.value == 'team' && selectedTeam.value != AppStrings.all) {
       return products.where((p) => p.team == selectedTeam.value).toList();
-    } else if (filterType.value == 'brand' && selectedBrand.value != 'All') {
+    } else if (filterType.value == 'brand' &&
+        selectedBrand.value != AppStrings.all) {
       return products.where((p) => p.brand == selectedBrand.value).toList();
     } else if (selectedCategory.value == 'All') {
       return products;
@@ -304,7 +314,7 @@ class ProductController extends GetxController {
       final userId = _authService.currentUser?.uid ?? '';
 
       if (userId.isEmpty) {
-        throw Exception('User not logged in');
+        throw Exception(AppStrings.userNotLoggedIn);
       }
 
       // Create order object
@@ -318,7 +328,7 @@ class ProductController extends GetxController {
         email: email,
         address: address,
         paymentMethod: paymentMethod,
-        orderStatus: 'Pending',
+        orderStatus: AppStrings.pending,
         orderDate: DateTime.now(),
       );
 
@@ -326,7 +336,7 @@ class ProductController extends GetxController {
       final orderId = await _firestoreService.saveOrder(order);
 
       if (orderId == null) {
-        throw Exception('Failed to save order');
+        throw Exception(AppStrings.failedToSaveOrder);
       }
 
       // Reduce inventory for each cart item
@@ -376,7 +386,7 @@ class ProductController extends GetxController {
       await _localStorageService.saveCartItems(cartItems);
 
       Get.snackbar(
-        'Success',
+        AppStrings.success,
         'Order #$orderId placed successfully!',
         backgroundColor: Colors.green,
         colorText: Colors.white,
@@ -385,8 +395,8 @@ class ProductController extends GetxController {
       return orderId;
     } catch (e) {
       Get.snackbar(
-        'Error',
-        'Failed to place order: ${e.toString()}',
+        AppStrings.error,
+        '${AppStrings.failedToPlaceOrder}: ${e.toString()}',
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -401,8 +411,8 @@ class ProductController extends GetxController {
     try {
       isLoading.value = true;
       Get.snackbar(
-        'Syncing',
-        'Uploading data to Firebase...',
+        AppStrings.syncing,
+        AppStrings.uploadingDataToFirebase,
         duration: Duration(seconds: 2),
       );
 
@@ -422,7 +432,7 @@ class ProductController extends GetxController {
 
         isOnline.value = successCount > 0;
         Get.snackbar(
-          'Sync Complete',
+          AppStrings.syncComplete,
           'Successfully synced $successCount products to Firebase!',
           backgroundColor: Colors.green,
           colorText: Colors.white,
@@ -430,8 +440,8 @@ class ProductController extends GetxController {
         );
       } else {
         Get.snackbar(
-          'No Data',
-          'No products found to sync',
+          AppStrings.noProductsToUpload,
+          AppStrings.noProductsFoundToSync,
           backgroundColor: Colors.orange,
           colorText: Colors.white,
           duration: Duration(seconds: 3),
@@ -443,8 +453,8 @@ class ProductController extends GetxController {
       loadProducts();
     } catch (e) {
       Get.snackbar(
-        'Sync Error',
-        'Failed to sync data: ${e.toString()}',
+        AppStrings.syncError,
+        '${AppStrings.failedToSyncData}: ${e.toString()}',
         backgroundColor: Colors.red,
         colorText: Colors.white,
         duration: Duration(seconds: 5),
@@ -464,7 +474,7 @@ class ProductController extends GetxController {
       isOnline.value = true;
 
       Get.snackbar(
-        'Firebase Test',
+        AppStrings.firebaseTest,
         'Connection successful! Found ${testProducts.length} products.',
         backgroundColor: Colors.green,
         colorText: Colors.white,
@@ -472,8 +482,8 @@ class ProductController extends GetxController {
     } catch (e) {
       isOnline.value = false;
       Get.snackbar(
-        'Firebase Test',
-        'Connection failed: ${e.toString()}',
+        AppStrings.firebaseTest,
+        '${AppStrings.connectionFailed}: ${e.toString()}',
         backgroundColor: Colors.red,
         colorText: Colors.white,
         duration: Duration(seconds: 5),
@@ -492,8 +502,8 @@ class ProductController extends GetxController {
 
       if (localProducts.isEmpty) {
         Get.snackbar(
-          'No Data',
-          'No products found to upload',
+          AppStrings.noProductsToUpload,
+          AppStrings.noProductsFoundToUpload,
           backgroundColor: Colors.orange,
           colorText: Colors.white,
           duration: Duration(seconds: 3),
@@ -651,13 +661,13 @@ class ProductController extends GetxController {
       await _localStorageService.saveProducts([]);
 
       Get.snackbar(
-        'Success',
+        AppStrings.success,
         'All products have been deleted',
         snackPosition: SnackPosition.BOTTOM,
       );
     } catch (e) {
       Get.snackbar(
-        'Error',
+        AppStrings.error,
         'Failed to delete all products: ${e.toString()}',
         snackPosition: SnackPosition.BOTTOM,
       );
@@ -694,7 +704,7 @@ class ProductController extends GetxController {
       isLoading.value = false;
 
       Get.snackbar(
-        'Success',
+        AppStrings.success,
         'Product has been deleted successfully',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.green,
@@ -708,8 +718,8 @@ class ProductController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       Get.snackbar(
-        'Error',
-        'Failed to delete product: ${e.toString()}',
+        AppStrings.error,
+        '${AppStrings.failedToDeleteProduct}: ${e.toString()}',
         snackPosition: SnackPosition.BOTTOM,
       );
     }
@@ -754,8 +764,8 @@ class ProductController extends GetxController {
       await _localStorageService.saveProducts(products);
     } catch (e) {
       Get.snackbar(
-        'Error',
-        'Failed to update product: ${e.toString()}',
+        AppStrings.error,
+        '${AppStrings.failedToUpdateProduct}: ${e.toString()}',
         snackPosition: SnackPosition.BOTTOM,
       );
       rethrow;

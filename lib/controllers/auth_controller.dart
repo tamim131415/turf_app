@@ -53,8 +53,8 @@ class AuthController extends GetxController {
       }
     } catch (e) {
       Get.snackbar(
-        'Error',
-        'Failed to sign in with Google: ${e.toString()}',
+        AppStrings.error,
+        '${AppStrings.failedToSignInWithGoogle}: ${e.toString()}',
         snackPosition: SnackPosition.BOTTOM,
       );
     } finally {
@@ -83,8 +83,8 @@ class AuthController extends GetxController {
           // Email not verified, go to verification screen
           Get.offAllNamed(Routes.emailVerification);
           Get.snackbar(
-            'Email Not Verified',
-            'Please verify your email to continue',
+            AppStrings.emailNotVerified,
+            AppStrings.pleaseVerifyEmail,
             snackPosition: SnackPosition.BOTTOM,
             duration: Duration(seconds: 4),
           );
@@ -113,9 +113,12 @@ class AuthController extends GetxController {
           errorMessage = e.message ?? 'An error occurred';
       }
 
-      Get.snackbar('Error', errorMessage);
+      Get.snackbar(AppStrings.error, errorMessage);
     } catch (e) {
-      Get.snackbar('Error', 'Failed to login: ${e.toString()}');
+      Get.snackbar(
+        AppStrings.error,
+        '${AppStrings.failedToLogin}: ${e.toString()}',
+      );
     } finally {
       isEmailLoading.value = false;
     }
@@ -169,9 +172,12 @@ class AuthController extends GetxController {
           errorMessage = e.message ?? 'An error occurred';
       }
 
-      Get.snackbar('Error', errorMessage);
+      Get.snackbar(AppStrings.error, errorMessage);
     } catch (e) {
-      Get.snackbar('Error', 'Failed to register: ${e.toString()}');
+      Get.snackbar(
+        AppStrings.error,
+        '${AppStrings.failedToRegister}: ${e.toString()}',
+      );
     } finally {
       isLoading.value = false;
     }
@@ -195,7 +201,7 @@ class AuthController extends GetxController {
     try {
       await _authService.sendEmailVerification();
     } catch (e) {
-      Get.snackbar('Error', 'Failed to send verification email');
+      Get.snackbar(AppStrings.error, AppStrings.failedToSendVerificationEmail);
     }
   }
 
@@ -212,7 +218,10 @@ class AuthController extends GetxController {
       Get.offAllNamed(Routes.login);
       Get.snackbar(AppStrings.success, AppStrings.loggedOutSuccessfully);
     } catch (e) {
-      Get.snackbar('Error', 'Failed to logout: ${e.toString()}');
+      Get.snackbar(
+        AppStrings.error,
+        '${AppStrings.failedToLogout}: ${e.toString()}',
+      );
     } finally {
       isLoading.value = false;
     }
@@ -238,9 +247,12 @@ class AuthController extends GetxController {
           errorMessage = e.message ?? 'An error occurred';
       }
 
-      Get.snackbar('Error', errorMessage);
+      Get.snackbar(AppStrings.error, errorMessage);
     } catch (e) {
-      Get.snackbar('Error', 'Failed to send reset email: ${e.toString()}');
+      Get.snackbar(
+        AppStrings.error,
+        '${AppStrings.failedToSendResetEmail}: ${e.toString()}',
+      );
     } finally {
       isLoading.value = false;
     }

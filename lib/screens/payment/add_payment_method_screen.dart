@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../controllers/payment_method_controller.dart';
 import '../../services/auth_service.dart';
 import '../../models/payment_method.dart';
+import '../../utils/app_strings.dart';
 
 class AddPaymentMethodScreen extends StatefulWidget {
   const AddPaymentMethodScreen({super.key});
@@ -308,7 +309,7 @@ class _AddPaymentMethodScreenState extends State<AddPaymentMethodScreen> {
     if (_formKey.currentState!.validate()) {
       final userId = authService.currentUser?.uid;
       if (userId == null) {
-        Get.snackbar('Error', 'User not authenticated');
+        Get.snackbar(AppStrings.error, AppStrings.userNotAuthenticated);
         return;
       }
 

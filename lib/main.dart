@@ -13,6 +13,7 @@ import 'services/image_upload_service.dart';
 import 'services/local_image_service.dart';
 import 'services/cloudinary_service.dart';
 import 'services/auth_service.dart';
+import 'utils/app_strings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,7 +53,7 @@ class TurfMateApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Turf-Mate',
+      title: AppStrings.appName,
       theme: AppTheme.lightTheme,
       initialRoute: Routes.splash,
       getPages: AppPages.routes,
