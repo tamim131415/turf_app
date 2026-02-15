@@ -276,4 +276,60 @@ class FirestoreService extends GetxService {
       return false;
     }
   }
+
+  // Get all orders (Admin)
+  Future<List<app_models.Order>> getAllOrders() async {
+    try {
+      print('🔄 Fetching all orders from Firestore...');
+      QuerySnapshot snapshot = await ordersCollection.get();
+
+      print('📦 Found ${snapshot.docs.length} order documents');
+
+      final orders = snapshot.docs
+          .map((doc) {
+            try {
+              return app_models.Order.fromFirestore(doc);
+            } catch (e) {
+              print('❌ Error parsing order ${doc.id}: $e');
+              return null;
+            }
+          })
+          .whereType<app_models.Order>()
+          .toList();
+
+      print('✅ Successfully parsed ${orders.length} orders');
+
+      // Sort by date in memory (descending - newest first)
+      orders.sort((a, b) => b.orderDate.compareTo(a.orderDate));
+
+      return orders;
+    } catch (e) {
+      print('❌ Error in getAllOrders: $e');
+      return [];
+    }
+  }
+
+  // Update order (Admin)
+  Future<bool> updateOrder(String orderId, Map<String, dynamic> updates) async {
+    try {
+      print('📝 Updating order: $orderId');
+      print('📝 Update data: $updates');
+
+      await ordersCollection.doc(orderId).update(updates);
+
+      print('✅ Order updated successfully in Firestore');
+
+      // Verify update
+      final doc = await ordersCollection.doc(orderId).get();
+      if (doc.exists) {
+        final data = doc.data() as Map<String, dynamic>;
+        print('✅ Verified orderStatus: ${data['orderStatus']}');
+      }
+
+      return true;
+    } catch (e) {
+      print('❌ Error updating order: $e');
+      return false;
+    }
+  }
 }

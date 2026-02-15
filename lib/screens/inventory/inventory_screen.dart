@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/product_controller.dart';
+import '../../controllers/order_controller.dart';
 import '../../models/product.dart';
 import '../../app/routes/app_routes.dart';
-import '../../utils/app_strings.dart';
+import 'admin_orders_screen.dart';
 
 class InventoryScreen extends StatefulWidget {
   const InventoryScreen({super.key});
@@ -12,7 +13,71 @@ class InventoryScreen extends StatefulWidget {
   State<InventoryScreen> createState() => _InventoryScreenState();
 }
 
-class _InventoryScreenState extends State<InventoryScreen> {
+class _InventoryScreenState extends State<InventoryScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  final ProductController productController = Get.find<ProductController>();
+  final OrderController orderController = Get.put(OrderController());
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[50],
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.green[800]),
+          onPressed: () => Get.back(),
+        ),
+        title: Text(
+          'Inventory Management',
+          style: TextStyle(
+            color: Colors.green[800],
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+        bottom: TabBar(
+          controller: _tabController,
+          labelColor: Colors.green[800],
+          unselectedLabelColor: Colors.grey[600],
+          indicatorColor: Colors.green[700],
+          indicatorWeight: 3,
+          tabs: [
+            Tab(icon: Icon(Icons.inventory_2), text: 'Products'),
+            Tab(icon: Icon(Icons.receipt_long), text: 'Orders'),
+          ],
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [ProductsInventoryTab(), AdminOrdersScreen()],
+      ),
+    );
+  }
+}
+
+class ProductsInventoryTab extends StatefulWidget {
+  const ProductsInventoryTab({super.key});
+
+  @override
+  State<ProductsInventoryTab> createState() => _ProductsInventoryTabState();
+}
+
+class _ProductsInventoryTabState extends State<ProductsInventoryTab> {
   final ProductController productController = Get.find<ProductController>();
   String selectedFilter = 'All';
   String selectedCategory = 'All';
@@ -70,87 +135,17 @@ class _InventoryScreenState extends State<InventoryScreen> {
     Get.toNamed(Routes.inventoryDetail, arguments: product);
   }
 
-  void _showDeleteAllConfirmation(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Row(
-            children: [
-              Icon(Icons.warning_amber_rounded, color: Colors.red, size: 28),
-              SizedBox(width: 12),
-              Text(AppStrings.deleteAllProducts),
-            ],
-          ),
-          content: Text(
-            'Are you sure you want to delete all ${productController.products.length} products? This action cannot be undone.',
-            style: TextStyle(fontSize: 16),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                AppStrings.cancel,
-                style: TextStyle(color: Colors.grey[700], fontSize: 16),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.of(context).pop();
-                await productController.deleteAllProducts();
-                Get.snackbar(
-                  'Success',
-                  'All products deleted successfully',
-                  backgroundColor: Colors.green[100],
-                  colorText: Colors.green[800],
-                  snackPosition: SnackPosition.BOTTOM,
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-              ),
-              child: Text(AppStrings.delete, style: TextStyle(fontSize: 16)),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.green[800]),
-          onPressed: () => Get.back(),
-        ),
-        title: Text(
-          'Inventory Management',
-          style: TextStyle(
-            color: Colors.green[800],
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.delete_sweep, color: Colors.red[700]),
-            onPressed: () => _showDeleteAllConfirmation(context),
-            tooltip: 'Delete All Products',
-          ),
-          IconButton(
-            icon: Icon(Icons.add_circle_outline, color: Colors.green[700]),
-            onPressed: () {
-              Get.toNamed(Routes.addProduct);
-            },
-            tooltip: 'Add Product',
-          ),
-        ],
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Get.toNamed(Routes.addProduct);
+        },
+        backgroundColor: Colors.green[700],
+        icon: Icon(Icons.add),
+        label: Text('Add Product'),
       ),
       body: Obx(() {
         if (productController.isLoading.value) {

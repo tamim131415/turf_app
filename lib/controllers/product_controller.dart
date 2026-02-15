@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/product.dart';
 import '../models/cart_item.dart';
 import '../models/order.dart' as app_models;
+import '../models/order_status_history.dart';
 import '../services/firestore_service.dart';
 import '../services/local_storage_service.dart';
 import '../services/auth_service.dart';
@@ -317,6 +318,14 @@ class ProductController extends GetxController {
         throw Exception(AppStrings.userNotLoggedIn);
       }
 
+      // Create initial status history
+      final initialStatusHistory = OrderStatusHistory(
+        status: AppStrings.pending,
+        timestamp: DateTime.now(),
+        updatedBy: 'System',
+        note: 'Order placed successfully',
+      );
+
       // Create order object
       final order = app_models.Order(
         id: 'order_${DateTime.now().millisecondsSinceEpoch}',
@@ -330,6 +339,7 @@ class ProductController extends GetxController {
         paymentMethod: paymentMethod,
         orderStatus: AppStrings.pending,
         orderDate: DateTime.now(),
+        statusHistory: [initialStatusHistory],
       );
 
       // Save order to Firebase

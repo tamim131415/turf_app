@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'cart_item.dart';
+import 'order_status_history.dart';
 
 class Order {
   final String id;
@@ -13,6 +14,12 @@ class Order {
   final String paymentMethod;
   final String orderStatus;
   final DateTime orderDate;
+  final List<OrderStatusHistory> statusHistory;
+  final DateTime? confirmedAt;
+  final DateTime? shippedAt;
+  final DateTime? deliveredAt;
+  final String? trackingNumber;
+  final String? deliveryNote;
 
   Order({
     required this.id,
@@ -26,6 +33,12 @@ class Order {
     required this.paymentMethod,
     this.orderStatus = 'Pending',
     required this.orderDate,
+    this.statusHistory = const [],
+    this.confirmedAt,
+    this.shippedAt,
+    this.deliveredAt,
+    this.trackingNumber,
+    this.deliveryNote,
   });
 
   Map<String, dynamic> toMap() {
@@ -41,6 +54,12 @@ class Order {
       'paymentMethod': paymentMethod,
       'orderStatus': orderStatus,
       'orderDate': orderDate.toIso8601String(),
+      'statusHistory': statusHistory.map((h) => h.toMap()).toList(),
+      'confirmedAt': confirmedAt?.toIso8601String(),
+      'shippedAt': shippedAt?.toIso8601String(),
+      'deliveredAt': deliveredAt?.toIso8601String(),
+      'trackingNumber': trackingNumber,
+      'deliveryNote': deliveryNote,
     };
   }
 
@@ -60,10 +79,37 @@ class Order {
       address: map['address'] ?? '',
       paymentMethod: map['paymentMethod'] ?? '',
       orderStatus: map['orderStatus'] ?? 'Pending',
-      orderDate: map['orderDate'] != null
-          ? DateTime.parse(map['orderDate'])
-          : DateTime.now(),
+      orderDate: _parseDateTime(map['orderDate']) ?? DateTime.now(),
+      statusHistory:
+          (map['statusHistory'] as List<dynamic>?)
+              ?.map((h) => OrderStatusHistory.fromMap(h))
+              .toList() ??
+          [],
+      confirmedAt: _parseDateTime(map['confirmedAt']),
+      shippedAt: _parseDateTime(map['shippedAt']),
+      deliveredAt: _parseDateTime(map['deliveredAt']),
+      trackingNumber: map['trackingNumber'],
+      deliveryNote: map['deliveryNote'],
     );
+  }
+
+  // Helper method to parse both String and Timestamp
+  static DateTime? _parseDateTime(dynamic value) {
+    if (value == null) return null;
+
+    if (value is Timestamp) {
+      return value.toDate();
+    }
+
+    if (value is String) {
+      try {
+        return DateTime.parse(value);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    return null;
   }
 
   factory Order.fromFirestore(DocumentSnapshot doc) {
