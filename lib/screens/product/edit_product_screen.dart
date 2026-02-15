@@ -22,7 +22,6 @@ class EditProductScreenState extends State<EditProductScreen> {
   late TextEditingController priceController;
   late TextEditingController originalPriceController;
   late TextEditingController descriptionController;
-  late TextEditingController reviewCountController;
   late TextEditingController quantityController;
 
   late String selectedCategory;
@@ -32,7 +31,6 @@ class EditProductScreenState extends State<EditProductScreen> {
   String? existingImageUrl;
   final ImagePicker picker = ImagePicker();
   bool isUploading = false;
-  late double rating;
   late List<String> selectedSizes;
 
   late Product product;
@@ -77,9 +75,6 @@ class EditProductScreenState extends State<EditProductScreen> {
       text: product.originalPrice?.toString() ?? '',
     );
     descriptionController = TextEditingController(text: product.description);
-    reviewCountController = TextEditingController(
-      text: product.reviewCount.toString(),
-    );
     quantityController = TextEditingController(
       text: product.quantity.toString(),
     );
@@ -87,7 +82,6 @@ class EditProductScreenState extends State<EditProductScreen> {
     selectedCategory = product.category;
     selectedBrand = product.brand;
     selectedTeam = product.team;
-    rating = product.rating;
     selectedSizes = List.from(product.sizes);
     existingImageUrl = product.imageUrl;
   }
@@ -98,7 +92,6 @@ class EditProductScreenState extends State<EditProductScreen> {
     priceController.dispose();
     originalPriceController.dispose();
     descriptionController.dispose();
-    reviewCountController.dispose();
     quantityController.dispose();
     super.dispose();
   }
@@ -199,7 +192,6 @@ class EditProductScreenState extends State<EditProductScreen> {
       }
 
       int quantity = int.parse(quantityController.text);
-      int reviewCount = int.parse(reviewCountController.text);
 
       String finalImageUrl = existingImageUrl ?? '';
 
@@ -233,8 +225,8 @@ class EditProductScreenState extends State<EditProductScreen> {
         category: selectedCategory,
         brand: selectedBrand,
         imageUrl: finalImageUrl,
-        rating: rating,
-        reviewCount: reviewCount,
+        rating: product.rating,
+        reviewCount: product.reviewCount,
         isFavorite: product.isFavorite,
         sizes: (selectedCategory == 'Jerseys' || selectedCategory == 'Shoes')
             ? selectedSizes
@@ -559,44 +551,6 @@ class EditProductScreenState extends State<EditProductScreen> {
               ),
               SizedBox(height: 16),
             ],
-
-            // Rating
-            Text(
-              'Rating: ${rating.toStringAsFixed(1)}',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey[700],
-              ),
-            ),
-            Slider(
-              value: rating,
-              min: 0,
-              max: 5,
-              divisions: 10,
-              label: rating.toStringAsFixed(1),
-              onChanged: (value) {
-                setState(() {
-                  rating = value;
-                });
-              },
-              activeColor: Colors.green[700],
-            ),
-            SizedBox(height: 16),
-
-            // Reviews Count
-            TextField(
-              controller: reviewCountController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Number of Reviews',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                prefixIcon: Icon(Icons.rate_review),
-              ),
-            ),
-            SizedBox(height: 16),
 
             // Description
             TextField(

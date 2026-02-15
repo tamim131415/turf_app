@@ -4,6 +4,7 @@ import '../models/product.dart';
 import '../models/order.dart' as app_models;
 import '../models/address.dart';
 import '../models/payment_method.dart';
+import '../models/review.dart';
 
 class FirestoreService extends GetxService {
   static FirestoreService get instance => Get.find<FirestoreService>();
@@ -20,6 +21,7 @@ class FirestoreService extends GetxService {
       _firestore.collection('addresses');
   CollectionReference get paymentMethodsCollection =>
       _firestore.collection('payment_methods');
+  CollectionReference get reviewsCollection => _firestore.collection('reviews');
 
   // Get all products
   Future<List<Product>> getProducts() async {
@@ -330,6 +332,91 @@ class FirestoreService extends GetxService {
     } catch (e) {
       print('❌ Error updating order: $e');
       return false;
+    }
+  }
+
+  // ==================== Review Methods ====================
+
+  // Save a review
+  Future<String?> saveReview(Review review) async {
+    try {
+      await reviewsCollection.doc(review.id).set(review.toMap());
+
+      // Update product rating and review count
+      await _updateProductRating(review.productId);
+
+      return review.id;
+    } catch (e) {
+      print('❌ Error saving review: $e');
+      return null;
+    }
+  }
+
+  // Get review by order and product
+  Future<Review?> getReviewByOrderAndProduct(
+    String orderId,
+    String productId,
+  ) async {
+    try {
+      final snapshot = await reviewsCollection
+          .where('orderId', isEqualTo: orderId)
+          .where('productId', isEqualTo: productId)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isEmpty) {
+        return null;
+      }
+
+      return Review.fromFirestore(snapshot.docs.first);
+    } catch (e) {
+      print('❌ Error getting review: $e');
+      return null;
+    }
+  }
+
+  // Get all reviews for a product
+  Future<List<Review>> getProductReviews(String productId) async {
+    try {
+      final snapshot = await reviewsCollection
+          .where('productId', isEqualTo: productId)
+          .orderBy('createdAt', descending: true)
+          .get();
+
+      return snapshot.docs.map((doc) => Review.fromFirestore(doc)).toList();
+    } catch (e) {
+      print('❌ Error getting product reviews: $e');
+      return [];
+    }
+  }
+
+  // Update product rating based on all reviews
+  Future<void> _updateProductRating(String productId) async {
+    try {
+      final reviews = await getProductReviews(productId);
+
+      if (reviews.isEmpty) {
+        return;
+      }
+
+      // Calculate average rating
+      double totalRating = 0;
+      for (var review in reviews) {
+        totalRating += review.rating;
+      }
+      double averageRating = totalRating / reviews.length;
+
+      // Update product
+      await productsCollection.doc(productId).update({
+        'rating': averageRating,
+        'reviewCount': reviews.length,
+      });
+
+      print(
+        '✅ Updated product $productId rating: $averageRating (${reviews.length} reviews)',
+      );
+    } catch (e) {
+      print('❌ Error updating product rating: $e');
     }
   }
 }

@@ -22,9 +22,6 @@ class AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController priceController = TextEditingController();
   final TextEditingController originalPriceController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController reviewCountController = TextEditingController(
-    text: '0',
-  );
   final TextEditingController quantityController = TextEditingController();
 
   String selectedCategory = 'Jerseys';
@@ -33,7 +30,6 @@ class AddProductScreenState extends State<AddProductScreen> {
   File? selectedImage;
   final ImagePicker picker = ImagePicker();
   bool isUploading = false;
-  double rating = 4.0;
   List<String> selectedSizes = ['S', 'M', 'L', 'XL'];
 
   final List<String> categories = [
@@ -68,7 +64,6 @@ class AddProductScreenState extends State<AddProductScreen> {
     priceController.dispose();
     originalPriceController.dispose();
     descriptionController.dispose();
-    reviewCountController.dispose();
     quantityController.dispose();
     super.dispose();
   }
@@ -175,7 +170,6 @@ class AddProductScreenState extends State<AddProductScreen> {
         quantity = int.parse(quantityController.text);
       }
 
-      int reviewCount = int.parse(reviewCountController.text);
       String productId = 'custom_${DateTime.now().millisecondsSinceEpoch}';
 
       // Default image URL
@@ -212,8 +206,6 @@ class AddProductScreenState extends State<AddProductScreen> {
         category: selectedCategory,
         brand: selectedBrand,
         imageUrl: finalImageUrl,
-        rating: rating,
-        reviewCount: reviewCount,
         isFavorite: false,
         sizes: (selectedCategory == 'Jerseys' || selectedCategory == 'Shoes')
             ? selectedSizes
@@ -423,62 +415,6 @@ class AddProductScreenState extends State<AddProductScreen> {
                     selectedBrand = newValue!;
                   });
                 },
-              ),
-              SizedBox(height: 16),
-
-              // Rating Slider
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.star, color: Colors.orange[700]),
-                        SizedBox(width: 8),
-                        Text(
-                          'Rating: ${rating.toStringAsFixed(1)}',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey[700],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Slider(
-                      value: rating,
-                      min: 0,
-                      max: 5,
-                      divisions: 10,
-                      label: rating.toStringAsFixed(1),
-                      activeColor: Colors.orange[700],
-                      onChanged: (value) {
-                        setState(() {
-                          rating = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 16),
-
-              // Review Count
-              TextField(
-                controller: reviewCountController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Review Count',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  prefixIcon: Icon(Icons.reviews),
-                ),
               ),
               SizedBox(height: 16),
 
