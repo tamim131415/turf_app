@@ -190,7 +190,7 @@ class ProductDetailScreen extends StatelessWidget {
                                     ),
                                     SizedBox(width: 4),
                                     Text(
-                                      '${product.rating} (${product.reviewCount} reviews)',
+                                      '${product.rating.toStringAsFixed(1)} (${product.reviewCount} reviews)',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),

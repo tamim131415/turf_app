@@ -188,7 +188,7 @@ class ProductCard extends StatelessWidget {
                         Icon(Icons.star, color: Colors.amber, size: 14),
                         SizedBox(width: 3),
                         Text(
-                          product.rating.toString(),
+                          product.rating.toStringAsFixed(1),
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.bold,
