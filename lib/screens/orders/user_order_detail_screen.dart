@@ -706,19 +706,52 @@ class _UserOrderDetailScreenState extends State<UserOrderDetailScreen> {
       // Show loading
       Get.dialog(
         Center(
-          child: Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(color: Colors.green[700]),
-                SizedBox(height: 16),
-                Text('Submitting review...'),
-              ],
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 40),
+              padding: EdgeInsets.all(32),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 20,
+                    offset: Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.green[50],
+                      shape: BoxShape.circle,
+                    ),
+                    child: CircularProgressIndicator(
+                      color: Colors.green[700],
+                      strokeWidth: 3,
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  Text(
+                    'Submitting Review',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green[800],
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Please wait...',
+                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

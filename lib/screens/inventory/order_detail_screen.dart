@@ -536,25 +536,59 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   Future<void> _updateOrderStatus(String newStatus) async {
     try {
       // Show loading
-      Get.dialog(
-        Center(
-          child: Container(
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(color: Colors.green[700]),
-                SizedBox(height: 16),
-                Text('Updating order status...'),
-              ],
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 40),
+              padding: EdgeInsets.all(32),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 20,
+                    offset: Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.green[50],
+                      shape: BoxShape.circle,
+                    ),
+                    child: CircularProgressIndicator(
+                      color: Colors.green[700],
+                      strokeWidth: 3,
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  Text(
+                    'Updating Status',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green[800],
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Please wait...',
+                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-        barrierDismissible: false,
       );
 
       final adminEmail = authController.firebaseUser.value?.email ?? 'Admin';
@@ -573,7 +607,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       await orderController.loadAllOrders();
 
       // Close loading dialog
-      Get.back();
+      if (mounted) Navigator.pop(context);
 
       // Clear inputs
       _noteController.clear();
@@ -586,19 +620,19 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         backgroundColor: Colors.green[600],
         colorText: Colors.white,
         snackPosition: SnackPosition.TOP,
-        duration: Duration(seconds: 3),
+        duration: Duration(seconds: 2),
         margin: EdgeInsets.all(16),
         borderRadius: 8,
         icon: Icon(Icons.check_circle, color: Colors.white),
       );
 
       // Go back to orders list
-      await Future.delayed(Duration(milliseconds: 500));
-      Get.back(result: true);
+      await Future.delayed(Duration(milliseconds: 300));
+      if (mounted) Navigator.pop(context, true);
     } catch (e) {
       // Close loading dialog if open
-      if (Get.isDialogOpen ?? false) {
-        Get.back();
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.pop(context);
       }
 
       Get.snackbar(
