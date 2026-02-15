@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../controllers/auth_controller.dart';
+import '../../controllers/product_controller.dart';
 import '../../models/order.dart' as app_models;
 import '../../models/review.dart';
 import '../../services/firestore_service.dart';
@@ -17,6 +18,7 @@ class UserOrderDetailScreen extends StatefulWidget {
 
 class _UserOrderDetailScreenState extends State<UserOrderDetailScreen> {
   final AuthController authController = Get.find<AuthController>();
+  final ProductController productController = Get.find<ProductController>();
   final FirestoreService firestoreService = Get.find<FirestoreService>();
 
   // Review form controllers (one per product)
@@ -681,6 +683,14 @@ class _UserOrderDetailScreenState extends State<UserOrderDetailScreen> {
     final rating = reviewRatings[productId] ?? 5.0;
     final comment = reviewControllers[productId]?.text ?? '';
 
+    print('🔍 Debug Review Submission:');
+    print('  Item: $item');
+    print('  Product: ${item.product}');
+    print('  Product ID: "$productId"');
+    print('  Product Name: ${item.product.name}');
+    print('  Rating: $rating');
+    print('  Comment length: ${comment.length}');
+
     if (comment.trim().isEmpty) {
       Get.snackbar(
         'Required',
@@ -729,7 +739,23 @@ class _UserOrderDetailScreenState extends State<UserOrderDetailScreen> {
         isVerifiedPurchase: true,
       );
 
+      print(
+        '📝 Submitting review for product: $productId with rating: $rating',
+      );
       await firestoreService.saveReview(review);
+      print('✅ Review submission completed');
+
+      // Wait a moment for Firestore to update
+      print('⏳ Waiting for Firestore update...');
+      await Future.delayed(Duration(milliseconds: 500));
+
+      // Reload products to update ratings on home screen
+      print('🔄 Reloading products...');
+      productController.loadProducts();
+
+      // Wait for products to reload
+      await Future.delayed(Duration(seconds: 1));
+      print('✅ Products reload triggered');
 
       // Close loading dialog
       Get.back();

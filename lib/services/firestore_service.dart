@@ -340,10 +340,23 @@ class FirestoreService extends GetxService {
   // Save a review
   Future<String?> saveReview(Review review) async {
     try {
-      await reviewsCollection.doc(review.id).set(review.toMap());
+      print('💾 Saving review for product: "${review.productId}"');
+      print('   Review ID: ${review.id}');
+      print('   Rating: ${review.rating}');
+      print(
+        '   Comment: ${review.comment.substring(0, review.comment.length > 50 ? 50 : review.comment.length)}...',
+      );
+
+      final reviewData = review.toMap();
+      print('   Review data to save: $reviewData');
+
+      await reviewsCollection.doc(review.id).set(reviewData);
+      print('✅ Review saved to Firestore');
 
       // Update product rating and review count
+      print('🔄 Triggering product rating update for: "${review.productId}"');
       await _updateProductRating(review.productId);
+      print('✅ Product rating update completed');
 
       return review.id;
     } catch (e) {
@@ -380,10 +393,16 @@ class FirestoreService extends GetxService {
     try {
       final snapshot = await reviewsCollection
           .where('productId', isEqualTo: productId)
-          .orderBy('createdAt', descending: true)
           .get();
 
-      return snapshot.docs.map((doc) => Review.fromFirestore(doc)).toList();
+      final reviews = snapshot.docs
+          .map((doc) => Review.fromFirestore(doc))
+          .toList();
+
+      // Sort in memory instead of Firestore query (no index needed)
+      reviews.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+      return reviews;
     } catch (e) {
       print('❌ Error getting product reviews: $e');
       return [];
@@ -393,24 +412,40 @@ class FirestoreService extends GetxService {
   // Update product rating based on all reviews
   Future<void> _updateProductRating(String productId) async {
     try {
+      print('🔄 Updating rating for product: $productId');
+
       final reviews = await getProductReviews(productId);
+      print('📊 Found ${reviews.length} reviews for product $productId');
 
       if (reviews.isEmpty) {
+        print('⚠️ No reviews found, skipping rating update');
         return;
       }
 
       // Calculate average rating
       double totalRating = 0;
       for (var review in reviews) {
+        print('  ⭐ Review rating: ${review.rating}');
         totalRating += review.rating;
       }
       double averageRating = totalRating / reviews.length;
+
+      print('📈 Calculated average: $averageRating from $totalRating total');
 
       // Update product
       await productsCollection.doc(productId).update({
         'rating': averageRating,
         'reviewCount': reviews.length,
       });
+
+      // Verify update
+      final doc = await productsCollection.doc(productId).get();
+      if (doc.exists) {
+        final data = doc.data() as Map<String, dynamic>;
+        print(
+          '✅ Verified in Firestore - rating: ${data['rating']}, reviewCount: ${data['reviewCount']}',
+        );
+      }
 
       print(
         '✅ Updated product $productId rating: $averageRating (${reviews.length} reviews)',
