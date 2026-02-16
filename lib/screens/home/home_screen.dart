@@ -456,7 +456,7 @@ class HomeScreenContentState extends State<HomeScreenContent> {
               ),
               // Products Grid
               Padding(
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.fromLTRB(20, 20, 20, 100),
                 child: Obx(
                   () => productController.isLoading.value
                       ? Center(
