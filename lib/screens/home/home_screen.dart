@@ -542,6 +542,17 @@ class HomeScreenContentState extends State<HomeScreenContent> {
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Get.toNamed('/chat');
+        },
+        backgroundColor: Colors.green[700],
+        icon: Icon(Icons.chat_bubble_outline, color: Colors.white),
+        label: Text(
+          'Chat Assistant',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ),
     );
   }
 

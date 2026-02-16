@@ -24,6 +24,7 @@ import '../../screens/product/add_product_screen.dart';
 import '../../screens/product/edit_product_screen.dart';
 import '../../screens/inventory/inventory_screen.dart';
 import '../../screens/inventory/inventory_detail_screen.dart';
+import '../../screens/chat/chat_screen.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -63,5 +64,6 @@ class AppPages {
       name: Routes.inventoryDetail,
       page: () => const InventoryDetailScreen(),
     ),
+    GetPage(name: Routes.chat, page: () => ChatScreen()),
   ];
 }

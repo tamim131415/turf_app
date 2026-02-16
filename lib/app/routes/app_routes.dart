@@ -25,4 +25,5 @@ abstract class Routes {
   static const editProduct = '/edit-product';
   static const inventory = '/inventory';
   static const inventoryDetail = '/inventory-detail';
+  static const chat = '/chat';
 }
