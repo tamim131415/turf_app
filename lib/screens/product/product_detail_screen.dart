@@ -72,7 +72,24 @@ class ProductDetailScreen extends StatelessWidget {
                   Spacer(),
                   GestureDetector(
                     onTap: () {
-                      productController.toggleFavorite(product);
+                      // Get the latest product state from controller
+                      final currentProduct = productController.products
+                          .firstWhereOrNull((p) => p.id == product.id);
+                      if (currentProduct != null) {
+                        productController.toggleFavorite(currentProduct);
+                        Get.snackbar(
+                          currentProduct.isFavorite
+                              ? 'Removed from Wishlist'
+                              : 'Added to Wishlist',
+                          currentProduct.isFavorite
+                              ? '${currentProduct.name} removed from wishlist'
+                              : '${currentProduct.name} added to wishlist',
+                          backgroundColor: currentProduct.isFavorite
+                              ? Colors.red[100]
+                              : Colors.green[100],
+                          duration: Duration(seconds: 2),
+                        );
+                      }
                     },
                     child: Container(
                       padding: EdgeInsets.all(8),
@@ -96,22 +113,6 @@ class ProductDetailScreen extends StatelessWidget {
                         );
                       }),
                     ),
-                  ),
-                  SizedBox(width: 12),
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 5,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Icon(Icons.share, color: Colors.grey[700]),
                   ),
                 ],
               ),
