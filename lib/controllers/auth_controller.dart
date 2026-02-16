@@ -63,11 +63,22 @@ class AuthController extends GetxController {
   }
 
   void login(String email, String password) async {
+    // Validate email and password
+    if (email.trim().isEmpty) {
+      Get.snackbar(AppStrings.error, AppStrings.pleaseEnterEmail);
+      return;
+    }
+
+    if (password.trim().isEmpty) {
+      Get.snackbar(AppStrings.error, AppStrings.pleaseEnterPassword);
+      return;
+    }
+
     isEmailLoading.value = true;
 
     try {
       final userCredential = await _authService.signInWithEmailPassword(
-        email,
+        email.trim(),
         password,
       );
 
@@ -125,13 +136,29 @@ class AuthController extends GetxController {
   }
 
   void register(String name, String email, String password) async {
+    // Validate name, email and password
+    if (name.trim().isEmpty) {
+      Get.snackbar(AppStrings.error, AppStrings.pleaseEnterName);
+      return;
+    }
+
+    if (email.trim().isEmpty) {
+      Get.snackbar(AppStrings.error, AppStrings.pleaseEnterEmail);
+      return;
+    }
+
+    if (password.trim().isEmpty) {
+      Get.snackbar(AppStrings.error, AppStrings.pleaseEnterPassword);
+      return;
+    }
+
     isLoading.value = true;
 
     try {
       final userCredential = await _authService.registerWithEmailPassword(
-        email,
+        email.trim(),
         password,
-        name,
+        name.trim(),
       );
 
       if (userCredential != null) {

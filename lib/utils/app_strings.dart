@@ -358,6 +358,9 @@ class AppStrings {
   static const String userNotLoggedIn = 'User not logged in';
   static const String userNotAuthenticated = 'User not authenticated';
   static const String passwordsDoNotMatch = 'Passwords do not match';
+  static const String pleaseEnterEmail = 'Please enter your email';
+  static const String pleaseEnterPassword = 'Please enter your password';
+  static const String pleaseEnterName = 'Please enter your name';
   static const String failedToUpdateFavorite = 'Failed to update favorite';
   static const String addedToCart = 'added to cart';
   static const String removedFromCart = 'removed from cart';
