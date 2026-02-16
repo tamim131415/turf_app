@@ -17,6 +17,7 @@ class Product {
   final List<Color> colors;
   final String description;
   final int quantity;
+  final int soldCount;
 
   Product({
     required this.id,
@@ -34,6 +35,7 @@ class Product {
     required this.colors,
     required this.description,
     this.quantity = 0,
+    this.soldCount = 0,
   });
 
   // Convert Product to Map for Firestore
@@ -55,6 +57,7 @@ class Product {
       'colors': colors.map((color) => color.value).toList(),
       'description': description,
       'quantity': quantity,
+      'soldCount': soldCount,
     };
   }
 
@@ -80,6 +83,7 @@ class Product {
           [],
       description: map['description'] ?? '',
       quantity: map['quantity'] ?? 0,
+      soldCount: map['soldCount'] ?? 0,
     );
   }
 

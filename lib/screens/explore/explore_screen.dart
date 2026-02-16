@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/product_controller.dart';
 import '../../utils/app_strings.dart';
+import '../../widgets/product_card.dart';
 
 class ExploreScreen extends StatelessWidget {
   const ExploreScreen({super.key});
@@ -43,6 +44,13 @@ class ExploreScreen extends StatelessWidget {
     'Puma': 'assets/brands/puma.png',
     'New Balance': 'assets/brands/newbalance.png',
   };
+
+  // Get trending products sorted by soldCount
+  List _getTrendingProducts(List products) {
+    final sortedProducts = List.from(products);
+    sortedProducts.sort((a, b) => b.soldCount.compareTo(a.soldCount));
+    return sortedProducts.take(6).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +96,7 @@ class ExploreScreen extends StatelessWidget {
               ]),
               _buildProductSection(
                 'Trending Products',
-                productController.products.take(4).toList(),
+                _getTrendingProducts(productController.products),
               ),
             ],
           ),
@@ -229,84 +237,17 @@ class ExploreScreen extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 250,
+          height: 320,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: EdgeInsets.symmetric(horizontal: 16),
             itemCount: products.length,
             itemBuilder: (context, index) {
               final product = products[index];
-              return GestureDetector(
-                onTap: () {
-                  Get.toNamed('/product-detail', arguments: product);
-                },
-                child: Container(
-                  margin: EdgeInsets.only(right: 12),
-                  width: 160,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 8,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: NetworkImage(product.imageUrl),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                product.name,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                product.team,
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 12,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                '৳${product.price.toStringAsFixed(2)}',
-                                style: TextStyle(
-                                  color: Colors.green[700],
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+              return Container(
+                margin: EdgeInsets.only(right: 12),
+                width: 180,
+                child: ProductCard(product: product),
               );
             },
           ),

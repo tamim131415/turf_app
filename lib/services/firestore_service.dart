@@ -79,6 +79,21 @@ class FirestoreService extends GetxService {
     }
   }
 
+  // Increment product soldCount (when order is delivered)
+  Future<bool> incrementProductSoldCount(String productId, int quantity) async {
+    try {
+      await productsCollection.doc(productId).update({
+        'soldCount': FieldValue.increment(quantity),
+        'updated_at': FieldValue.serverTimestamp(),
+      });
+      debugPrint('✅ Incremented soldCount for product $productId by $quantity');
+      return true;
+    } catch (e) {
+      debugPrint('❌ Error incrementing soldCount: $e');
+      return false;
+    }
+  }
+
   // Toggle favorite status
   Future<bool> toggleFavorite(String productId, bool isFavorite) async {
     try {

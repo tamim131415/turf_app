@@ -113,6 +113,14 @@ class OrderController extends GetxController {
           break;
         case 'Delivered':
           updateData['deliveredAt'] = FieldValue.serverTimestamp();
+          // Increment soldCount for each product in the order
+          debugPrint('📊 Incrementing soldCount for delivered products...');
+          for (var item in order.items) {
+            await _firestoreService.incrementProductSoldCount(
+              item.product.id,
+              item.quantity,
+            );
+          }
           break;
       }
 
