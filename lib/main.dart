@@ -13,6 +13,7 @@ import 'services/image_upload_service.dart';
 import 'services/local_image_service.dart';
 import 'services/cloudinary_service.dart';
 import 'services/auth_service.dart';
+import 'services/fcm_notification_service.dart';
 import 'utils/app_strings.dart';
 
 void main() async {
@@ -39,6 +40,10 @@ void main() async {
   Get.put(LocalImageService());
   Get.put(CloudinaryService());
   Get.put(AuthService());
+
+  // Initialize FCM Notification Service
+  final fcmService = Get.put(FCMNotificationService());
+  await fcmService.initialize();
 
   // Initialize controllers
   Get.put(AuthController());

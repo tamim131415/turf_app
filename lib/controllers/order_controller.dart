@@ -5,11 +5,13 @@ import '../models/order.dart' as app_models;
 import '../models/order_status_history.dart';
 import '../services/firestore_service.dart';
 import '../services/auth_service.dart';
+import '../services/fcm_notification_service.dart';
 import '../utils/app_strings.dart';
 
 class OrderController extends GetxController {
   final FirestoreService _firestoreService = Get.find<FirestoreService>();
   final AuthService _authService = Get.find<AuthService>();
+  final FCMNotificationService _fcmService = Get.find<FCMNotificationService>();
 
   final RxList<app_models.Order> orders = <app_models.Order>[].obs;
   final RxList<app_models.Order> allOrders = <app_models.Order>[].obs;
@@ -104,12 +106,25 @@ class OrderController extends GetxController {
       switch (newStatus) {
         case 'Confirmed':
           updateData['confirmedAt'] = FieldValue.serverTimestamp();
+          // Send confirmed notification
+          _fcmService.sendOrderConfirmedNotification(
+            userId: order.userId,
+            orderId: order.id,
+            orderNumber: order.id,
+          );
           break;
         case 'Shipped':
           updateData['shippedAt'] = FieldValue.serverTimestamp();
           if (trackingNumber != null && trackingNumber.isNotEmpty) {
             updateData['trackingNumber'] = trackingNumber;
           }
+          // Send shipped notification
+          _fcmService.sendOrderShippedNotification(
+            userId: order.userId,
+            orderId: order.id,
+            orderNumber: order.id,
+            trackingNumber: trackingNumber,
+          );
           break;
         case 'Delivered':
           updateData['deliveredAt'] = FieldValue.serverTimestamp();
@@ -121,6 +136,21 @@ class OrderController extends GetxController {
               item.quantity,
             );
           }
+          // Send delivered notification
+          _fcmService.sendOrderDeliveredNotification(
+            userId: order.userId,
+            orderId: order.id,
+            orderNumber: order.id,
+          );
+          break;
+        case 'Cancelled':
+          // Send cancelled notification
+          _fcmService.sendOrderCancelledNotification(
+            userId: order.userId,
+            orderId: order.id,
+            orderNumber: order.id,
+            reason: note,
+          );
           break;
       }
 

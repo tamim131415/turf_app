@@ -3,10 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../app/routes/app_routes.dart';
 import '../services/auth_service.dart';
+import '../services/fcm_notification_service.dart';
 import '../utils/app_strings.dart';
 
 class AuthController extends GetxController {
   final AuthService _authService = AuthService();
+  final FCMNotificationService _fcmService = Get.find<FCMNotificationService>();
 
   final RxBool isLoggedIn = false.obs;
   final RxBool isLoading = false.obs;
@@ -44,6 +46,12 @@ class AuthController extends GetxController {
       final userCredential = await _authService.signInWithGoogle();
 
       if (userCredential != null) {
+        // Save FCM token for the user
+        final userId = userCredential.user?.uid;
+        if (userId != null) {
+          await _fcmService.saveFCMTokenForUser(userId);
+        }
+
         Get.offAllNamed(Routes.home);
         Get.snackbar(
           'Success',
@@ -83,6 +91,12 @@ class AuthController extends GetxController {
       );
 
       if (userCredential != null) {
+        // Save FCM token for the user
+        final userId = userCredential.user?.uid;
+        if (userId != null) {
+          await _fcmService.saveFCMTokenForUser(userId);
+        }
+
         // Skip email verification for admin user
         if (email == 'admin@turfmate.com') {
           Get.offAllNamed(Routes.home);
@@ -162,6 +176,12 @@ class AuthController extends GetxController {
       );
 
       if (userCredential != null) {
+        // Save FCM token for the user
+        final userId = userCredential.user?.uid;
+        if (userId != null) {
+          await _fcmService.saveFCMTokenForUser(userId);
+        }
+
         // Skip email verification for admin user
         if (email == 'admin@turfmate.com') {
           Get.offAllNamed(Routes.home);
@@ -236,6 +256,12 @@ class AuthController extends GetxController {
     isLoading.value = true;
 
     try {
+      // Delete FCM token before logout
+      final userId = _authService.currentUser?.uid;
+      if (userId != null) {
+        await _fcmService.deleteFCMToken(userId);
+      }
+
       // Clear SharedPreferences (profile images, etc.)
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('profile_image_url');

@@ -146,6 +146,51 @@ class OneSignalService {
     }
   }
 
+  // Send notification when order is confirmed
+  Future<void> sendOrderConfirmedNotification({
+    required String userId,
+    required String orderId,
+    required String orderNumber,
+  }) async {
+    await sendNotificationToUser(
+      userId: userId,
+      title: '✅ Order Confirmed!',
+      message:
+          'Your order #$orderNumber has been confirmed. We are preparing your items.',
+      data: {
+        'type': 'order_confirmed',
+        'orderId': orderId,
+        'orderNumber': orderNumber,
+      },
+    );
+  }
+
+  // Send notification when order is shipped
+  Future<void> sendOrderShippedNotification({
+    required String userId,
+    required String orderId,
+    required String orderNumber,
+    String? trackingNumber,
+  }) async {
+    String message =
+        'Your order #$orderNumber has been shipped and is on the way!';
+    if (trackingNumber != null && trackingNumber.isNotEmpty) {
+      message += ' Tracking: $trackingNumber';
+    }
+
+    await sendNotificationToUser(
+      userId: userId,
+      title: '📦 Order Shipped!',
+      message: message,
+      data: {
+        'type': 'order_shipped',
+        'orderId': orderId,
+        'orderNumber': orderNumber,
+        'trackingNumber': trackingNumber ?? '',
+      },
+    );
+  }
+
   // Send notification when order is delivered
   Future<void> sendOrderDeliveredNotification({
     required String userId,
@@ -156,11 +201,36 @@ class OneSignalService {
       userId: userId,
       title: '🎉 Order Delivered!',
       message:
-          'Your order #$orderNumber has been delivered successfully. Tap to review.',
+          'Your order #$orderNumber has been delivered successfully. Thank you for shopping with us!',
       data: {
         'type': 'order_delivered',
         'orderId': orderId,
         'orderNumber': orderNumber,
+      },
+    );
+  }
+
+  // Send notification when order is cancelled
+  Future<void> sendOrderCancelledNotification({
+    required String userId,
+    required String orderId,
+    required String orderNumber,
+    String? reason,
+  }) async {
+    String message = 'Your order #$orderNumber has been cancelled.';
+    if (reason != null && reason.isNotEmpty) {
+      message += ' Reason: $reason';
+    }
+
+    await sendNotificationToUser(
+      userId: userId,
+      title: '❌ Order Cancelled',
+      message: message,
+      data: {
+        'type': 'order_cancelled',
+        'orderId': orderId,
+        'orderNumber': orderNumber,
+        'reason': reason ?? '',
       },
     );
   }

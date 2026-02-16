@@ -1,4 +1,8 @@
 {
+  "functions": {
+    "source": "functions",
+    "predeploy": []
+  },
   "flutter": {
     "platforms": {
       "android": {
