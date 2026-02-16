@@ -193,15 +193,27 @@ class HomeScreenContentState extends State<HomeScreenContent> {
           Obx(() {
             final userEmail = authController.firebaseUser.value?.email ?? '';
             if (userEmail == 'admin@turfmate.com') {
-              return IconButton(
-                icon: Icon(
-                  Icons.inventory_2_outlined,
-                  color: Colors.green[700],
-                ),
-                onPressed: () {
-                  Get.toNamed(Routes.inventory);
-                },
-                tooltip: 'Inventory',
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.inventory_2_outlined,
+                      color: Colors.green[700],
+                    ),
+                    onPressed: () {
+                      Get.toNamed(Routes.inventory);
+                    },
+                    tooltip: 'Inventory',
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.support_agent, color: Colors.green[700]),
+                    onPressed: () {
+                      Get.toNamed('/admin-tickets');
+                    },
+                    tooltip: 'Support Tickets',
+                  ),
+                ],
               );
             }
             return SizedBox.shrink();

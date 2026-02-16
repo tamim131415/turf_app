@@ -586,6 +586,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   _buildProfileTile(
+                    Icons.confirmation_number,
+                    'My Support Tickets',
+                    'View your submitted support tickets',
+                    () {
+                      Get.toNamed('/my-tickets');
+                    },
+                  ),
+                  _buildProfileTile(
                     Icons.help,
                     'Help & Support',
                     'Get help and contact customer support',

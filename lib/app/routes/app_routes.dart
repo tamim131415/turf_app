@@ -26,4 +26,7 @@ abstract class Routes {
   static const inventory = '/inventory';
   static const inventoryDetail = '/inventory-detail';
   static const chat = '/chat';
+  static const myTickets = '/my-tickets';
+  static const adminTickets = '/admin-tickets';
+  static const ticketDetail = '/ticket-detail';
 }

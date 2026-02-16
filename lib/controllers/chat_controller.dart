@@ -23,7 +23,6 @@ class ChatController extends GetxController {
   void onInit() {
     super.onInit();
     _geminiService = GeminiChatService();
-    _geminiService.listAvailableModels(); // Debug: Check available models
     _loadChatHistory();
     _addWelcomeMessage();
   }

@@ -25,6 +25,9 @@ import '../../screens/product/edit_product_screen.dart';
 import '../../screens/inventory/inventory_screen.dart';
 import '../../screens/inventory/inventory_detail_screen.dart';
 import '../../screens/chat/chat_screen.dart';
+import '../../screens/support/user_tickets_screen.dart';
+import '../../screens/support/admin_tickets_screen.dart';
+import '../../screens/support/ticket_detail_screen.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -65,5 +68,11 @@ class AppPages {
       page: () => const InventoryDetailScreen(),
     ),
     GetPage(name: Routes.chat, page: () => ChatScreen()),
+    GetPage(name: Routes.myTickets, page: () => const UserTicketsScreen()),
+    GetPage(name: Routes.adminTickets, page: () => const AdminTicketsScreen()),
+    GetPage(
+      name: Routes.ticketDetail,
+      page: () => const TicketDetailScreen(ticketId: ''),
+    ),
   ];
 }

@@ -474,4 +474,191 @@ class FirestoreService extends GetxService {
       debugPrint('❌ Error updating product rating: $e');
     }
   }
+
+  // ==================== SUPPORT TICKETS ====================
+
+  // Create a new support ticket
+  Future<String?> createSupportTicket({
+    required String userId,
+    required String userName,
+    required String userEmail,
+    required String issue,
+  }) async {
+    try {
+      final ticketId = DateTime.now().millisecondsSinceEpoch.toString();
+      final ticket = {
+        'id': ticketId,
+        'userId': userId,
+        'userName': userName,
+        'userEmail': userEmail,
+        'issue': issue,
+        'status': 'pending',
+        'createdAt': FieldValue.serverTimestamp(),
+        'updatedAt': null,
+        'replies': [],
+        'hasUnreadReplies': false,
+      };
+
+      await _firestore.collection('supportTickets').doc(ticketId).set(ticket);
+      debugPrint('✅ Support ticket created: $ticketId');
+      return ticketId;
+    } catch (e) {
+      debugPrint('❌ Error creating support ticket: $e');
+      return null;
+    }
+  }
+
+  // Get all support tickets (for admin)
+  Stream<List<Map<String, dynamic>>> getAllSupportTickets() {
+    return _firestore
+        .collection('supportTickets')
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) => doc.data()).toList();
+        });
+  }
+
+  // Get user's support tickets
+  Stream<List<Map<String, dynamic>>> getUserSupportTickets(String userId) {
+    try {
+      return _firestore
+          .collection('supportTickets')
+          .where('userId', isEqualTo: userId)
+          .orderBy('createdAt', descending: true)
+          .snapshots()
+          .map((snapshot) {
+            return snapshot.docs.map((doc) => doc.data()).toList();
+          })
+          .handleError((error) {
+            debugPrint('❌ Error in getUserSupportTickets: $error');
+            // If index error, return empty list
+            return <Map<String, dynamic>>[];
+          });
+    } catch (e) {
+      debugPrint('❌ Error creating getUserSupportTickets stream: $e');
+      // Return empty stream on error
+      return Stream.value([]);
+    }
+  }
+
+  // Get a single support ticket
+  Future<Map<String, dynamic>?> getSupportTicket(String ticketId) async {
+    try {
+      final doc = await _firestore
+          .collection('supportTickets')
+          .doc(ticketId)
+          .get();
+      return doc.exists ? doc.data() : null;
+    } catch (e) {
+      debugPrint('❌ Error getting support ticket: $e');
+      return null;
+    }
+  }
+
+  // Get support ticket as stream (for real-time updates)
+  Stream<Map<String, dynamic>?> getSupportTicketStream(String ticketId) {
+    return _firestore
+        .collection('supportTickets')
+        .doc(ticketId)
+        .snapshots()
+        .map((doc) => doc.exists ? doc.data() : null);
+  }
+
+  // Add reply to support ticket
+  Future<void> addTicketReply({
+    required String ticketId,
+    required String message,
+    required bool isAdmin,
+    required String senderName,
+  }) async {
+    try {
+      final replyId = DateTime.now().millisecondsSinceEpoch.toString();
+      final now = DateTime.now();
+      final reply = {
+        'id': replyId,
+        'message': message,
+        'isAdmin': isAdmin,
+        'senderName': senderName,
+        'createdAt': Timestamp.fromDate(
+          now,
+        ), // Use Timestamp instead of FieldValue
+      };
+
+      final updateData = {
+        'replies': FieldValue.arrayUnion([reply]),
+        'updatedAt': FieldValue.serverTimestamp(),
+        'hasUnreadReplies': !isAdmin, // If admin replies, user has unread
+      };
+
+      if (isAdmin) {
+        updateData['status'] = 'in-progress';
+      }
+
+      await _firestore
+          .collection('supportTickets')
+          .doc(ticketId)
+          .update(updateData);
+
+      debugPrint('✅ Reply added to ticket: $ticketId');
+    } catch (e) {
+      debugPrint('❌ Error adding ticket reply: $e');
+      rethrow;
+    }
+  }
+
+  // Update support ticket status
+  Future<void> updateTicketStatus(String ticketId, String status) async {
+    try {
+      await _firestore.collection('supportTickets').doc(ticketId).update({
+        'status': status,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+      debugPrint('✅ Ticket status updated: $ticketId -> $status');
+    } catch (e) {
+      debugPrint('❌ Error updating ticket status: $e');
+      rethrow;
+    }
+  }
+
+  // Mark ticket replies as read (for user)
+  Future<void> markTicketRepliesAsRead(String ticketId) async {
+    try {
+      await _firestore.collection('supportTickets').doc(ticketId).update({
+        'hasUnreadReplies': false,
+      });
+      debugPrint('✅ Ticket marked as read: $ticketId');
+    } catch (e) {
+      debugPrint('❌ Error marking ticket as read: $e');
+    }
+  }
+
+  // Get count of unread tickets (for user)
+  Future<int> getUnreadTicketsCount(String userId) async {
+    try {
+      final snapshot = await _firestore
+          .collection('supportTickets')
+          .where('userId', isEqualTo: userId)
+          .where('hasUnreadReplies', isEqualTo: true)
+          .get();
+      return snapshot.docs.length;
+    } catch (e) {
+      debugPrint('❌ Error getting unread tickets count: $e');
+      return 0;
+    }
+  }
+
+  // Get count of pending tickets (for admin)
+  Future<int> getPendingTicketsCount() async {
+    try {
+      final snapshot = await _firestore
+          .collection('supportTickets')
+          .where('status', isEqualTo: 'pending')
+          .get();
+      return snapshot.docs.length;
+    } catch (e) {
+      debugPrint('❌ Error getting pending tickets count: $e');
+      return 0;
+    }
+  }
 }

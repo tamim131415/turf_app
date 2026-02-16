@@ -11,22 +11,6 @@ class GeminiChatService {
 
   List<Map<String, dynamic>> _chatHistory = [];
 
-  // Debug: List available models
-  Future<void> listAvailableModels() async {
-    try {
-      final response = await http.get(
-        Uri.parse(
-          'https://generativelanguage.googleapis.com/v1beta/models?key=$_apiKey',
-        ),
-      );
-
-      print('📋 Available Models Response: ${response.statusCode}');
-      print(response.body);
-    } catch (e) {
-      print('❌ Error listing models: $e');
-    }
-  }
-
   String _buildSystemPrompt() {
     return '''
 You are Turf-Mate Assistant, a helpful chatbot for a football products e-commerce app.
@@ -78,19 +62,43 @@ Ready to assist!
         final productController = Get.find<ProductController>();
         final productContext = _buildProductContext(productController.products);
 
-        final requestBody = {
-          "contents": [
-            {
-              "parts": [
-                {
-                  "text":
-                      _buildSystemPrompt() +
-                      productContext +
-                      "\n\nUser: $userMessage",
-                },
-              ],
-            },
+        // Build conversation contents with history
+        List<Map<String, dynamic>> contents = [];
+
+        // First message includes system prompt and product context
+        if (_chatHistory.isEmpty) {
+          contents.add({
+            "role": "user",
+            "parts": [
+              {"text": _buildSystemPrompt() + productContext},
+            ],
+          });
+          contents.add({
+            "role": "model",
+            "parts": [
+              {
+                "text":
+                    "Hello! 👋 I'm ready to help you with products, orders, and delivery.",
+              },
+            ],
+          });
+        }
+
+        // Add chat history
+        for (var message in _chatHistory) {
+          contents.add(message);
+        }
+
+        // Add current user message
+        contents.add({
+          "role": "user",
+          "parts": [
+            {"text": userMessage},
           ],
+        });
+
+        final requestBody = {
+          "contents": contents,
           "generationConfig": {
             "temperature": 0.7,
             "topK": 40,
@@ -109,7 +117,28 @@ Ready to assist!
           final data = json.decode(response.body);
           final text =
               data['candidates']?[0]?['content']?['parts']?[0]?['text'];
-          return text ?? 'Sorry, could not generate response.';
+          final botResponse = text ?? 'Sorry, could not generate response.';
+
+          // Store in history
+          _chatHistory.add({
+            "role": "user",
+            "parts": [
+              {"text": userMessage},
+            ],
+          });
+          _chatHistory.add({
+            "role": "model",
+            "parts": [
+              {"text": botResponse},
+            ],
+          });
+
+          // Keep only last 10 message pairs (20 messages total)
+          if (_chatHistory.length > 20) {
+            _chatHistory.removeRange(0, _chatHistory.length - 20);
+          }
+
+          return botResponse;
         } else {
           throw Exception(
             'API Error: ${response.statusCode} - ${response.body}',

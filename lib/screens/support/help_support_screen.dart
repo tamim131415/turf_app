@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../utils/app_strings.dart';
+import '../../services/firestore_service.dart';
+import '../../controllers/auth_controller.dart';
 
 class HelpSupportScreen extends StatelessWidget {
   const HelpSupportScreen({super.key});
@@ -334,6 +336,9 @@ class HelpSupportScreen extends StatelessWidget {
 
   void _showReportDialog() {
     final TextEditingController issueController = TextEditingController();
+    final authController = Get.find<AuthController>();
+    final firestoreService = Get.find<FirestoreService>();
+
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -376,15 +381,51 @@ class HelpSupportScreen extends StatelessWidget {
                   ),
                   SizedBox(width: 12),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (issueController.text.isNotEmpty) {
                         Get.back();
-                        Get.snackbar(
-                          AppStrings.success,
-                          AppStrings.reportSubmitted,
-                          backgroundColor: Colors.green,
-                          colorText: Colors.white,
+
+                        // Show loading
+                        Get.dialog(
+                          Center(child: CircularProgressIndicator()),
+                          barrierDismissible: false,
                         );
+
+                        // Save to Firestore
+                        final ticketId = await firestoreService
+                            .createSupportTicket(
+                              userId:
+                                  authController.firebaseUser.value?.uid ?? '',
+                              userName: authController.userName.value,
+                              userEmail:
+                                  authController.firebaseUser.value?.email ??
+                                  '',
+                              issue: issueController.text,
+                            );
+
+                        Get.back(); // Close loading
+
+                        if (ticketId != null) {
+                          Get.snackbar(
+                            AppStrings.success,
+                            'Your ticket has been submitted. We\'ll respond soon!',
+                            backgroundColor: Colors.green,
+                            colorText: Colors.white,
+                            duration: Duration(seconds: 4),
+                          );
+
+                          // Navigate to user tickets screen
+                          Future.delayed(Duration(seconds: 2), () {
+                            Get.toNamed('/my-tickets');
+                          });
+                        } else {
+                          Get.snackbar(
+                            'Error',
+                            'Failed to submit ticket. Please try again.',
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
+                          );
+                        }
                       }
                     },
                     style: ElevatedButton.styleFrom(
