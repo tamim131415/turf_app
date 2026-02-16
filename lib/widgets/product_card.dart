@@ -204,7 +204,7 @@ class ProductCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Spacer(flex: 1),
+                    SizedBox(height: 6),
                     // Price and Add to Cart Button
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

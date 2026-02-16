@@ -281,19 +281,21 @@ class _ExploreScreenState extends State<ExploreScreen> {
             ],
           ),
         ),
-        SizedBox(
-          height: 340,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: 16),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 15,
+              mainAxisSpacing: 15,
+              childAspectRatio: 0.7,
+            ),
             itemCount: products.length,
             itemBuilder: (context, index) {
               final product = products[index];
-              return Container(
-                margin: EdgeInsets.only(right: 12),
-                width: 190,
-                child: ProductCard(product: product),
-              );
+              return ProductCard(product: product);
             },
           ),
         ),
