@@ -79,7 +79,6 @@ class ForgotPasswordScreen extends StatelessWidget {
                       ? null
                       : () {
                           authController.forgotPassword(emailController.text);
-                          Get.back();
                         },
                   child: authController.isLoading.value
                       ? CircularProgressIndicator(color: Colors.white)

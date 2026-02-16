@@ -255,10 +255,17 @@ class AuthController extends GetxController {
   }
 
   void forgotPassword(String email) async {
+    // Validate email
+    if (email.trim().isEmpty) {
+      Get.snackbar(AppStrings.error, AppStrings.pleaseEnterEmail);
+      return;
+    }
+
     isLoading.value = true;
 
     try {
-      await _authService.resetPassword(email);
+      await _authService.resetPassword(email.trim());
+      Get.back(); // Go back only on success
       Get.snackbar(AppStrings.success, AppStrings.passwordResetLinkSent);
     } on FirebaseAuthException catch (e) {
       String errorMessage = 'An error occurred';

@@ -160,13 +160,7 @@ class OrderSuccessScreen extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-                          Get.snackbar(
-                            'Order Tracking',
-                            'Track your order with ID: $orderId',
-                            snackPosition: SnackPosition.BOTTOM,
-                            backgroundColor: Colors.green[100],
-                            colorText: Colors.green[800],
-                          );
+                          Get.offAllNamed(Routes.myOrders);
                         },
                         child: Text(
                           'TRACK ORDER',

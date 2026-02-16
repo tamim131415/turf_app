@@ -18,6 +18,12 @@ class MyOrdersScreen extends StatelessWidget {
         title: Text(AppStrings.myOrders),
         backgroundColor: Colors.green[700],
         foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Get.offAllNamed('/home');
+          },
+        ),
       ),
       body: Obx(() {
         if (orderController.isLoading.value) {
