@@ -106,6 +106,7 @@ class ProductController extends GetxController {
           colors: product.colors,
           description: product.description,
           quantity: product.quantity,
+          soldCount: product.soldCount,
         );
       }
 
@@ -381,6 +382,7 @@ class ProductController extends GetxController {
             colors: products[productIndex].colors,
             description: products[productIndex].description,
             quantity: products[productIndex].quantity - cartItem.quantity,
+            soldCount: products[productIndex].soldCount,
           );
 
           // Update in Firebase
@@ -621,6 +623,7 @@ class ProductController extends GetxController {
           colors: product.colors,
           description: product.description,
           quantity: product.quantity,
+          soldCount: product.soldCount,
         );
 
         products.add(updatedProduct);

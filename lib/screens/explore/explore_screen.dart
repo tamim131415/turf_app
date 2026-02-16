@@ -1,11 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/product_controller.dart';
+import '../../models/product.dart';
 import '../../utils/app_strings.dart';
 import '../../widgets/product_card.dart';
 
-class ExploreScreen extends StatelessWidget {
+class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
+
+  @override
+  State<ExploreScreen> createState() => _ExploreScreenState();
+}
+
+class _ExploreScreenState extends State<ExploreScreen> {
+  final ProductController productController = Get.find<ProductController>();
+  List<String> _trendingProductIds = []; // Store only IDs to maintain order
+  Worker? _productsWorker;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize trending products once
+    _updateTrendingProducts();
+
+    // Listen to product changes only to update when new products are loaded
+    _productsWorker = ever(productController.products, (_) {
+      // Only recalculate if we don't have trending IDs or product count changed significantly
+      if (_trendingProductIds.isEmpty ||
+          (productController.products.length - _trendingProductIds.length)
+                  .abs() >
+              3) {
+        _updateTrendingProducts();
+      }
+    });
+  }
+
+  void _updateTrendingProducts() {
+    if (productController.products.isNotEmpty) {
+      final sortedProducts = List<Product>.from(productController.products);
+      sortedProducts.sort((a, b) => b.soldCount.compareTo(a.soldCount));
+      setState(() {
+        _trendingProductIds = sortedProducts.take(6).map((p) => p.id).toList();
+      });
+    }
+  }
+
+  // Get trending products by IDs (maintains order but gets latest data)
+  List<Product> get _trendingProducts {
+    return _trendingProductIds
+        .map(
+          (id) =>
+              productController.products.firstWhereOrNull((p) => p.id == id),
+        )
+        .whereType<Product>()
+        .toList();
+  }
+
+  @override
+  void dispose() {
+    _productsWorker?.dispose();
+    super.dispose();
+  }
 
   // Team flag mapping
   final Map<String, String> teamFlags = const {
@@ -45,17 +100,8 @@ class ExploreScreen extends StatelessWidget {
     'New Balance': 'assets/brands/newbalance.png',
   };
 
-  // Get trending products sorted by soldCount
-  List _getTrendingProducts(List products) {
-    final sortedProducts = List.from(products);
-    sortedProducts.sort((a, b) => b.soldCount.compareTo(a.soldCount));
-    return sortedProducts.take(6).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final ProductController productController = Get.find<ProductController>();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(AppStrings.explore),
@@ -63,45 +109,44 @@ class ExploreScreen extends StatelessWidget {
         foregroundColor: Colors.green[800],
         elevation: 0,
       ),
-      body: Obx(() {
-        return RefreshIndicator(
-          onRefresh: () async {
-            productController.loadProducts();
-          },
-          child: ListView(
-            physics: AlwaysScrollableScrollPhysics(),
-            children: [
-              _buildCategorySection('Popular Teams', Icons.group, [
-                'Argentina',
-                'Brazil',
-                'Germany',
-                'France',
-                'Spain',
-                'England',
-                'Others',
-              ]),
-              _buildCategorySection('Categories', Icons.category, [
-                'Jerseys',
-                'Shoes',
-                'Accessories',
-                'Balls',
-                'Training',
-              ]),
-              _buildCategorySection('Brands', Icons.business, [
-                'Nike',
-                'Adidas',
-                'Puma',
-                'New Balance',
-                'Others',
-              ]),
-              _buildProductSection(
-                'Trending Products',
-                _getTrendingProducts(productController.products),
-              ),
-            ],
-          ),
-        );
-      }),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          productController.loadProducts();
+          _updateTrendingProducts();
+        },
+        child: ListView(
+          physics: AlwaysScrollableScrollPhysics(),
+          children: [
+            _buildCategorySection('Popular Teams', Icons.group, [
+              'Argentina',
+              'Brazil',
+              'Germany',
+              'France',
+              'Spain',
+              'England',
+              'Others',
+            ]),
+            _buildCategorySection('Categories', Icons.category, [
+              'Jerseys',
+              'Shoes',
+              'Accessories',
+              'Balls',
+              'Training',
+            ]),
+            _buildCategorySection('Brands', Icons.business, [
+              'Nike',
+              'Adidas',
+              'Puma',
+              'New Balance',
+              'Others',
+            ]),
+            Obx(
+              () =>
+                  _buildProductSection('Trending Products', _trendingProducts),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -237,7 +282,7 @@ class ExploreScreen extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 320,
+          height: 340,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: EdgeInsets.symmetric(horizontal: 16),
@@ -246,7 +291,7 @@ class ExploreScreen extends StatelessWidget {
               final product = products[index];
               return Container(
                 margin: EdgeInsets.only(right: 12),
-                width: 180,
+                width: 190,
                 child: ProductCard(product: product),
               );
             },
