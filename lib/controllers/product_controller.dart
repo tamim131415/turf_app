@@ -35,22 +35,24 @@ class ProductController extends GetxController {
   // Load products with Firebase/Local fallback
   void loadProducts() async {
     try {
-      print('🔄 Loading products from Firestore...');
+      debugPrint('🔄 Loading products from Firestore...');
       isLoading.value = true;
 
       // Try Firebase first
       try {
         final firestoreProducts = await _firestoreService.getProducts();
-        print('✅ Loaded ${firestoreProducts.length} products from Firestore');
+        debugPrint(
+          '✅ Loaded ${firestoreProducts.length} products from Firestore',
+        );
         products.value = firestoreProducts;
         isOnline.value = true;
         // Save to local storage as backup
         if (firestoreProducts.isNotEmpty) {
           await _localStorageService.saveProducts(firestoreProducts);
-          print('💾 Saved products to local storage');
+          debugPrint('💾 Saved products to local storage');
         }
       } catch (e) {
-        print('⚠️ Firestore load failed, using local storage');
+        debugPrint('⚠️ Firestore load failed, using local storage');
         isOnline.value = false;
 
         // Fallback to local storage
@@ -59,9 +61,9 @@ class ProductController extends GetxController {
       }
 
       updateFavoriteProducts();
-      print('✅ Products loaded and UI updated');
+      debugPrint('✅ Products loaded and UI updated');
     } catch (e) {
-      print('❌ Error loading products: $e');
+      debugPrint('❌ Error loading products: $e');
       Get.snackbar(AppStrings.error, '${AppStrings.failedToLoadProducts}: $e');
     } finally {
       isLoading.value = false;

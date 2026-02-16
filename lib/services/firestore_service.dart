@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import '../models/product.dart';
@@ -282,31 +283,31 @@ class FirestoreService extends GetxService {
   // Get all orders (Admin)
   Future<List<app_models.Order>> getAllOrders() async {
     try {
-      print('🔄 Fetching all orders from Firestore...');
+      debugPrint('🔄 Fetching all orders from Firestore...');
       QuerySnapshot snapshot = await ordersCollection.get();
 
-      print('📦 Found ${snapshot.docs.length} order documents');
+      debugPrint('📦 Found ${snapshot.docs.length} order documents');
 
       final orders = snapshot.docs
           .map((doc) {
             try {
               return app_models.Order.fromFirestore(doc);
             } catch (e) {
-              print('❌ Error parsing order ${doc.id}: $e');
+              debugPrint('❌ Error parsing order ${doc.id}: $e');
               return null;
             }
           })
           .whereType<app_models.Order>()
           .toList();
 
-      print('✅ Successfully parsed ${orders.length} orders');
+      debugPrint('✅ Successfully parsed ${orders.length} orders');
 
       // Sort by date in memory (descending - newest first)
       orders.sort((a, b) => b.orderDate.compareTo(a.orderDate));
 
       return orders;
     } catch (e) {
-      print('❌ Error in getAllOrders: $e');
+      debugPrint('❌ Error in getAllOrders: $e');
       return [];
     }
   }
@@ -314,23 +315,23 @@ class FirestoreService extends GetxService {
   // Update order (Admin)
   Future<bool> updateOrder(String orderId, Map<String, dynamic> updates) async {
     try {
-      print('📝 Updating order: $orderId');
-      print('📝 Update data: $updates');
+      debugPrint('📝 Updating order: $orderId');
+      debugPrint('📝 Update data: $updates');
 
       await ordersCollection.doc(orderId).update(updates);
 
-      print('✅ Order updated successfully in Firestore');
+      debugPrint('✅ Order updated successfully in Firestore');
 
       // Verify update
       final doc = await ordersCollection.doc(orderId).get();
       if (doc.exists) {
         final data = doc.data() as Map<String, dynamic>;
-        print('✅ Verified orderStatus: ${data['orderStatus']}');
+        debugPrint('✅ Verified orderStatus: ${data['orderStatus']}');
       }
 
       return true;
     } catch (e) {
-      print('❌ Error updating order: $e');
+      debugPrint('❌ Error updating order: $e');
       return false;
     }
   }
@@ -340,27 +341,29 @@ class FirestoreService extends GetxService {
   // Save a review
   Future<String?> saveReview(Review review) async {
     try {
-      print('💾 Saving review for product: "${review.productId}"');
-      print('   Review ID: ${review.id}');
-      print('   Rating: ${review.rating}');
-      print(
+      debugPrint('💾 Saving review for product: "${review.productId}"');
+      debugPrint('   Review ID: ${review.id}');
+      debugPrint('   Rating: ${review.rating}');
+      debugPrint(
         '   Comment: ${review.comment.substring(0, review.comment.length > 50 ? 50 : review.comment.length)}...',
       );
 
       final reviewData = review.toMap();
-      print('   Review data to save: $reviewData');
+      debugPrint('   Review data to save: $reviewData');
 
       await reviewsCollection.doc(review.id).set(reviewData);
-      print('✅ Review saved to Firestore');
+      debugPrint('✅ Review saved to Firestore');
 
       // Update product rating and review count
-      print('🔄 Triggering product rating update for: "${review.productId}"');
+      debugPrint(
+        '🔄 Triggering product rating update for: "${review.productId}"',
+      );
       await _updateProductRating(review.productId);
-      print('✅ Product rating update completed');
+      debugPrint('✅ Product rating update completed');
 
       return review.id;
     } catch (e) {
-      print('❌ Error saving review: $e');
+      debugPrint('❌ Error saving review: $e');
       return null;
     }
   }
@@ -383,7 +386,7 @@ class FirestoreService extends GetxService {
 
       return Review.fromFirestore(snapshot.docs.first);
     } catch (e) {
-      print('❌ Error getting review: $e');
+      debugPrint('❌ Error getting review: $e');
       return null;
     }
   }
@@ -404,7 +407,7 @@ class FirestoreService extends GetxService {
 
       return reviews;
     } catch (e) {
-      print('❌ Error getting product reviews: $e');
+      debugPrint('❌ Error getting product reviews: $e');
       return [];
     }
   }
@@ -412,25 +415,27 @@ class FirestoreService extends GetxService {
   // Update product rating based on all reviews
   Future<void> _updateProductRating(String productId) async {
     try {
-      print('🔄 Updating rating for product: $productId');
+      debugPrint('🔄 Updating rating for product: $productId');
 
       final reviews = await getProductReviews(productId);
-      print('📊 Found ${reviews.length} reviews for product $productId');
+      debugPrint('📊 Found ${reviews.length} reviews for product $productId');
 
       if (reviews.isEmpty) {
-        print('⚠️ No reviews found, skipping rating update');
+        debugPrint('⚠️ No reviews found, skipping rating update');
         return;
       }
 
       // Calculate average rating
       double totalRating = 0;
       for (var review in reviews) {
-        print('  ⭐ Review rating: ${review.rating}');
+        debugPrint('  ⭐ Review rating: ${review.rating}');
         totalRating += review.rating;
       }
       double averageRating = totalRating / reviews.length;
 
-      print('📈 Calculated average: $averageRating from $totalRating total');
+      debugPrint(
+        '📈 Calculated average: $averageRating from $totalRating total',
+      );
 
       // Update product
       await productsCollection.doc(productId).update({
@@ -442,16 +447,16 @@ class FirestoreService extends GetxService {
       final doc = await productsCollection.doc(productId).get();
       if (doc.exists) {
         final data = doc.data() as Map<String, dynamic>;
-        print(
+        debugPrint(
           '✅ Verified in Firestore - rating: ${data['rating']}, reviewCount: ${data['reviewCount']}',
         );
       }
 
-      print(
+      debugPrint(
         '✅ Updated product $productId rating: $averageRating (${reviews.length} reviews)',
       );
     } catch (e) {
-      print('❌ Error updating product rating: $e');
+      debugPrint('❌ Error updating product rating: $e');
     }
   }
 }

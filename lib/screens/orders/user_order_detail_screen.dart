@@ -61,7 +61,9 @@ class _UserOrderDetailScreenState extends State<UserOrderDetailScreen> {
 
   @override
   void dispose() {
-    reviewControllers.values.forEach((controller) => controller.dispose());
+    for (final controller in reviewControllers.values) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -320,7 +322,7 @@ class _UserOrderDetailScreenState extends State<UserOrderDetailScreen> {
                 ],
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );
@@ -425,7 +427,7 @@ class _UserOrderDetailScreenState extends State<UserOrderDetailScreen> {
               history.timestamp,
               history.note,
             );
-          }).toList(),
+          }),
         ],
       ),
     );
@@ -540,13 +542,13 @@ class _UserOrderDetailScreenState extends State<UserOrderDetailScreen> {
           else
             ...widget.order.items.map((item) {
               return _buildProductReviewCard(item);
-            }).toList(),
+            }),
         ],
       ),
     );
   }
 
-  Widget _buildProductReviewCard(item) {
+  Widget _buildProductReviewCard(dynamic item) {
     final productId = item.product.id;
     final alreadyReviewed = hasReviewed[productId] ?? false;
 
@@ -678,18 +680,18 @@ class _UserOrderDetailScreenState extends State<UserOrderDetailScreen> {
     );
   }
 
-  Future<void> _submitReview(item) async {
+  Future<void> _submitReview(dynamic item) async {
     final productId = item.product.id;
     final rating = reviewRatings[productId] ?? 5.0;
     final comment = reviewControllers[productId]?.text ?? '';
 
-    print('🔍 Debug Review Submission:');
-    print('  Item: $item');
-    print('  Product: ${item.product}');
-    print('  Product ID: "$productId"');
-    print('  Product Name: ${item.product.name}');
-    print('  Rating: $rating');
-    print('  Comment length: ${comment.length}');
+    debugPrint('🔍 Debug Review Submission:');
+    debugPrint('  Item: $item');
+    debugPrint('  Product: ${item.product}');
+    debugPrint('  Product ID: "$productId"');
+    debugPrint('  Product Name: ${item.product.name}');
+    debugPrint('  Rating: $rating');
+    debugPrint('  Comment length: ${comment.length}');
 
     if (comment.trim().isEmpty) {
       Get.snackbar(
@@ -772,23 +774,23 @@ class _UserOrderDetailScreenState extends State<UserOrderDetailScreen> {
         isVerifiedPurchase: true,
       );
 
-      print(
+      debugPrint(
         '📝 Submitting review for product: $productId with rating: $rating',
       );
       await firestoreService.saveReview(review);
-      print('✅ Review submission completed');
+      debugPrint('✅ Review submission completed');
 
       // Wait a moment for Firestore to update
-      print('⏳ Waiting for Firestore update...');
+      debugPrint('⏳ Waiting for Firestore update...');
       await Future.delayed(Duration(milliseconds: 500));
 
       // Reload products to update ratings on home screen
-      print('🔄 Reloading products...');
+      debugPrint('🔄 Reloading products...');
       productController.loadProducts();
 
       // Wait for products to reload
       await Future.delayed(Duration(seconds: 1));
-      print('✅ Products reload triggered');
+      debugPrint('✅ Products reload triggered');
 
       // Close loading dialog
       Get.back();

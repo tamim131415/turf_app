@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/order.dart' as app_models;
@@ -39,23 +40,23 @@ class OrderController extends GetxController {
   Future<void> loadAllOrders() async {
     try {
       isLoading.value = true;
-      print('🔄 Loading all orders...');
+      debugPrint('🔄 Loading all orders...');
 
       final fetchedOrders = await _firestoreService.getAllOrders();
       allOrders.value = fetchedOrders;
 
-      print('✅ Loaded ${allOrders.length} orders');
+      debugPrint('✅ Loaded ${allOrders.length} orders');
 
       if (allOrders.isEmpty) {
-        print('⚠️ No orders found in database');
+        debugPrint('⚠️ No orders found in database');
       }
     } catch (e) {
-      print('❌ Error loading orders: $e');
+      debugPrint('❌ Error loading orders: $e');
       Get.snackbar(
         AppStrings.error,
         'Failed to load orders: ${e.toString()}',
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Get.theme.colorScheme.error.withOpacity(0.1),
+        backgroundColor: Get.theme.colorScheme.error.withValues(alpha: 0.1),
         duration: Duration(seconds: 3),
       );
     } finally {
@@ -73,16 +74,16 @@ class OrderController extends GetxController {
   }) async {
     try {
       isLoading.value = true;
-      print('\n🔄 Starting order status update...');
-      print('📋 Order ID: $orderId');
-      print('📋 New Status: $newStatus');
+      debugPrint('\n🔄 Starting order status update...');
+      debugPrint('📋 Order ID: $orderId');
+      debugPrint('📋 New Status: $newStatus');
 
       // Get current order
       final order = await _firestoreService.getOrderById(orderId);
       if (order == null) {
         throw Exception('Order not found');
       }
-      print('✅ Current order status: ${order.orderStatus}');
+      debugPrint('✅ Current order status: ${order.orderStatus}');
 
       // Create new status history entry
       final statusHistory = OrderStatusHistory(
@@ -120,18 +121,18 @@ class OrderController extends GetxController {
       }
 
       // Update in Firestore
-      print('📤 Sending update to Firestore...');
+      debugPrint('📤 Sending update to Firestore...');
       final success = await _firestoreService.updateOrder(orderId, updateData);
 
       if (!success) {
         throw Exception('Failed to update order in Firestore');
       }
 
-      print('🔄 Reloading all orders...');
+      debugPrint('🔄 Reloading all orders...');
       // Reload orders
       await loadAllOrders();
 
-      print('✅ Order status update completed successfully!');
+      debugPrint('✅ Order status update completed successfully!');
     } catch (e) {
       Get.snackbar(AppStrings.error, 'Failed to update order status: $e');
       rethrow;

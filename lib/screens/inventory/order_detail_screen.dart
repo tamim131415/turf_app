@@ -293,7 +293,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 ],
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );
@@ -680,7 +680,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           else
             ...widget.order.statusHistory.map((history) {
               return _buildTimelineItem(history);
-            }).toList(),
+            }),
         ],
       ),
     );
@@ -727,7 +727,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: statusColor.withOpacity(0.1),
+                color: statusColor.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
                 border: Border.all(color: statusColor, width: 2),
               ),

@@ -158,7 +158,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                   onRefresh: () => orderController.loadAllOrders(),
                   child: SingleChildScrollView(
                     physics: AlwaysScrollableScrollPhysics(),
-                    child: Container(
+                    child: SizedBox(
                       height: MediaQuery.of(context).size.height - 300,
                       child: Center(
                         child: Column(
