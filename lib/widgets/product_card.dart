@@ -59,7 +59,14 @@ class ProductCard extends StatelessWidget {
                       productController.toggleFavorite(product);
                     },
                     child: Container(
-                      padding: EdgeInsets.all(ResponsiveHelper.getPadding(context, small: 5, medium: 6, large: 8)),
+                      padding: EdgeInsets.all(
+                        ResponsiveHelper.getPadding(
+                          context,
+                          small: 5,
+                          medium: 6,
+                          large: 8,
+                        ),
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.circle,
@@ -88,7 +95,20 @@ class ProductCard extends StatelessWidget {
                     top: 8,
                     left: 8,
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: ResponsiveHelper.getPadding(
+                          context,
+                          small: 6,
+                          medium: 8,
+                          large: 10,
+                        ),
+                        vertical: ResponsiveHelper.getPadding(
+                          context,
+                          small: 3,
+                          medium: 4,
+                          large: 5,
+                        ),
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.red,
                         borderRadius: BorderRadius.circular(10),
@@ -97,7 +117,12 @@ class ProductCard extends StatelessWidget {
                         AppStrings.discount,
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: ResponsiveHelper.getFontSize(context, small: 10, medium: 11, large: 12),
+                          fontSize: ResponsiveHelper.getFontSize(
+                            context,
+                            small: 10,
+                            medium: 11,
+                            large: 12,
+                          ),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -117,8 +142,18 @@ class ProductCard extends StatelessWidget {
                       child: Center(
                         child: Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
+                            horizontal: ResponsiveHelper.getPadding(
+                              context,
+                              small: 14,
+                              medium: 16,
+                              large: 18,
+                            ),
+                            vertical: ResponsiveHelper.getPadding(
+                              context,
+                              small: 6,
+                              medium: 8,
+                              large: 10,
+                            ),
                           ),
                           decoration: BoxDecoration(
                             color: Colors.red,
@@ -128,7 +163,12 @@ class ProductCard extends StatelessWidget {
                             AppStrings.outOfStock.toUpperCase(),
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: ResponsiveHelper.getFontSize(context, small: 12, medium: 13, large: 14),
+                              fontSize: ResponsiveHelper.getFontSize(
+                                context,
+                                small: 12,
+                                medium: 13,
+                                large: 14,
+                              ),
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1.2,
                             ),
@@ -142,7 +182,32 @@ class ProductCard extends StatelessWidget {
             // Product Details
             Expanded(
               child: Padding(
-                padding: EdgeInsets.all(ResponsiveHelper.getPadding(context, small: 10, medium: 12, large: 14)),
+                padding: EdgeInsets.only(
+                  left: ResponsiveHelper.getPadding(
+                    context,
+                    small: 8,
+                    medium: 10,
+                    large: 12,
+                  ),
+                  right: ResponsiveHelper.getPadding(
+                    context,
+                    small: 8,
+                    medium: 10,
+                    large: 12,
+                  ),
+                  top: ResponsiveHelper.getPadding(
+                    context,
+                    small: 8,
+                    medium: 10,
+                    large: 12,
+                  ),
+                  bottom: ResponsiveHelper.getPadding(
+                    context,
+                    small: 6,
+                    medium: 7,
+                    large: 8,
+                  ),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -151,29 +216,58 @@ class ProductCard extends StatelessWidget {
                       product.category,
                       style: TextStyle(
                         color: Colors.green[700],
-                        fontSize: ResponsiveHelper.getFontSize(context, small: 11, medium: 12, large: 13),
+                        fontSize: ResponsiveHelper.getFontSize(
+                          context,
+                          small: 10,
+                          medium: 11,
+                          large: 12,
+                        ),
                         fontWeight: FontWeight.bold,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 2),
+                    SizedBox(
+                      height: ResponsiveHelper.getSpacing(
+                        context,
+                        small: 1,
+                        medium: 2,
+                        large: 3,
+                      ),
+                    ),
                     Text(
                       product.name,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: ResponsiveHelper.getFontSize(context, small: 13, medium: 14, large: 16),
+                        fontSize: ResponsiveHelper.getFontSize(
+                          context,
+                          small: 12,
+                          medium: 13,
+                          large: 15,
+                        ),
                         height: 1.2,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 2),
+                    SizedBox(
+                      height: ResponsiveHelper.getSpacing(
+                        context,
+                        small: 1,
+                        medium: 2,
+                        large: 3,
+                      ),
+                    ),
                     Flexible(
                       child: Text(
                         product.description,
                         style: TextStyle(
-                          fontSize: ResponsiveHelper.getFontSize(context, small: 10, medium: 11, large: 12),
+                          fontSize: ResponsiveHelper.getFontSize(
+                            context,
+                            small: 9,
+                            medium: 10,
+                            large: 11,
+                          ),
                           color: Colors.grey[600],
                           height: 1.2,
                         ),
@@ -181,31 +275,81 @@ class ProductCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    SizedBox(
+                      height: ResponsiveHelper.getSpacing(
+                        context,
+                        small: 2,
+                        medium: 3,
+                        large: 4,
+                      ),
+                    ),
                     // Rating
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.star, color: Colors.amber, size: ResponsiveHelper.getFontSize(context, small: 14, medium: 16, large: 18)),
-                        SizedBox(width: 3),
+                        Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                          size: ResponsiveHelper.getFontSize(
+                            context,
+                            small: 12,
+                            medium: 14,
+                            large: 16,
+                          ),
+                        ),
+                        SizedBox(
+                          width: ResponsiveHelper.getSpacing(
+                            context,
+                            small: 1,
+                            medium: 2,
+                            large: 3,
+                          ),
+                        ),
                         Text(
                           product.rating.toStringAsFixed(1),
                           style: TextStyle(
-                            fontSize: ResponsiveHelper.getFontSize(context, small: 11, medium: 12, large: 13),
+                            fontSize: ResponsiveHelper.getFontSize(
+                              context,
+                              small: 10,
+                              medium: 11,
+                              large: 12,
+                            ),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(width: 3),
+                        SizedBox(
+                          width: ResponsiveHelper.getSpacing(
+                            context,
+                            small: 1,
+                            medium: 2,
+                            large: 3,
+                          ),
+                        ),
                         Flexible(
                           child: Text(
                             '(${product.reviewCount})',
-                            style: TextStyle(fontSize: ResponsiveHelper.getFontSize(context, small: 11, medium: 12, large: 13), color: Colors.grey),
+                            style: TextStyle(
+                              fontSize: ResponsiveHelper.getFontSize(
+                                context,
+                                small: 10,
+                                medium: 11,
+                                large: 12,
+                              ),
+                              color: Colors.grey,
+                            ),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 6),
+                    SizedBox(
+                      height: ResponsiveHelper.getSpacing(
+                        context,
+                        small: 3,
+                        medium: 4,
+                        large: 5,
+                      ),
+                    ),
                     // Price and Add to Cart Button
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -221,19 +365,29 @@ class ProductCard extends StatelessWidget {
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.green[700],
-                                  fontSize: ResponsiveHelper.getFontSize(context, small: 15, medium: 16, large: 18),
+                                  fontSize: ResponsiveHelper.getFontSize(
+                                    context,
+                                    small: 14,
+                                    medium: 15,
+                                    large: 17,
+                                  ),
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
                               if (product.originalPrice != null)
                                 Padding(
-                                  padding: EdgeInsets.only(top: 2),
+                                  padding: EdgeInsets.only(top: 1),
                                   child: Text(
                                     '৳${product.originalPrice!.toStringAsFixed(2)}',
                                     style: TextStyle(
                                       color: Colors.grey,
-                                      fontSize: ResponsiveHelper.getFontSize(context, small: 11, medium: 12, large: 13),
+                                      fontSize: ResponsiveHelper.getFontSize(
+                                        context,
+                                        small: 10,
+                                        medium: 11,
+                                        large: 12,
+                                      ),
                                       decoration: TextDecoration.lineThrough,
                                     ),
                                     maxLines: 1,
@@ -243,7 +397,14 @@ class ProductCard extends StatelessWidget {
                             ],
                           ),
                         ),
-                        SizedBox(width: 6),
+                        SizedBox(
+                          width: ResponsiveHelper.getSpacing(
+                            context,
+                            small: 4,
+                            medium: 6,
+                            large: 8,
+                          ),
+                        ),
                         GestureDetector(
                           onTap: product.quantity > 0
                               ? () {
@@ -251,7 +412,14 @@ class ProductCard extends StatelessWidget {
                                 }
                               : null,
                           child: Container(
-                            padding: EdgeInsets.all(ResponsiveHelper.getPadding(context, small: 8, medium: 9, large: 10)),
+                            padding: EdgeInsets.all(
+                              ResponsiveHelper.getPadding(
+                                context,
+                                small: 6,
+                                medium: 9,
+                                large: 10,
+                              ),
+                            ),
                             decoration: BoxDecoration(
                               color: product.quantity > 0
                                   ? Colors.green[700]
@@ -263,7 +431,10 @@ class ProductCard extends StatelessWidget {
                                   ? Icons.add_shopping_cart
                                   : Icons.remove_shopping_cart,
                               color: Colors.white,
-                              size: 16,
+                              size: ResponsiveHelper.getIconSize(
+                                context,
+                                baseSize: 18,
+                              ),
                             ),
                           ),
                         ),

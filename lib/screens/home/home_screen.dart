@@ -532,17 +532,36 @@ class HomeScreenContentState extends State<HomeScreenContent> {
                   }).toList(),
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(
+                height: ResponsiveHelper.getSpacing(
+                  context,
+                  small: 16,
+                  medium: 20,
+                  large: 24,
+                ),
+              ),
               // Featured Products
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                padding: EdgeInsets.symmetric(
+                  horizontal: ResponsiveHelper.getPadding(
+                    context,
+                    small: 16,
+                    medium: 20,
+                    large: 24,
+                  ),
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       'Featured Products',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: ResponsiveHelper.getFontSize(
+                          context,
+                          small: 18,
+                          medium: 20,
+                          large: 22,
+                        ),
                         fontWeight: FontWeight.bold,
                         color: Colors.green[800],
                       ),
@@ -553,7 +572,15 @@ class HomeScreenContentState extends State<HomeScreenContent> {
                       },
                       child: Text(
                         'View All',
-                        style: TextStyle(color: Colors.green[700]),
+                        style: TextStyle(
+                          color: Colors.green[700],
+                          fontSize: ResponsiveHelper.getFontSize(
+                            context,
+                            small: 13,
+                            medium: 14,
+                            large: 16,
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -561,7 +588,32 @@ class HomeScreenContentState extends State<HomeScreenContent> {
               ),
               // Products Grid
               Padding(
-                padding: EdgeInsets.fromLTRB(20, 20, 20, 100),
+                padding: EdgeInsets.fromLTRB(
+                  ResponsiveHelper.getPadding(
+                    context,
+                    small: 16,
+                    medium: 20,
+                    large: 24,
+                  ),
+                  ResponsiveHelper.getPadding(
+                    context,
+                    small: 16,
+                    medium: 20,
+                    large: 24,
+                  ),
+                  ResponsiveHelper.getPadding(
+                    context,
+                    small: 16,
+                    medium: 20,
+                    large: 24,
+                  ),
+                  ResponsiveHelper.getPadding(
+                    context,
+                    small: 80,
+                    medium: 90,
+                    large: 100,
+                  ),
+                ),
                 child: Obx(
                   () => productController.isLoading.value
                       ? Center(
@@ -572,10 +624,25 @@ class HomeScreenContentState extends State<HomeScreenContent> {
                                   Colors.green[700]!,
                                 ),
                               ),
-                              SizedBox(height: 16),
+                              SizedBox(
+                                height: ResponsiveHelper.getSpacing(
+                                  context,
+                                  small: 12,
+                                  medium: 16,
+                                  large: 20,
+                                ),
+                              ),
                               Text(
                                 'Loading products...',
-                                style: TextStyle(color: Colors.grey[600]),
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: ResponsiveHelper.getFontSize(
+                                    context,
+                                    small: 13,
+                                    medium: 14,
+                                    large: 16,
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -585,35 +652,81 @@ class HomeScreenContentState extends State<HomeScreenContent> {
                           children: [
                             Icon(
                               Icons.sports_soccer,
-                              size: 80,
+                              size: ResponsiveHelper.getIconSize(
+                                context,
+                                baseSize: 70,
+                              ),
                               color: Colors.grey[300],
                             ),
-                            SizedBox(height: 20),
+                            SizedBox(
+                              height: ResponsiveHelper.getSpacing(
+                                context,
+                                small: 16,
+                                medium: 20,
+                                large: 24,
+                              ),
+                            ),
                             Text(
                               'Welcome to Turf-Mate!',
                               style: TextStyle(
-                                fontSize: 20,
+                                fontSize: ResponsiveHelper.getFontSize(
+                                  context,
+                                  small: 18,
+                                  medium: 20,
+                                  large: 22,
+                                ),
                                 fontWeight: FontWeight.bold,
                                 color: Colors.green[800],
                               ),
                             ),
-                            SizedBox(height: 8),
+                            SizedBox(
+                              height: ResponsiveHelper.getSpacing(
+                                context,
+                                small: 6,
+                                medium: 8,
+                                large: 10,
+                              ),
+                            ),
                             Text(
                               'Your ultimate football products store',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: ResponsiveHelper.getFontSize(
+                                  context,
+                                  small: 14,
+                                  medium: 16,
+                                  large: 18,
+                                ),
                                 color: Colors.grey[600],
                               ),
                             ),
-                            SizedBox(height: 20),
+                            SizedBox(
+                              height: ResponsiveHelper.getSpacing(
+                                context,
+                                small: 16,
+                                medium: 20,
+                                large: 24,
+                              ),
+                            ),
                             Text(
                               'No products found',
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: ResponsiveHelper.getFontSize(
+                                  context,
+                                  small: 16,
+                                  medium: 18,
+                                  large: 20,
+                                ),
                                 color: Colors.grey[500],
                               ),
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(
+                              height: ResponsiveHelper.getSpacing(
+                                context,
+                                small: 8,
+                                medium: 10,
+                                large: 12,
+                              ),
+                            ),
                             Obx(
                               () => Text(
                                 productController.isOnline.value
@@ -631,10 +744,28 @@ class HomeScreenContentState extends State<HomeScreenContent> {
                               physics: NeverScrollableScrollPhysics(),
                               gridDelegate:
                                   SliverGridDelegateWithMaxCrossAxisExtent(
-                                    maxCrossAxisExtent: ResponsiveHelper.getMaxCrossAxisExtent(context),
-                                    crossAxisSpacing: ResponsiveHelper.getSpacing(context, small: 12, medium: 15, large: 18),
-                                    mainAxisSpacing: ResponsiveHelper.getSpacing(context, small: 12, medium: 15, large: 18),
-                                    childAspectRatio: ResponsiveHelper.getChildAspectRatio(context),
+                                    maxCrossAxisExtent:
+                                        ResponsiveHelper.getMaxCrossAxisExtent(
+                                          context,
+                                        ),
+                                    crossAxisSpacing:
+                                        ResponsiveHelper.getSpacing(
+                                          context,
+                                          small: 12,
+                                          medium: 15,
+                                          large: 18,
+                                        ),
+                                    mainAxisSpacing:
+                                        ResponsiveHelper.getSpacing(
+                                          context,
+                                          small: 12,
+                                          medium: 15,
+                                          large: 18,
+                                        ),
+                                    childAspectRatio:
+                                        ResponsiveHelper.getChildAspectRatio(
+                                          context,
+                                        ),
                                   ),
                               itemCount: _filteredProducts.length,
                               itemBuilder: (context, index) {

@@ -612,33 +612,46 @@ class _UserOrderDetailScreenState extends State<UserOrderDetailScreen> {
               )
             else ...[
               // Rating Stars
-              Row(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Your Rating: ',
-                    style: TextStyle(fontWeight: FontWeight.w500),
+                    'Your Rating:',
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
                   ),
-                  ...List.generate(5, (index) {
-                    return IconButton(
-                      icon: Icon(
-                        index < (reviewRatings[productId] ?? 5)
-                            ? Icons.star
-                            : Icons.star_border,
-                        color: Colors.orange[700],
+                  SizedBox(height: 4),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ...List.generate(5, (index) {
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              reviewRatings[productId] = (index + 1).toDouble();
+                            });
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 2),
+                            child: Icon(
+                              index < (reviewRatings[productId] ?? 5)
+                                  ? Icons.star
+                                  : Icons.star_border,
+                              color: Colors.orange[700],
+                              size: 32,
+                            ),
+                          ),
+                        );
+                      }),
+                      SizedBox(width: 8),
+                      Text(
+                        '${reviewRatings[productId]?.toStringAsFixed(1)}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orange[700],
+                          fontSize: 16,
+                        ),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          reviewRatings[productId] = (index + 1).toDouble();
-                        });
-                      },
-                    );
-                  }),
-                  Text(
-                    '${reviewRatings[productId]?.toStringAsFixed(1)}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.orange[700],
-                    ),
+                    ],
                   ),
                 ],
               ),
