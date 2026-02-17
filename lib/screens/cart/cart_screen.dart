@@ -4,6 +4,7 @@ import '../../controllers/product_controller.dart';
 import '../../widgets/cart_item.dart';
 import '../../app/routes/app_routes.dart';
 import '../../utils/app_strings.dart';
+import '../../utils/responsive_helper.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -31,15 +32,18 @@ class CartScreen extends StatelessWidget {
               children: [
                 Icon(
                   Icons.shopping_cart_outlined,
-                  size: 80,
+                  size: ResponsiveHelper.isMobile(context) ? 80 : 100,
                   color: Colors.grey[400],
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: ResponsiveHelper.getPadding(context, small: 16, medium: 20, large: 24)),
                 Text(
                   'Your cart is empty',
-                  style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                  style: TextStyle(
+                    fontSize: ResponsiveHelper.getFontSize(context, small: 18, medium: 20, large: 22),
+                    color: Colors.grey[600],
+                  ),
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: ResponsiveHelper.getPadding(context, small: 16, medium: 20, large: 24)),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green[700],
@@ -64,7 +68,7 @@ class CartScreen extends StatelessWidget {
               ),
             ),
             Container(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(ResponsiveHelper.getPadding(context, small: 16, medium: 20, large: 24)),
               decoration: BoxDecoration(
                 color: Colors.grey[100],
                 border: Border(top: BorderSide(color: Colors.grey[300]!)),
@@ -76,13 +80,13 @@ class CartScreen extends StatelessWidget {
                     children: [
                       Text(
                         AppStrings.subtotalLabel,
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: ResponsiveHelper.getFontSize(context, small: 16, medium: 17, large: 18)),
                       ),
                       Obx(
                         () => Text(
                           '৳${controller.cartTotal.toStringAsFixed(2)}',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: ResponsiveHelper.getFontSize(context, small: 16, medium: 17, large: 18),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -95,11 +99,11 @@ class CartScreen extends StatelessWidget {
                     children: [
                       Text(
                         AppStrings.shippingLabel,
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: ResponsiveHelper.getFontSize(context, small: 16, medium: 17, large: 18)),
                       ),
                       Text(
                         AppStrings.shippingAmount,
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: ResponsiveHelper.getFontSize(context, small: 16, medium: 17, large: 18)),
                       ),
                     ],
                   ),
@@ -110,7 +114,7 @@ class CartScreen extends StatelessWidget {
                       Text(
                         'Total:',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: ResponsiveHelper.getFontSize(context, small: 18, medium: 19, large: 20),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -118,7 +122,7 @@ class CartScreen extends StatelessWidget {
                         () => Text(
                           '৳${(controller.cartTotal + 100).toStringAsFixed(2)}',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: ResponsiveHelper.getFontSize(context, small: 18, medium: 19, large: 20),
                             fontWeight: FontWeight.bold,
                             color: Colors.green[700],
                           ),
@@ -129,7 +133,7 @@ class CartScreen extends StatelessWidget {
                   SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
-                    height: 50,
+                    height: ResponsiveHelper.isMobile(context) ? 50 : 56,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green[700],
@@ -139,7 +143,7 @@ class CartScreen extends StatelessWidget {
                       },
                       child: Text(
                         'PROCEED TO CHECKOUT',
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: ResponsiveHelper.getFontSize(context, small: 16, medium: 17, large: 18)),
                       ),
                     ),
                   ),

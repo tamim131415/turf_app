@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/product_controller.dart';
 import '../models/cart_item.dart';
+import '../utils/responsive_helper.dart';
 
 class CartItemCard extends StatelessWidget {
   final CartItem cartItem;
@@ -13,15 +14,18 @@ class CartItemCard extends StatelessWidget {
     final ProductController controller = Get.find<ProductController>();
 
     return Card(
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: EdgeInsets.symmetric(
+        horizontal: ResponsiveHelper.getPadding(context, small: 16, medium: 20, large: 24),
+        vertical: ResponsiveHelper.getPadding(context, small: 8, medium: 10, large: 12),
+      ),
       child: Padding(
-        padding: EdgeInsets.all(12),
+        padding: EdgeInsets.all(ResponsiveHelper.getPadding(context, small: 12, medium: 14, large: 16)),
         child: Row(
           children: [
             // Product Image
             Container(
-              width: 80,
-              height: 80,
+              width: ResponsiveHelper.isMobile(context) ? 80 : (ResponsiveHelper.isTablet(context) ? 100 : 120),
+              height: ResponsiveHelper.isMobile(context) ? 80 : (ResponsiveHelper.isTablet(context) ? 100 : 120),
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(cartItem.product.imageUrl),
@@ -38,14 +42,20 @@ class CartItemCard extends StatelessWidget {
                 children: [
                   Text(
                     cartItem.product.name,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: ResponsiveHelper.getFontSize(context, small: 16, medium: 17, large: 18),
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: 4),
                   Text(
                     '৳${cartItem.product.price.toStringAsFixed(2)} each',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: ResponsiveHelper.getFontSize(context, small: 14, medium: 15, large: 16),
+                    ),
                   ),
                   SizedBox(height: 8),
                   // Quantity Controls
@@ -59,15 +69,17 @@ class CartItemCard extends StatelessWidget {
                         child: Row(
                           children: [
                             IconButton(
-                              icon: Icon(Icons.remove, size: 18),
+                              icon: Icon(Icons.remove, size: ResponsiveHelper.getIconSize(context)),
                               onPressed: () {
                                 controller.decrementCartItem(cartItem);
                               },
-                              padding: EdgeInsets.all(4),
+                              padding: EdgeInsets.all(ResponsiveHelper.getPadding(context, small: 4, medium: 5, large: 6)),
                               constraints: BoxConstraints(),
                             ),
                             Container(
-                              padding: EdgeInsets.symmetric(horizontal: 12),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: ResponsiveHelper.getPadding(context, small: 12, medium: 14, large: 16),
+                              ),
                               child: Obx(() {
                                 final updatedCartItem = controller.cartItems
                                     .firstWhere(
@@ -80,17 +92,17 @@ class CartItemCard extends StatelessWidget {
                                   '${updatedCartItem.quantity}',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                    fontSize: ResponsiveHelper.getFontSize(context, small: 16, medium: 17, large: 18),
                                   ),
                                 );
                               }),
                             ),
                             IconButton(
-                              icon: Icon(Icons.add, size: 18),
+                              icon: Icon(Icons.add, size: ResponsiveHelper.getIconSize(context)),
                               onPressed: () {
                                 controller.incrementCartItem(cartItem);
                               },
-                              padding: EdgeInsets.all(4),
+                              padding: EdgeInsets.all(ResponsiveHelper.getPadding(context, small: 4, medium: 5, large: 6)),
                               constraints: BoxConstraints(),
                             ),
                           ],
@@ -101,7 +113,7 @@ class CartItemCard extends StatelessWidget {
                         '৳${cartItem.totalPrice.toStringAsFixed(2)}',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: ResponsiveHelper.getFontSize(context, small: 16, medium: 17, large: 18),
                           color: Colors.green[700],
                         ),
                       ),

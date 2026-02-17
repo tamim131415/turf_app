@@ -4,6 +4,7 @@ import '../../controllers/product_controller.dart';
 import '../../models/product.dart';
 import '../../app/routes/app_routes.dart';
 import '../../utils/app_strings.dart';
+import '../../utils/responsive_helper.dart';
 
 class ProductDetailController extends GetxController {
   final RxString selectedSize = ''.obs;
@@ -48,7 +49,7 @@ class ProductDetailScreen extends StatelessWidget {
           children: [
             // Header with Back Button and Share
             Container(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(ResponsiveHelper.getPadding(context, small: 16, medium: 20, large: 24)),
               child: Row(
                 children: [
                   GestureDetector(
@@ -123,7 +124,7 @@ class ProductDetailScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     Container(
-                      height: 300,
+                      height: ResponsiveHelper.isMobile(context) ? 300 : (ResponsiveHelper.isTablet(context) ? 400 : 500),
                       width: double.infinity,
                       decoration: BoxDecoration(
                         image: DecorationImage(
@@ -134,7 +135,7 @@ class ProductDetailScreen extends StatelessWidget {
                     ),
                     // Product Info
                     Container(
-                      padding: EdgeInsets.all(20),
+                      padding: EdgeInsets.all(ResponsiveHelper.getPadding(context, small: 20, medium: 24, large: 28)),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.only(
@@ -156,20 +157,20 @@ class ProductDetailScreen extends StatelessWidget {
                             product.category,
                             style: TextStyle(
                               color: Colors.green[700],
-                              fontSize: 16,
+                              fontSize: ResponsiveHelper.getFontSize(context, small: 16, medium: 17, large: 18),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 8),
+                          SizedBox(height: ResponsiveHelper.getPadding(context, small: 8, medium: 10, large: 12)),
                           Text(
                             product.name,
                             style: TextStyle(
-                              fontSize: 24,
+                              fontSize: ResponsiveHelper.getFontSize(context, small: 24, medium: 26, large: 28),
                               fontWeight: FontWeight.bold,
                               height: 1.2,
                             ),
                           ),
-                          SizedBox(height: 16),
+                          SizedBox(height: ResponsiveHelper.getPadding(context, small: 16, medium: 18, large: 20)),
                           // Rating and Reviews
                           Row(
                             children: [
@@ -187,7 +188,7 @@ class ProductDetailScreen extends StatelessWidget {
                                     Icon(
                                       Icons.star,
                                       color: Colors.amber,
-                                      size: 16,
+                                      size: ResponsiveHelper.getFontSize(context, small: 16, medium: 18, large: 20),
                                     ),
                                     SizedBox(width: 4),
                                     Text(
@@ -211,7 +212,7 @@ class ProductDetailScreen extends StatelessWidget {
                                   Text(
                                     '৳${product.price.toStringAsFixed(2)}',
                                     style: TextStyle(
-                                      fontSize: 28,
+                                      fontSize: ResponsiveHelper.getFontSize(context, small: 28, medium: 30, large: 32),
                                       fontWeight: FontWeight.bold,
                                       color: Colors.green[700],
                                     ),
@@ -221,7 +222,7 @@ class ProductDetailScreen extends StatelessWidget {
                                     Text(
                                       '৳${product.originalPrice!.toStringAsFixed(2)}',
                                       style: TextStyle(
-                                        fontSize: 18,
+                                        fontSize: ResponsiveHelper.getFontSize(context, small: 18, medium: 19, large: 20),
                                         color: Colors.grey,
                                         decoration: TextDecoration.lineThrough,
                                       ),
@@ -240,7 +241,7 @@ class ProductDetailScreen extends StatelessWidget {
                                         'SAVE ৳${(product.originalPrice! - product.price).toStringAsFixed(2)}',
                                         style: TextStyle(
                                           color: Colors.white,
-                                          fontSize: 12,
+                                          fontSize: ResponsiveHelper.getFontSize(context, small: 12, medium: 13, large: 14),
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -254,7 +255,7 @@ class ProductDetailScreen extends StatelessWidget {
                                 () => Text(
                                   'Total: ৳${(product.price * detailController.quantity.value).toStringAsFixed(2)}',
                                   style: TextStyle(
-                                    fontSize: 18,
+                                    fontSize: ResponsiveHelper.getFontSize(context, small: 18, medium: 19, large: 20),
                                     fontWeight: FontWeight.w600,
                                     color: Colors.black87,
                                   ),
@@ -289,7 +290,7 @@ class ProductDetailScreen extends StatelessWidget {
                                   color: product.quantity > 0
                                       ? Colors.green[700]
                                       : Colors.red[700],
-                                  size: 20,
+                                  size: ResponsiveHelper.getIconSize(context),
                                 ),
                                 SizedBox(width: 8),
                                 Text(
@@ -301,7 +302,7 @@ class ProductDetailScreen extends StatelessWidget {
                                         ? Colors.green[700]
                                         : Colors.red[700],
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 14,
+                                    fontSize: ResponsiveHelper.getFontSize(context, small: 14, medium: 15, large: 16),
                                   ),
                                 ),
                               ],
@@ -312,7 +313,7 @@ class ProductDetailScreen extends StatelessWidget {
                           Text(
                             'Product Description',
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: ResponsiveHelper.getFontSize(context, small: 18, medium: 19, large: 20),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -332,7 +333,7 @@ class ProductDetailScreen extends StatelessWidget {
                             Text(
                               'Select Size',
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: ResponsiveHelper.getFontSize(context, small: 18, medium: 19, large: 20),
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -393,7 +394,7 @@ class ProductDetailScreen extends StatelessWidget {
                               Text(
                                 'Quantity',
                                 style: TextStyle(
-                                  fontSize: 18,
+                                  fontSize: ResponsiveHelper.getFontSize(context, small: 18, medium: 19, large: 20),
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),

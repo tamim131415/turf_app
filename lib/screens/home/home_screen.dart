@@ -6,6 +6,7 @@ import '../../models/product.dart';
 import '../../widgets/product_card.dart';
 import '../../app/routes/app_routes.dart';
 import '../../utils/app_strings.dart';
+import '../../utils/responsive_helper.dart';
 import '../../services/firestore_service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -623,20 +624,24 @@ class HomeScreenContentState extends State<HomeScreenContent> {
                             ),
                           ],
                         )
-                      : GridView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 15,
-                                mainAxisSpacing: 15,
-                                childAspectRatio: 0.7,
-                              ),
-                          itemCount: _filteredProducts.length,
-                          itemBuilder: (context, index) {
-                            return ProductCard(
-                              product: _filteredProducts[index],
+                      : LayoutBuilder(
+                          builder: (context, constraints) {
+                            return GridView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  SliverGridDelegateWithMaxCrossAxisExtent(
+                                    maxCrossAxisExtent: ResponsiveHelper.getMaxCrossAxisExtent(context),
+                                    crossAxisSpacing: ResponsiveHelper.getSpacing(context, small: 12, medium: 15, large: 18),
+                                    mainAxisSpacing: ResponsiveHelper.getSpacing(context, small: 12, medium: 15, large: 18),
+                                    childAspectRatio: ResponsiveHelper.getChildAspectRatio(context),
+                                  ),
+                              itemCount: _filteredProducts.length,
+                              itemBuilder: (context, index) {
+                                return ProductCard(
+                                  product: _filteredProducts[index],
+                                );
+                              },
                             );
                           },
                         ),
