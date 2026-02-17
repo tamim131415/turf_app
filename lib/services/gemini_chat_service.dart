@@ -2,10 +2,11 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:get/get.dart';
 import '../models/product.dart';
 import '../controllers/product_controller.dart';
+import '../config/api_keys.dart';
 
 class GeminiChatService {
-  // IMPORTANT: Replace with your NEW unrestricted API key from https://aistudio.google.com/app/apikey
-  static const String _apiKey = 'AIzaSyDAWK34IHlMa0WQR1Q6zONVMHsS2lF89fo';
+  // API key is now securely stored in lib/config/api_keys.dart (not committed to git)
+  static const String _apiKey = ApiKeys.geminiApiKey;
 
   late final GenerativeModel _model;
   late final ChatSession _chat;

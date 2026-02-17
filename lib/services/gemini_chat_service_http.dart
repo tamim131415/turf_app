@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import '../models/product.dart';
 import '../controllers/product_controller.dart';
+import '../config/api_keys.dart';
 
 class GeminiChatService {
-  static const String _apiKey = 'AIzaSyDAWK34IHlMa0WQR1Q6zONVMHsS2lF89fo';
+  // API key is now securely stored in lib/config/api_keys.dart (not committed to git)
+  static const String _apiKey = ApiKeys.geminiApiKey;
   static const String _baseUrl =
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
