@@ -4,6 +4,7 @@ import '../../controllers/product_controller.dart';
 import '../../controllers/order_controller.dart';
 import '../../models/product.dart';
 import '../../app/routes/app_routes.dart';
+import '../../services/firestore_service.dart';
 import 'admin_orders_screen.dart';
 
 class InventoryScreen extends StatefulWidget {
@@ -18,6 +19,7 @@ class _InventoryScreenState extends State<InventoryScreen>
   late TabController _tabController;
   final ProductController productController = Get.find<ProductController>();
   final OrderController orderController = Get.put(OrderController());
+  final FirestoreService firestoreService = Get.find<FirestoreService>();
 
   @override
   void initState() {
@@ -58,7 +60,44 @@ class _InventoryScreenState extends State<InventoryScreen>
           indicatorWeight: 3,
           tabs: [
             Tab(icon: Icon(Icons.inventory_2), text: 'Products'),
-            Tab(icon: Icon(Icons.receipt_long), text: 'Orders'),
+            // Orders tab with badge
+            StreamBuilder<int>(
+              stream: firestoreService.getPendingOrdersCount(),
+              builder: (context, snapshot) {
+                final count = snapshot.data ?? 0;
+                return Tab(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.receipt_long),
+                      SizedBox(width: 8),
+                      Text('Orders'),
+                      if (count > 0) ...[
+                        SizedBox(width: 6),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.red[600],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            count > 99 ? '99+' : count.toString(),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),

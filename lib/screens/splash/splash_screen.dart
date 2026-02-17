@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../app/routes/app_routes.dart';
 import '../../controllers/auth_controller.dart';
+import '../../services/fcm_notification_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -25,13 +26,34 @@ class SplashScreenState extends State<SplashScreen>
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
     _controller.forward();
 
-    Future.delayed(Duration(seconds: 3), () {
-      final authController = Get.find<AuthController>();
-      // Check if user is already logged in
-      if (authController.isLoggedIn.value) {
-        Get.offNamed(Routes.home);
-      } else {
-        Get.offNamed(Routes.onboarding);
+    Future.delayed(Duration(seconds: 3), () async {
+      try {
+        final authController = Get.find<AuthController>();
+        debugPrint('📱 Splash complete, navigating...');
+
+        // Check if user is already logged in
+        if (authController.isLoggedIn.value) {
+          await Get.offNamed(Routes.home);
+          debugPrint('✅ Navigated to home');
+        } else {
+          await Get.offNamed(Routes.onboarding);
+          debugPrint('✅ Navigated to onboarding');
+        }
+
+        // After navigation is complete, handle any pending notification
+        // This is for when app was killed and opened via notification tap
+        try {
+          final fcmService = Get.find<FCMNotificationService>();
+          // Wait longer to ensure navigation is fully complete and app is stable
+          debugPrint('⏳ Waiting before handling pending notification...');
+          await Future.delayed(Duration(milliseconds: 1000));
+          debugPrint('🔔 Calling handlePendingNotification()');
+          fcmService.handlePendingNotification();
+        } catch (e) {
+          debugPrint('⚠️ Error handling pending notification: $e');
+        }
+      } catch (e) {
+        debugPrint('❌ Error in splash navigation: $e');
       }
     });
   }

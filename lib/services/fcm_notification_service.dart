@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:io' show Platform;
+import '../screens/support/ticket_detail_screen.dart';
+import '../controllers/auth_controller.dart';
 
 // Background message handler (must be top-level function)
 @pragma('vm:entry-point')
@@ -21,6 +23,7 @@ class FCMNotificationService {
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
   String? _currentUserId;
+  RemoteMessage? _pendingNotification; // Store notification when app is killed
 
   // Notification channel for Android 8+
   static const AndroidNotificationChannel _channel = AndroidNotificationChannel(
@@ -66,11 +69,14 @@ class FCMNotificationService {
         _handleNotificationTap(message);
       });
 
-      // Check if app was opened from a notification
+      // Check if app was opened from a notification (terminated state)
       RemoteMessage? initialMessage = await _fcm.getInitialMessage();
       if (initialMessage != null) {
-        debugPrint('🔔 App opened from notification');
-        _handleNotificationTap(initialMessage);
+        debugPrint('🔔 App opened from notification (terminated state)');
+        debugPrint('📦 Storing notification for later: ${initialMessage.data}');
+        // Store the notification, don't navigate immediately
+        // Will be handled after app is fully initialized
+        _pendingNotification = initialMessage;
       }
 
       debugPrint('✅ FCM initialized successfully');
@@ -105,10 +111,8 @@ class FCMNotificationService {
         initSettings,
         onDidReceiveNotificationResponse: (NotificationResponse response) {
           debugPrint('🔔 Local notification tapped: ${response.payload}');
-          // Handle notification tap
-          if (response.payload != null) {
-            Get.toNamed('/my-orders');
-          }
+          // Payload is not used - notification data is handled in _handleNotificationTap
+          // which is called from onMessageOpenedApp
         },
       );
 
@@ -242,19 +246,159 @@ class FCMNotificationService {
     }
   }
 
+  // Handle pending notification after app is ready
+  void handlePendingNotification() {
+    if (_pendingNotification != null) {
+      debugPrint('🔔 Processing pending notification');
+      final message = _pendingNotification!;
+      _pendingNotification = null; // Clear it
+
+      // Wait longer for app to be fully ready and stable
+      Future.delayed(Duration(milliseconds: 1500), () {
+        try {
+          debugPrint('🔔 App should be ready now, handling notification');
+          _handleNotificationTap(message);
+        } catch (e) {
+          debugPrint('❌ Error processing pending notification: $e');
+        }
+      });
+    } else {
+      debugPrint('ℹ️ No pending notification to handle');
+    }
+  }
+
   // Handle notification tap
   void _handleNotificationTap(RemoteMessage message) {
     final data = message.data;
-    if (data.containsKey('type')) {
-      switch (data['type']) {
+    debugPrint('🔔 Handling notification tap');
+    debugPrint('📦 Notification data: $data');
+
+    if (!data.containsKey('type')) {
+      debugPrint('⚠️ No type in notification data');
+      return;
+    }
+
+    final type = data['type'];
+    debugPrint('🎯 Notification type: $type');
+
+    // Ensure we're on main navigation first, then navigate to specific screen
+    try {
+      switch (type) {
         case 'order_confirmed':
         case 'order_shipped':
         case 'order_delivered':
         case 'order_cancelled':
           // Navigate to orders screen
-          Get.toNamed('/my-orders');
+          debugPrint('📍 Navigating to my-orders');
+          _navigateToScreen(() {
+            Get.toNamed('/my-orders');
+          });
+          break;
+
+        case 'support_ticket_reply':
+        case 'support_ticket_status':
+        case 'support_ticket_user_reply':
+          // Navigate to ticket detail
+          final ticketId = data['ticketId'] ?? '';
+          final isAdminNotification =
+              type == 'support_ticket_user_reply' ||
+              type == 'new_support_ticket';
+
+          debugPrint(
+            '📍 Navigating to ticket detail: $ticketId (admin: $isAdminNotification)',
+          );
+          if (ticketId.isNotEmpty) {
+            _navigateToScreen(() {
+              Get.to(
+                () => TicketDetailScreen(
+                  ticketId: ticketId,
+                  isAdmin: isAdminNotification,
+                ),
+              );
+            });
+          } else {
+            debugPrint('⚠️ Empty ticketId, cannot navigate');
+          }
+          break;
+
+        case 'new_support_ticket':
+          // Navigate to admin tickets (admin only)
+          debugPrint('📍 Navigating to admin tickets');
+          _navigateToScreen(() {
+            Get.toNamed('/admin-tickets');
+          });
+          break;
+
+        case 'new_order':
+          // Navigate to inventory orders tab (admin only)
+          debugPrint('📍 Navigating to inventory');
+          _navigateToScreen(() {
+            Get.toNamed('/inventory');
+          });
+          break;
+
+        default:
+          debugPrint('⚠️ Unknown notification type: $type');
           break;
       }
+    } catch (e) {
+      debugPrint('❌ Error handling notification tap: $e');
+    }
+  }
+
+  // Helper method to safely navigate to screen
+  void _navigateToScreen(Function() navigateAction) {
+    debugPrint('🔍 Current route: ${Get.currentRoute}');
+
+    // Check if GetX is ready by checking if AuthController is registered
+    if (!Get.isRegistered<AuthController>()) {
+      debugPrint('⚠️ GetX services not ready, waiting...');
+      Future.delayed(Duration(milliseconds: 1000), () {
+        _navigateToScreen(navigateAction);
+      });
+      return;
+    }
+
+    // If we're not on main navigation, go there first
+    if (Get.currentRoute != '/main-navigation' &&
+        !Get.currentRoute.startsWith('/main-navigation')) {
+      debugPrint(
+        '📍 Not on main navigation (${Get.currentRoute}), navigating there first',
+      );
+      try {
+        Get.offAllNamed('/main-navigation');
+        // Wait for main navigation to load
+        Future.delayed(Duration(milliseconds: 800), () {
+          _performNavigation(navigateAction);
+        });
+      } catch (e) {
+        debugPrint('❌ Error navigating to main: $e');
+      }
+    } else {
+      // Already on main navigation, proceed
+      debugPrint('✅ Already on main navigation');
+      Future.delayed(Duration(milliseconds: 300), () {
+        _performNavigation(navigateAction);
+      });
+    }
+  }
+
+  // Perform the actual navigation with error handling
+  void _performNavigation(Function() navigateAction) {
+    try {
+      debugPrint('🎯 Performing navigation action');
+      navigateAction();
+      debugPrint('✅ Navigation completed');
+    } catch (e) {
+      debugPrint('❌ Navigation error: $e');
+      // Try one more time
+      Future.delayed(Duration(milliseconds: 500), () {
+        try {
+          navigateAction();
+        } catch (e2) {
+          debugPrint('❌ Second navigation attempt failed: $e2');
+        }
+      });
     }
   }
 

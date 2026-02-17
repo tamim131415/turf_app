@@ -6,6 +6,7 @@ import '../models/order.dart' as app_models;
 import '../models/address.dart';
 import '../models/payment_method.dart';
 import '../models/review.dart';
+import 'fcm_notification_service.dart';
 
 class FirestoreService extends GetxService {
   static FirestoreService get instance => Get.find<FirestoreService>();
@@ -327,6 +328,14 @@ class FirestoreService extends GetxService {
     }
   }
 
+  // Get pending orders count (for admin badge)
+  Stream<int> getPendingOrdersCount() {
+    return ordersCollection
+        .where('orderStatus', isEqualTo: 'Pending')
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
+  }
+
   // Update order (Admin)
   Future<bool> updateOrder(String orderId, Map<String, dynamic> updates) async {
     try {
@@ -501,6 +510,52 @@ class FirestoreService extends GetxService {
 
       await _firestore.collection('supportTickets').doc(ticketId).set(ticket);
       debugPrint('✅ Support ticket created: $ticketId');
+
+      // Send notification to admin
+      try {
+        debugPrint('🔍 Looking for admin user...');
+        // Get admin user ID by email
+        final adminQuery = await _firestore
+            .collection('users')
+            .where('email', isEqualTo: 'admin@turfmate.com')
+            .limit(1)
+            .get();
+
+        debugPrint(
+          '📊 Admin query results: ${adminQuery.docs.length} users found',
+        );
+
+        if (adminQuery.docs.isNotEmpty) {
+          final adminUserId = adminQuery.docs.first.id;
+          final adminData = adminQuery.docs.first.data();
+          debugPrint('👤 Admin user ID: $adminUserId');
+          debugPrint(
+            '🔑 Admin FCM token: ${adminData['fcmToken'] ?? 'NOT FOUND'}',
+          );
+
+          await FCMNotificationService().sendNotificationToUser(
+            userId: adminUserId,
+            title: '🎫 New Support Ticket #$ticketId',
+            message: '$userName submitted a new support ticket',
+            data: {
+              'type': 'new_support_ticket',
+              'ticketId': ticketId,
+              'userId': userId,
+              'userName': userName,
+              'route': '/admin-tickets',
+            },
+          );
+          debugPrint(
+            '✅ Notification queued to admin for new ticket: $ticketId',
+          );
+        } else {
+          debugPrint('⚠️ Admin user not found in Firestore');
+        }
+      } catch (e) {
+        debugPrint('⚠️ Failed to send admin notification: $e');
+        // Don't fail ticket creation if notification fails
+      }
+
       return ticketId;
     } catch (e) {
       debugPrint('❌ Error creating support ticket: $e');
@@ -517,6 +572,15 @@ class FirestoreService extends GetxService {
         .map((snapshot) {
           return snapshot.docs.map((doc) => doc.data()).toList();
         });
+  }
+
+  // Get pending tickets count (for admin badge)
+  Stream<int> getPendingTicketsCount() {
+    return _firestore
+        .collection('supportTickets')
+        .where('status', isEqualTo: 'pending')
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
   }
 
   // Get user's support tickets
@@ -573,6 +637,19 @@ class FirestoreService extends GetxService {
     required String senderName,
   }) async {
     try {
+      // Get ticket data to find user
+      final ticketDoc = await _firestore
+          .collection('supportTickets')
+          .doc(ticketId)
+          .get();
+
+      if (!ticketDoc.exists) {
+        throw Exception('Ticket not found');
+      }
+
+      final ticketData = ticketDoc.data()!;
+      final userId = ticketData['userId'] as String;
+
       final replyId = DateTime.now().millisecondsSinceEpoch.toString();
       final now = DateTime.now();
       final reply = {
@@ -580,9 +657,7 @@ class FirestoreService extends GetxService {
         'message': message,
         'isAdmin': isAdmin,
         'senderName': senderName,
-        'createdAt': Timestamp.fromDate(
-          now,
-        ), // Use Timestamp instead of FieldValue
+        'createdAt': Timestamp.fromDate(now),
       };
 
       final updateData = {
@@ -601,6 +676,68 @@ class FirestoreService extends GetxService {
           .update(updateData);
 
       debugPrint('✅ Reply added to ticket: $ticketId');
+
+      // Send notifications based on who replied
+      if (isAdmin) {
+        // Admin replied - notify user
+        try {
+          final fcmService = Get.find<FCMNotificationService>();
+          final ticketNumber = ticketId.substring(ticketId.length - 6);
+
+          await fcmService.sendNotificationToUser(
+            userId: userId,
+            title: '💬 New Reply on Support Ticket #$ticketNumber',
+            message: 'Support team has replied to your ticket',
+            data: {
+              'type': 'support_ticket_reply',
+              'ticketId': ticketId,
+              'route': '/ticket-detail',
+            },
+          );
+          debugPrint('✅ Notification sent to user: $userId');
+        } catch (e) {
+          debugPrint('⚠️ Failed to send notification to user: $e');
+          // Don't throw - notification failure shouldn't break the reply
+        }
+      } else {
+        // User replied - notify admin
+        try {
+          debugPrint('🔍 Looking for admin user to notify about user reply...');
+          final adminQuery = await _firestore
+              .collection('users')
+              .where('email', isEqualTo: 'admin@turfmate.com')
+              .limit(1)
+              .get();
+
+          if (adminQuery.docs.isNotEmpty) {
+            final adminUserId = adminQuery.docs.first.id;
+            final ticketNumber = ticketId.substring(ticketId.length - 6);
+            final userName = ticketData['userName'] as String? ?? 'User';
+
+            final fcmService = Get.find<FCMNotificationService>();
+            await fcmService.sendNotificationToUser(
+              userId: adminUserId,
+              title: '💬 User Replied to Ticket #$ticketNumber',
+              message: '$userName replied to their support ticket',
+              data: {
+                'type': 'support_ticket_user_reply',
+                'ticketId': ticketId,
+                'userId': userId,
+                'userName': userName,
+                'route': '/admin-tickets',
+              },
+            );
+            debugPrint(
+              '✅ Notification sent to admin for user reply on ticket: $ticketId',
+            );
+          } else {
+            debugPrint('⚠️ Admin user not found');
+          }
+        } catch (e) {
+          debugPrint('⚠️ Failed to send notification to admin: $e');
+          // Don't throw - notification failure shouldn't break the reply
+        }
+      }
     } catch (e) {
       debugPrint('❌ Error adding ticket reply: $e');
       rethrow;
@@ -610,11 +747,67 @@ class FirestoreService extends GetxService {
   // Update support ticket status
   Future<void> updateTicketStatus(String ticketId, String status) async {
     try {
+      // Get ticket data to find user
+      final ticketDoc = await _firestore
+          .collection('supportTickets')
+          .doc(ticketId)
+          .get();
+
+      if (!ticketDoc.exists) {
+        throw Exception('Ticket not found');
+      }
+
+      final ticketData = ticketDoc.data()!;
+      final userId = ticketData['userId'] as String;
+
       await _firestore.collection('supportTickets').doc(ticketId).update({
         'status': status,
         'updatedAt': FieldValue.serverTimestamp(),
       });
+
       debugPrint('✅ Ticket status updated: $ticketId -> $status');
+
+      // Send notification to user about status change
+      try {
+        final fcmService = Get.find<FCMNotificationService>();
+        final ticketNumber = ticketId.substring(ticketId.length - 6);
+
+        String statusEmoji = '📋';
+        String statusMessage = '';
+
+        switch (status) {
+          case 'in-progress':
+            statusEmoji = '🔄';
+            statusMessage = 'Your ticket is now being processed';
+            break;
+          case 'resolved':
+            statusEmoji = '✅';
+            statusMessage = 'Your ticket has been resolved';
+            break;
+          case 'closed':
+            statusEmoji = '🔒';
+            statusMessage = 'Your ticket has been closed';
+            break;
+          default:
+            statusMessage = 'Ticket status updated to $status';
+        }
+
+        await fcmService.sendNotificationToUser(
+          userId: userId,
+          title: '$statusEmoji Support Ticket #$ticketNumber',
+          message: statusMessage,
+          data: {
+            'type': 'support_ticket_status',
+            'ticketId': ticketId,
+            'status': status,
+            'route': '/ticket-detail',
+          },
+        );
+        debugPrint('✅ Status notification sent to user: $userId');
+      } catch (e) {
+        debugPrint('⚠️ Failed to send status notification: $e');
+        // Don't throw - notification failure shouldn't break the status update
+      }
     } catch (e) {
       debugPrint('❌ Error updating ticket status: $e');
       rethrow;
@@ -644,20 +837,6 @@ class FirestoreService extends GetxService {
       return snapshot.docs.length;
     } catch (e) {
       debugPrint('❌ Error getting unread tickets count: $e');
-      return 0;
-    }
-  }
-
-  // Get count of pending tickets (for admin)
-  Future<int> getPendingTicketsCount() async {
-    try {
-      final snapshot = await _firestore
-          .collection('supportTickets')
-          .where('status', isEqualTo: 'pending')
-          .get();
-      return snapshot.docs.length;
-    } catch (e) {
-      debugPrint('❌ Error getting pending tickets count: $e');
       return 0;
     }
   }

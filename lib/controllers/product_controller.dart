@@ -8,6 +8,7 @@ import '../models/order_status_history.dart';
 import '../services/firestore_service.dart';
 import '../services/local_storage_service.dart';
 import '../services/auth_service.dart';
+import '../services/fcm_notification_service.dart';
 import '../utils/app_strings.dart';
 
 class ProductController extends GetxController {
@@ -356,6 +357,54 @@ class ProductController extends GetxController {
 
       if (orderId == null) {
         throw Exception(AppStrings.failedToSaveOrder);
+      }
+
+      // Send notification to admin about new order
+      try {
+        debugPrint('🔍 Looking for admin user for order notification...');
+        // Get admin user ID by email
+        final adminQuery = await FirebaseFirestore.instance
+            .collection('users')
+            .where('email', isEqualTo: 'admin@turfmate.com')
+            .limit(1)
+            .get();
+
+        debugPrint(
+          '📊 Admin query results: ${adminQuery.docs.length} users found',
+        );
+
+        if (adminQuery.docs.isNotEmpty) {
+          final adminUserId = adminQuery.docs.first.id;
+          final adminData = adminQuery.docs.first.data();
+          final totalItems = cartItems.fold<int>(
+            0,
+            (sum, item) => sum + item.quantity,
+          );
+
+          debugPrint('👤 Admin user ID: $adminUserId');
+          debugPrint(
+            '🔑 Admin FCM token: ${adminData['fcmToken'] ?? 'NOT FOUND'}',
+          );
+
+          await FCMNotificationService().sendNotificationToUser(
+            userId: adminUserId,
+            title: '🛒 New Order #$orderId',
+            message: '$customerName placed an order with $totalItems items',
+            data: {
+              'type': 'new_order',
+              'orderId': orderId,
+              'userId': userId,
+              'customerName': customerName,
+              'route': '/inventory',
+            },
+          );
+          debugPrint('✅ Notification queued to admin for new order: $orderId');
+        } else {
+          debugPrint('⚠️ Admin user not found in Firestore');
+        }
+      } catch (e) {
+        debugPrint('⚠️ Failed to send admin notification: $e');
+        // Don't fail order creation if notification fails
       }
 
       // Reduce inventory for each cart item
