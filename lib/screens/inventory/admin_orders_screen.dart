@@ -360,7 +360,13 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                 children: [
                   Icon(Icons.phone, size: 18, color: Colors.grey[600]),
                   SizedBox(width: 8),
-                  Text(order.phoneNumber, style: TextStyle(fontSize: 14)),
+                  Expanded(
+                    child: Text(
+                      order.phoneNumber,
+                      style: TextStyle(fontSize: 14),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 ],
               ),
               SizedBox(height: 8),
