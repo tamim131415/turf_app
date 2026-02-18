@@ -337,6 +337,23 @@ class FCMNotificationService {
           });
           break;
 
+        case 'new_product':
+          // Navigate to product detail
+          final productId = data['productId'] ?? '';
+          debugPrint('📍 Navigating to product detail: $productId');
+          if (productId.isNotEmpty) {
+            _navigateToScreen(() {
+              Get.toNamed('/product-detail', arguments: productId);
+            });
+          } else {
+            // If no product ID, just navigate to home/products
+            debugPrint('⚠️ No productId, navigating to home');
+            _navigateToScreen(() {
+              Get.toNamed('/main-navigation');
+            });
+          }
+          break;
+
         default:
           debugPrint('⚠️ Unknown notification type: $type');
           break;
@@ -582,5 +599,68 @@ class FCMNotificationService {
         'reason': reason ?? '',
       },
     );
+  }
+
+  // Send new product notification to all users
+  Future<void> sendNewProductNotification({
+    required String productId,
+    required String productName,
+    required String category,
+    required double price,
+  }) async {
+    try {
+      // Get all users with FCM tokens
+      final usersSnapshot = await _firestore
+          .collection('users')
+          .where('fcmToken', isNull: false)
+          .get();
+
+      if (usersSnapshot.docs.isEmpty) {
+        debugPrint('ℹ️ No users with FCM tokens found');
+        return;
+      }
+
+      // Create notification for each user
+      final batch = _firestore.batch();
+      int notificationCount = 0;
+
+      for (var userDoc in usersSnapshot.docs) {
+        final fcmToken = userDoc.data()['fcmToken'] as String?;
+        if (fcmToken != null && fcmToken.isNotEmpty) {
+          final notificationRef = _firestore
+              .collection('fcmNotificationQueue')
+              .doc();
+
+          batch.set(notificationRef, {
+            'userId': userDoc.id,
+            'fcmToken': fcmToken,
+            'title': '🆕 New Product Available!',
+            'message':
+                '$productName is now available at ৳${price.toStringAsFixed(0)}',
+            'data': {
+              'type': 'new_product',
+              'productId': productId,
+              'productName': productName,
+              'category': category,
+              'price': price.toString(),
+            },
+            'status': 'pending',
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+          notificationCount++;
+        }
+      }
+
+      // Commit batch
+      await batch.commit();
+
+      debugPrint(
+        '✅ New product notifications queued for $notificationCount users',
+      );
+      debugPrint('📦 Product: $productName');
+      debugPrint('💰 Price: ৳$price');
+    } catch (e) {
+      debugPrint('❌ Error sending new product notifications: $e');
+    }
   }
 }

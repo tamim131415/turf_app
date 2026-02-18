@@ -25,6 +25,7 @@ class ProductController extends GetxController {
   final FirestoreService _firestoreService = FirestoreService.instance;
   final LocalStorageService _localStorageService = LocalStorageService.instance;
   final AuthService _authService = Get.find<AuthService>();
+  final FCMNotificationService _fcmService = Get.find<FCMNotificationService>();
 
   @override
   void onInit() {
@@ -680,6 +681,20 @@ class ProductController extends GetxController {
 
         // Also save to local storage as backup
         await _localStorageService.saveProducts(products);
+
+        // Send notification to all users about new product
+        try {
+          await _fcmService.sendNewProductNotification(
+            productId: productId,
+            productName: updatedProduct.name,
+            category: updatedProduct.category,
+            price: updatedProduct.price,
+          );
+          debugPrint('✅ New product notification sent');
+        } catch (e) {
+          debugPrint('⚠️ Failed to send new product notification: $e');
+          // Don't fail the whole operation if notification fails
+        }
       } else {
         // Firebase failed, add to local storage only
         products.add(product);
