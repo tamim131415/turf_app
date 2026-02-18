@@ -475,12 +475,54 @@ class InventoryDetailScreen extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () async {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Close confirmation dialog
+
+                // Show loading dialog
+                Get.dialog(
+                  WillPopScope(
+                    onWillPop: () async => false, // Prevent dismiss
+                    child: AlertDialog(
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.green,
+                            ),
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            'Deleting product...',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  barrierDismissible: false,
+                );
+
                 try {
                   await productController.deleteProduct(product.id);
-                  // Navigation is handled in the controller
+                  // Close loading dialog
+                  Get.back();
+                  // Navigate back to inventory screen
+                  Get.back();
+                  // Show success message after navigation
+                  Get.snackbar(
+                    'Success',
+                    'Product has been deleted successfully',
+                    snackPosition: SnackPosition.BOTTOM,
+                    backgroundColor: Colors.green,
+                    colorText: Colors.white,
+                    duration: Duration(seconds: 2),
+                  );
                 } catch (e) {
-                  // Error handling is done in the controller
+                  // Close loading dialog on error
+                  Get.back();
                 }
               },
               style: ElevatedButton.styleFrom(

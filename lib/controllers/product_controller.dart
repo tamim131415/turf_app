@@ -772,19 +772,6 @@ class ProductController extends GetxController {
       await _localStorageService.saveProducts(products);
 
       isLoading.value = false;
-
-      Get.snackbar(
-        AppStrings.success,
-        'Product has been deleted successfully',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-        duration: Duration(seconds: 2),
-      );
-
-      // Navigate back to inventory screen after a short delay
-      await Future.delayed(Duration(milliseconds: 300));
-      Get.back();
     } catch (e) {
       isLoading.value = false;
       Get.snackbar(
